@@ -16,6 +16,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    JSON,
     Numeric,
     Text,
     UniqueConstraint,
@@ -39,16 +40,48 @@ class ShopifyOrder(Base):
     order_id = Column(Text, primary_key=True)  # Human-readable ID like "2124"
     shopify_internal_id = Column(Text, nullable=True)  # Internal Shopify ID like "6913240793415"
     purchase_date = Column(DateTime(timezone=True), nullable=False)
-    status = Column(Text)
+    status = Column(Text)  # financial_status
+    fulfillment_status = Column(Text)  # fulfillment_status
     customer_id = Column(Text)
     total = Column(Numeric(12, 2))
     currency = Column(Text)
+    
+    # Financial details
+    subtotal_price = Column(Numeric(12, 2))
+    total_tax = Column(Numeric(12, 2))
+    total_discounts = Column(Numeric(12, 2))
+    total_weight = Column(Integer)  # in grams
+    
+    # Contact information
+    email = Column(Text)
+    phone = Column(Text)
+    
+    # Order metadata
+    tags = Column(Text)  # comma-separated tags
+    note = Column(Text)
+    confirmation_number = Column(Text)
+    order_number = Column(Integer)  # Shopify's internal order number
+    
+    # Marketing attribution
+    referring_site = Column(Text)
+    landing_site = Column(Text)
+    source_name = Column(Text)
+    
+    # Important timestamps
+    processed_at = Column(DateTime(timezone=True))
+    closed_at = Column(DateTime(timezone=True))
+    cancelled_at = Column(DateTime(timezone=True))
+    updated_at_shopify = Column(DateTime(timezone=True))
     
     # Fulfillment tracking
     tracking_number = Column(Text)
     carrier = Column(Text)
     tracking_url = Column(Text)
     tracking_updated_at = Column(DateTime(timezone=True))
+    
+    # Addresses (stored as JSON)
+    billing_address = Column(JSON)
+    shipping_address = Column(JSON)
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

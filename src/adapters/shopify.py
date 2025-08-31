@@ -240,7 +240,7 @@ class ShopifyClient:
                 "updated_at_min": since_iso,
                 "status": "any",  # Include all order statuses
                 "limit": 50,  # Conservative limit for rate limiting
-                "fields": "id,name,created_at,updated_at,total_price,currency,customer,line_items,financial_status,fulfillment_status",
+                # No fields parameter = get ALL available fields from Shopify
             }
 
             if page_info:
@@ -266,8 +266,9 @@ class ShopifyClient:
                         )
                         order_items.append(normalized_item)
 
-                # Check for pagination using Link header
-                link_header = getattr(self.session, "_last_response_headers", {}).get("Link", "")
+                # Check for pagination using Link header (case-insensitive)
+                all_headers = getattr(self.session, "_last_response_headers", {})
+                link_header = all_headers.get("Link", "") or all_headers.get("link", "")
                 links = self._parse_link_header(link_header)
 
                 if "next" in links:
@@ -401,6 +402,110 @@ class ShopifyClient:
         logger.info(f"Total products retrieved: {len(products)}, total variants: {len(variants)}")
         return products, variants
 
+    def get_all_orders(self) -> tuple[list[dict], list[dict]]:
+        """
+        Fetch ALL orders and their line items from Shopify (historical import).
+        
+        Returns:
+            Tuple of (orders_list, order_items_list) normalized for our schema
+        """
+        orders = []
+        order_items = []
+        page_info = None
+        seen_page_infos = set()  # Track page_info tokens to detect infinite loops
+        page_count = 0
+        max_pages = 50  # Safety limit to prevent runaway loops
+
+        logger.info("Fetching ALL Shopify orders (historical import)")
+
+        while page_count < max_pages:
+            page_count += 1
+
+            if page_info:
+                # Check for infinite loop
+                if page_info in seen_page_infos:
+                    logger.warning(f"Detected infinite pagination loop with page_info: {page_info[:50]}...")
+                    logger.info(f"Breaking pagination loop after {page_count} pages with {len(orders)} orders")
+                    break
+                    
+                seen_page_infos.add(page_info)
+                # When using page_info, only include limit parameter
+                params = {
+                    "limit": 250,
+                    "page_info": page_info
+                }
+            else:
+                # First page - include all parameters and get ALL fields (no fields parameter)
+                params = {
+                    "status": "any",  # Include all order statuses
+                    "limit": 250,  # Max limit for faster import
+                    "order": "created_at asc",  # Explicit ordering to ensure consistent pagination
+                    # No fields parameter = get ALL available fields from Shopify
+                }
+
+            try:
+                response_data = self._make_request("GET", "orders.json", params)
+
+                orders_list = response_data.get("orders", [])
+                
+                if not orders_list:
+                    logger.info("No more orders returned, pagination complete")
+                    break
+                    
+                logger.info(f"Page {page_count}: Retrieved {len(orders_list)} orders (total so far: {len(orders)})")
+
+                # Log order range for debugging
+                if orders_list:
+                    first_order_name = orders_list[0].get("name", "N/A")
+                    last_order_name = orders_list[-1].get("name", "N/A") 
+                    logger.debug(f"Order range: {first_order_name} to {last_order_name}")
+
+                # Process each order and its line items
+                for order_data in orders_list:
+                    # Normalize order data
+                    normalized_order = self._normalize_order(order_data)
+                    orders.append(normalized_order)
+
+                    # Process line items
+                    line_items = order_data.get("line_items", [])
+                    for item_data in line_items:
+                        normalized_item = self._normalize_order_item(
+                            normalized_order["order_id"], item_data  # Use the human-readable order ID
+                        )
+                        order_items.append(normalized_item)
+
+                # Check for pagination using Link header (case-insensitive)
+                all_headers = getattr(self.session, "_last_response_headers", {})
+                logger.debug(f"ALL response headers: {list(all_headers.keys())}")
+                # Try both cases - Shopify returns lowercase 'link' header
+                link_header = all_headers.get("Link", "") or all_headers.get("link", "")
+                logger.debug(f"Link header: '{link_header}'")
+                links = self._parse_link_header(link_header)
+                logger.debug(f"Parsed links: {links}")
+
+                if "next" in links:
+                    new_page_info = self._extract_page_info_from_url(links["next"])
+                    if new_page_info and new_page_info != page_info:
+                        page_info = new_page_info
+                        time.sleep(0.5)  # Rate limiting
+                        continue
+                    else:
+                        logger.info("No new page_info found, pagination complete")
+                        break
+                else:
+                    logger.info("No 'next' link found, pagination complete")
+                    break
+
+            except Exception as e:
+                logger.error(f"Error fetching all orders: {e}")
+                raise
+
+        if page_count >= max_pages:
+            logger.warning(f"Reached maximum page limit ({max_pages}) - may not have fetched all orders")
+
+        logger.info(f"Total orders retrieved: {len(orders)}, total items: {len(order_items)} across {page_count} pages")
+        return orders, order_items
+
     def _normalize_order(self, order_data: dict) -> dict:
         """Normalize Shopify order data to match our warehouse schema."""
         # Parse total price
@@ -427,13 +532,101 @@ class ShopifyClient:
         order_name = order_data.get("name")
         order_id = order_name if order_name else str(order_data["id"])
         
+        # Parse financial amounts
+        def parse_decimal(value, field_name=""):
+            if value is None or value == "":
+                return None
+            try:
+                return Decimal(str(value))
+            except (ValueError, TypeError):
+                logger.warning(f"Invalid {field_name} value: {value}")
+                return None
+
+        subtotal_price = parse_decimal(order_data.get("subtotal_price"), "subtotal_price")
+        total_tax = parse_decimal(order_data.get("total_tax"), "total_tax")
+        total_discounts = parse_decimal(order_data.get("total_discounts"), "total_discounts")
+        
+        # Parse timestamps
+        def parse_timestamp(timestamp_str):
+            if not timestamp_str:
+                return None
+            try:
+                return datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+            except ValueError:
+                return None
+        
+        processed_at = parse_timestamp(order_data.get("processed_at"))
+        closed_at = parse_timestamp(order_data.get("closed_at"))
+        cancelled_at = parse_timestamp(order_data.get("cancelled_at"))
+        updated_at_shopify = parse_timestamp(order_data.get("updated_at"))
+        
+        # Extract fulfillment/tracking information
+        tracking_number = None
+        carrier = None
+        tracking_url = None
+        tracking_updated_at = None
+        
+        fulfillments = order_data.get("fulfillments", [])
+        if fulfillments:
+            # Get the most recent fulfillment with tracking info
+            for fulfillment in reversed(fulfillments):  # Start with most recent
+                if fulfillment.get("tracking_number"):
+                    tracking_number = fulfillment.get("tracking_number")
+                    carrier = fulfillment.get("tracking_company")
+                    tracking_url = fulfillment.get("tracking_url")
+                    tracking_updated_at = parse_timestamp(fulfillment.get("updated_at"))
+                    break
+        
+        # Process tags (convert array to comma-separated string)
+        tags = order_data.get("tags", "")
+        if isinstance(tags, list):
+            tags = ", ".join(tags)
+        
         result = {
             "order_id": order_id,  # Use human-readable order name (e.g., "2121") 
             "purchase_date": created_at,
             "status": order_data.get("financial_status", ""),
+            "fulfillment_status": order_data.get("fulfillment_status", ""),
             "customer_id": customer_id,
             "total": total_amount,
             "currency": order_data.get("currency", ""),
+            
+            # Financial details
+            "subtotal_price": subtotal_price,
+            "total_tax": total_tax,
+            "total_discounts": total_discounts,
+            "total_weight": int(order_data.get("total_weight", 0)) if order_data.get("total_weight") else None,
+            
+            # Contact information
+            "email": order_data.get("email") or order_data.get("contact_email"),
+            "phone": order_data.get("phone"),
+            
+            # Order metadata
+            "tags": tags,
+            "note": order_data.get("note"),
+            "confirmation_number": order_data.get("confirmation_number"),
+            "order_number": int(order_data.get("order_number")) if order_data.get("order_number") else None,
+            
+            # Marketing attribution
+            "referring_site": order_data.get("referring_site"),
+            "landing_site": order_data.get("landing_site"),
+            "source_name": order_data.get("source_name"),
+            
+            # Timestamps
+            "processed_at": processed_at,
+            "closed_at": closed_at,
+            "cancelled_at": cancelled_at,
+            "updated_at_shopify": updated_at_shopify,
+            
+            # Fulfillment tracking
+            "tracking_number": tracking_number,
+            "carrier": carrier,
+            "tracking_url": tracking_url,
+            "tracking_updated_at": tracking_updated_at,
+            
+            # Addresses (store as JSON)
+            "billing_address": order_data.get("billing_address"),
+            "shipping_address": order_data.get("shipping_address"),
         }
         
         # Only add shopify_internal_id if it's different from order_id (to avoid redundancy)
@@ -458,11 +651,8 @@ class ShopifyClient:
         return {
             "order_id": order_id,
             "sku": sku,
-            "asin": None,  # Not applicable for Shopify
             "qty": int(item_data.get("quantity", 1)),
             "price": price,
-            "tax": None,  # Could be calculated from tax_lines if needed
-            "fee_estimate": None,
         }
 
     def _normalize_customer(self, customer_data: dict) -> dict:

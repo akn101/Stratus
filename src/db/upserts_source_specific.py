@@ -74,13 +74,47 @@ def upsert_shopify_orders(rows: list[dict], session: Session | None = None) -> t
                 "shopify_internal_id",
                 "purchase_date",
                 "status",
+                "fulfillment_status",
                 "customer_id",
                 "total",
                 "currency",
+                
+                # Financial details
+                "subtotal_price",
+                "total_tax", 
+                "total_discounts",
+                "total_weight",
+                
+                # Contact information
+                "email",
+                "phone",
+                
+                # Order metadata
+                "tags",
+                "note",
+                "confirmation_number",
+                "order_number",
+                
+                # Marketing attribution
+                "referring_site",
+                "landing_site",
+                "source_name",
+                
+                # Timestamps
+                "processed_at",
+                "closed_at",
+                "cancelled_at",
+                "updated_at_shopify",
+                
+                # Fulfillment tracking
                 "tracking_number",
                 "carrier",
                 "tracking_url",
                 "tracking_updated_at",
+                
+                # Addresses
+                "billing_address",
+                "shipping_address",
             ],
         )
 
