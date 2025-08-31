@@ -1,0 +1,449 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Bank Transaction Explanations</h1>
+<p><em>Minimum access level</em>: <code>Banking</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the explanation</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>bank_account</td>
+      <td>
+        <p><a href="bank_accounts.html">Bank account</a> in which the explained transaction will be created</p>
+        <em>Required if <code>bank_transaction</code> is not specified</em>
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>bank_transaction</td>
+      <td>
+        <p><a href="bank_transactions.html">Transaction</a> that is being explained</p>
+        <em>Required if <code>bank_account</code> is not specified</em>
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>type</td>
+      <td>Read-only explanation type, e.g. <em>Payment</em>, <em>Invoice Receipt</em></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ec_status</td>
+      <td>
+        Transaction's VAT status for reporting purposes. One of the following:
+        <p>
+          <ul>
+            <li><code>UK/Non-EC</code></li>
+            <li><code>EC Goods</code></li>
+            <li><code>EC Services</code></li>
+            <li><code>Reverse Charge</code></li>
+            <li><code>EC VAT MOSS</code></li>
+          </ul>
+        </p>
+        <p><em>Please note that <code>EC Goods</code> and <code>EC Services</code> are no longer valid options if the transaction is dated 1/1/2021 or later and the company is based in Great Britain (but not Northern Ireland), following the UK's withdrawal from the EU.</em></p>
+        <p><em><code>Reverse Charge</code> is only a valid status if the transaction is dated 1/1/2021 or later.</em></p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>place_of_supply</td>
+      <td>
+        Place of supply when <code>ec_status</code> is <a href="sales_tax.html#ec-vat-moss"><code>EC VAT MOSS</code></a>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>dated_on</td>
+      <td>Date of the explanation</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>gross_value</td>
+      <td>Value of the explanation in the Bank Account's native <a href="currencies.html">currency</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>sales_tax_rate</td>
+      <td>
+        <p>
+          One of the standard <a href="sales_tax.html">sales tax</a> rates or an
+          <a href="sales_tax.html#ec-vat-moss-rates">EC VAT MOSS</a> rate.
+        </p>
+        <em>Required for EC VAT MOSS explanation</em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_rate</td>
+      <td>[Universal accounts only] One of the standard <a href="sales_tax.html">second sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_value</td>
+      <td>Value of <a href="sales_tax.html">sales tax</a> for the transaction</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_value</td>
+      <td>[Universal accounts only] Value of <a href="sales_tax.html">second sales tax</a> for the transaction</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_status</td>
+      <td>Indicates whether the item is <code>TAXABLE</code>, <code>EXEMPT</code> or <code>OUT_OF_SCOPE</code> for
+      <a href="sales_tax.html">sales tax</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_status</td>
+      <td>[Universal accounts only] Similar to sales_tax_status, returned only if the relevant
+      <a href="sales_tax_periods.html">sales tax period</a> defines a second sales tax</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>description</td>
+      <td>
+        <p>Description</p>
+        <em>Not required for transfers or invoice receipts</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>category</td>
+      <td><a href="categories.html">Accounting category</a> of the explanation</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cheque_number</td>
+      <td>Cheque number</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>attachment</td>
+      <td>
+        <p>Explanation <a href="attachments.html">attachment</a> (max 5MB), in the following format:</p>
+        <ul>
+          <li><code>data</code> (binary data of the file being attached encoded as base64)</li>
+          <li><code>file_name</code></li>
+          <li><code>description</code></li>
+          <li>
+            <code>content_type</code> can be one of the following:
+            <ul>
+              <li><code>image/png</code></li>
+              <li><code>image/x-png</code></li>
+              <li><code>image/jpeg</code></li>
+              <li><code>image/jpg</code></li>
+              <li><code>image/gif</code></li>
+              <li><code>application/x-pdf</code></li>
+            </ul>
+          </li>
+        </ul>
+      </td>
+      <td>Object</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>marked_for_review</td>
+      <td><code>true</code> if the explanation has been guessed and awaiting approval, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_money_in</td>
+      <td><code>true</code> if money in, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_money_out</td>
+      <td><code>true</code> if money out, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_money_paid_to_user</td>
+      <td><code>true</code> if money is paid to or received from user, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_locked</td>
+      <td><code>true</code> when the explanation cannot be changed, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>locked_attributes</td>
+      <td>List of attributes that cannot be modified</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>locked_reason</td>
+      <td>The reason for the explanation being locked</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_deletable</td>
+      <td><code>true</code> when the explanation can be deleted, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Payment / Refund</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>project</td>
+      <td>The <a href="projects.html">project</a> being linked or rebilled</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>rebill_type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>cost</code></li>
+            <li><code>markup</code></li>
+            <li><code>price</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>rebill_factor</td>
+      <td>
+        <p>How much to rebill for</p>
+        <em>Required when <code>rebill_type</code> is <code>markup</code> or <code>price</code></em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>receipt_reference</td>
+      <td>Receipt reference</td>
+      <td>String</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Invoice Receipt / Credit Note Refund</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>paid_invoice</td>
+      <td><a href="invoices.html">Invoice</a> that has been paid, or credit note that has been refunded</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>foreign_currency_value</td>
+      <td>Equivalent of <code>gross_value</code> in the foreign currency, if explaining a foreign currency invoice</td>
+      <td>Decimal</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Bill Payment / Bill Refund</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>paid_bill</td>
+      <td><a href="bills.html">Bill</a> that was paid or refunded</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>foreign_currency_value</td>
+      <td>Equivalent of <code>gross_value</code> in the foreign currency, if explaining a foreign currency bill</td>
+      <td>Decimal</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Money Paid to User / Money Received from User</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>paid_user</td>
+      <td><a href="users.html">User</a> to which money was paid or from which money was received</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Transfer to Another Account / Transfer from Another Account</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>transfer_bank_account</td>
+      <td><a href="bank_accounts.html">Bank account</a> transfered to / from</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Purchase of Stock / Sale of Stock</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>stock_item</td>
+      <td><a href="stock_items.html">Stock item</a> purchased or sold</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>stock_altering_quantity</td>
+      <td>How much stock has been purchased or sold</td>
+      <td>Integer</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Purchase of Capital Asset / Disposal of Capital Asset</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>capital_asset</td>
+      <td>A link to the <a href="capital_assets.html">asset</a> purchased with this transaction. Read-only.
+        See <a href="depreciation_profiles.html">depreciation profiles</a> for more details on
+        what to include in this field for create/update requests.
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>asset_life_years</td>
+      <td>
+        <p><b>Note!</b> This field is deprecated. Fetch the capital asset using the link in
+        the capital_asset field of the response to view full details of its depreciation profile.</p>
+        <p>Number of years over which the <a href="capital_assets.html">asset</a> should be depreciated for straight line depreciation, otherwise 0 for backwards compatibility while the field is deprecated.</p>
+        <em>Only relevant for capital asset purchase.<em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>disposed_asset</td>
+      <td>
+        <p><a href="capital_assets.html">Asset</a> which is disposed of. No need to specify category in this case.</p>
+        <em>Required for capital asset disposal</em>
+      </td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for UK Unincorporated Landlord companies (profit and loss categories only)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>?</td>
+      <td>property</td>
+      <td>
+        <p>The <a href="properties.html">property</a> linked to the explanation</p>
+      </td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-bank-transaction-explanations">List all bank transaction explanations</h2>
+<p>Requires the bank account to be specified.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_transaction_explanations?bank_account=https://api.freeagent.com/v2/bank_accounts/:id
+</code></pre><h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_transaction_explanations?bank_account=https://api.freeagent.com/v2/bank_accounts/:id&amp;from_date=2012-01-01&amp;to_date=2012-03-31
+</code></pre><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_transaction_explanations?bank_account=https://api.freeagent.com/v2/bank_accounts/:id&amp;updated_since=2017-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+<li><code>updated_since</code></li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;bank_transaction_explanations&quot;: [
+  {
+    &quot;url&quot;: &quot;https://api.freeagent.com/v2/bank_transaction_explanations/20&quot;,
+    &quot;bank_transaction&quot;: &quot;https://api.freeagent.com/v2/bank_transactions/20&quot;,
+    &quot;bank_account&quot;: &quot;https://api.freeagent.com/v2/bank_accounts/1&quot;,
+    &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/366&quot;,
+    &quot;dated_on&quot;: &quot;2019-12-01&quot;,
+    &quot;description&quot;: &quot;transform plug-and-play convergence&quot;,
+    &quot;gross_value&quot;: &quot;-90.0&quot;,
+    &quot;project&quot;: &quot;https://api.freeagent.com/v2/projects/1&quot;,
+    &quot;rebill_type&quot;: &quot;markup&quot;,
+    &quot;rebill_factor&quot;: &quot;0.25&quot;,
+    &quot;updated_at&quot;: &quot;2020-02-06T11:08:28.000Z&quot;,
+    &quot;sales_tax_status&quot;: &quot;TAXABLE&quot;,
+    &quot;sales_tax_rate&quot;: &quot;0.0&quot;,
+    &quot;sales_tax_value&quot;: &quot;0.0&quot;,
+    &quot;is_deletable&quot;: true,
+    &quot;attachment&quot;:
+      {
+        &quot;url&quot;:&quot;https://api.freeagent.com/v2/attachments/3&quot;,
+        &quot;content_src&quot;:&quot;https://s3.amazonaws.com/freeagent-dev/attachments/2/original.pdf?AWSAccessKeyId=1K3MW21E6T8KWBY84B02&amp;Expires=1316186571&amp;Signature=tA4V5%2BJEE%2Fc3JTg5AiIO494m0cA%3D&quot;,
+        &quot;content_type&quot;:&quot;application/pdf&quot;,
+        &quot;file_name&quot;:&quot;About Stacks.pdf&quot;,
+        &quot;file_size&quot;:466028
+      }
+  }]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

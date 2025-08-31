@@ -1,0 +1,13 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Email Addresses</h1>
+<p><em>Minimum access level</em>: <code>Time</code>, unless stated otherwise.</p>
+<h2 id="get-a-list-of-verified-sender-email-addresses">Get a list of verified sender email addresses</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/email_addresses
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;email_addresses&quot;: [
+    &quot;John Smith &lt;jsmith@example.com&gt;&quot;
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;freeagent&gt;

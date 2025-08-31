@@ -1,0 +1,181 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Users</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting &amp; Users</code>, unless stated otherwise.</p>
+<h2 id="permissions">Permissions</h2>
+<p>Guide to the permission_level attribute:</p>
+<pre class=prettyprint><code class=>0 : No Access
+1 : Time
+2 : My Money
+3 : Contacts &amp; Projects
+4 : Invoices, Estimates &amp; Files
+5 : Bills
+6 : Banking
+7 : Tax, Accounting &amp; Users
+8 : Full
+</code></pre><h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the user</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>email</td>
+      <td>Login email address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>first_name</td>
+      <td>First name</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>last_name</td>
+      <td>Last name</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ni_number</td>
+      <td>UK National Insurance Number</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>unique_tax_reference</td>
+      <td>10-digit UK Tax Reference</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>role</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Owner</code></li>
+            <li><code>Director</code></li>
+            <li><code>Partner</code></li>
+            <li><code>Company Secretary</code></li>
+            <li><code>Employee</code></li>
+            <li><code>Shareholder</code></li>
+            <li><code>Accountant</code></li>
+          </ul>
+        </p>
+        <em>Certain roles can not be set, depending on the type of company - e.g. Sole trader businesses don't have Directors, Partners, Company Secretaries, or Shareholders.</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>opening_mileage</td>
+      <td>Opening mileage as of <a href="company.html">company</a> start date</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>send_invitation</td>
+      <td><code>true</code> to send the user an invitation to set their password, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>permission_level</td>
+      <td>See <a href="#permissions">Permissions</a> above</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the user resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the user resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional read-only attributes when a payroll profile is set up for this tax year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>current_payroll_profile</td>
+      <td>A subsection containing payroll information for the current tax year</td>
+      <td>Object</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="read-only-current-payroll-profile-attributes">Read-only current payroll profile attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>total_pay_in_previous_employment</td>
+      <td>Total pay during previous employment</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+    <td></td>
+      <td>total_tax_in_previous_employment</td>
+      <td>Total tax paid during previous employment</td>
+      <td>Decimal</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-users">List all users</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/users
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/users?view=all
+</code></pre>
+<ul>
+<li><code>all</code>: Show all users (default)</li>
+<li><code>staff</code>: Show users with a role as an Owner, Director, Partner, Company Secretary, Employee or Shareholder.</li>
+<li><code>active_staff</code>: Show non-hidden users with a role as an Owner, Director, Partner, Company Secretary, Employee or Shareholder.</li>
+<li><code>advisors</code>: Show users with an Accountant role.</li>
+<li><code>active_advisors</code>: Show non-hidden users with an Accountant role.</li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;users&quot;:[
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/users/1&quot;,
+    &quot;first_name&quot;:&quot;Development&quot;,
+    &quot;last_name&quot;:&quot;Team&quot;,
+    &quot;email&quot;:&quot;dev@example.com&quot;,
+    &quot;role&quot;:&quot;Director&quot;,
+    &quot;permission_level&quot;:8,
+    &quot;ni_number&quot;:&quot;QQ123456C&quot;,
+    &quot;unique_tax_reference&quot;:&quot;1234567890&quot;,
+    &quot;opening_mileage&quot;:0,
+    &quot;updated_at&quot;:&quot;2011-08-24T08:10:23Z&quot;,
+    &quot;created_at&quot;:&quot;2011-07-28T11:25:11Z&quot;
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

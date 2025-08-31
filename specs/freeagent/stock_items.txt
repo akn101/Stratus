@@ -1,0 +1,88 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Stock Items</h1>
+<p><em>Minimum access level</em>: <code>Invoices, Estimates and Files</code></p>
+
+<p>Provides read-only access to the list of stock items defined in the FreeAgent account.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td>The unique identifier for the stock item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>
+        Free-text description / code to identify the item when it's added to an <a href="invoices.html">invoice</a> or <a href="estimates.html">estimate</a>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>opening_quantity</td>
+      <td>Stock on hand as of FreeAgent Start Date</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>opening_balance</td>
+      <td>The value of stock on hand as of FreeAgent Start Date</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>cost_of_sale_category</td>
+      <td>The <a href="categories.html">spending category</a> which will be used to account for sales of this stock item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>stock_on_hand</td>
+      <td>Stock on hand as of today</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>created_at</td>
+      <td>Creation of the stock item (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>updated_at</td>
+      <td>When the stock item was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-stock-items">List all Stock Items</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/stock_items
+</code></pre><h4>Sort Orders</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/stock_items?sort=created_at
+</code></pre>
+<ul>
+<li><code>created_at</code>: Sort by the time the stock item was created (default).</li>
+<li><code>description</code>: Sort by the stock item description / code.</li>
+<li><code>updated_at</code>: Sort by the time the stock item was updated.</li>
+</ul>
+
+<p>To sort in descending order, the sort parameter can be prefixed with a hyphen.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/stock_items?sort=-created_at
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;stock_items&quot;: [
+    {
+      &quot;url&quot;: &quot;https://api.freeagent.com/v2/stock_items/3&quot;,
+      &quot;description&quot;: &quot;Apple&quot;,
+      &quot;opening_quantity&quot;: &quot;10.0&quot;,
+      &quot;opening_balance&quot;: &quot;1.0&quot;,
+      &quot;cost_of_sale_category&quot;: &quot;https://api.freeagent.com/v2/categories/2&quot;,
+      &quot;stock_on_hand&quot;: &quot;10.0&quot;,
+      &quot;created_at&quot;:&quot;2023-05-22T09:22:45Z&quot;,
+      &quot;updated_at&quot;:&quot;2023-05-25T12:43:36Z&quot;
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

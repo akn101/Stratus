@@ -1,0 +1,149 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Bank Transactions</h1>
+<p><em>Minimum access level</em>: <code>Banking</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td>The unique identifier for the bank transaction</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>Total amount in the company's native <a href="currencies.html">currency</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>bank_account</td>
+      <td>Transaction's <a href="bank_accounts.html">bank account</a></td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>dated_on</td>
+      <td>Date of transaction in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Free-text description</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>full_description</td>
+      <td>A complete description of the transaction, including the amount and type</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>uploaded_at</td>
+      <td>When the transaction was uploaded to FreeAgent</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>unexplained_amount</td>
+      <td>Amount yet to be explained</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>is_manual</td>
+      <td><code>true</code> if transaction was manually added (i.e. not from a statement or bank feed), <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>transaction_id</td>
+      <td>A unique ID of the transaction. It is assumed to be unique within a banking instiution, and can be used as a shared identifier between FreeAgent and the third party. Also known as <code>fit_id</code></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>created_at</td>
+      <td>Creation of the bank transaction (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>updated_at</td>
+      <td>When the bank transaction was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>matching_transactions_count</td>
+      <td>The number of other transactions in the bank account that have a matching description</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>bank_transaction_explanations</td>
+      <td>
+        Entries that fully or partially explain this transaction.
+        See <a href="bank_transaction_explanations.html">Bank Transaction Explanations</a>.
+        </td>
+      <td>Array</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-bank-transactions-under-a-certain-bank-account">List all bank transactions under a certain bank account</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_transactions?bank_account=:bank_account
+</code></pre><h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_transactions?bank_account=:bank_account&amp;from_date=2012-01-01&amp;to_date=2012-03-31
+</code></pre><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_transactions?bank_account=:bank_account&amp;updated_since=2017-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+<li><code>updated_since</code></li>
+</ul>
+<h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_transactions?bank_account=:bank_account&amp;view=unexplained
+</code></pre>
+<ul>
+<li><code>all</code> (default)</li>
+<li><code>unexplained</code></li>
+<li><code>explained</code></li>
+<li><code>manual</code></li>
+<li><code>imported</code></li>
+<li><code>marked_for_review</code></li>
+</ul>
+<h4>Filtering by latest statement upload</h4>
+<p>Returns only transactions that are part of the last statement that has been uploaded.
+Note that this may have been uploaded via the API or by a user via the web interface.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_transactions?bank_account=:bank_account&amp;last_uploaded=true
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;bank_transactions&quot;:[
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/bank_transactions/8&quot;,
+    &quot;amount&quot;:&quot;-730.0&quot;,
+    &quot;bank_account&quot;:&quot;https://api.freeagent.com/v2/bank_accounts/1&quot;,
+    &quot;dated_on&quot;:&quot;2020-07-06&quot;,
+    &quot;description&quot;:&quot;.Reichert, Kautzer and Schultz/.harness end-to-end e-business 665-454-0057 x55609&quot;,
+    &quot;full_description&quot;: &quot;.Reichert, Kautzer and Schultz/.harness end-to-end e-business 665-454-0057 x55609/OTHER/£730.0&quot;,
+    &quot;uploaded_at&quot;: &quot;2020-07-06T15:26:21.000Z&quot;,
+    &quot;unexplained_amount&quot;:&quot;0.0&quot;,
+    &quot;is_manual&quot;:false,
+    &quot;transaction_id&quot;:&quot;049b807d-83ea-4d98-854c-e84b18775d31&quot;,
+    &quot;created_at&quot;: &quot;2020-07-06T15:26:21.000Z&quot;,
+    &quot;updated_at&quot;: &quot;2020-07-06T15:26:21.000Z&quot;,
+    &quot;matching_transactions_count&quot;: 0,
+    &quot;bank_transaction_explanations&quot;: []
+  },
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/bank_transactions/15&quot;,
+    &quot;amount&quot;:&quot;-350.0&quot;,
+    &quot;bank_account&quot;:&quot;https://api.freeagent.com/v2/bank_accounts/1&quot;,
+    &quot;dated_on&quot;:&quot;2020-07-06&quot;,
+    &quot;description&quot;:&quot;.Ledner Inc/.mesh enterprise platforms (246)942-9558&quot;,
+    &quot;full_description&quot;: &quot;.Ledner Inc/.mesh enterprise platforms (246)942-9558/OTHER/£350.0&quot;,
+    &quot;uploaded_at&quot;: &quot;2020-07-06T15:26:21.000Z&quot;,
+    &quot;unexplained_amount&quot;:&quot;0.0&quot;,
+    &quot;is_manual&quot;:false,
+    &quot;transaction_id&quot;:&quot;049b807d-83ea-4d98-854c-e84b18775d32&quot;,
+    &quot;created_at&quot;: &quot;2020-07-06T15:26:21.000Z&quot;,
+    &quot;updated_at&quot;: &quot;2020-07-06T15:26:21.000Z&quot;,
+    &quot;matching_transactions_count&quot;: 0,
+    &quot;bank_transaction_explanations&quot;: []
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

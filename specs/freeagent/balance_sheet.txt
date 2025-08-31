@@ -1,0 +1,217 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Balance Sheet</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting &amp; Users</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>accounting_period_start_date</td>
+      <td>
+        <p>Start date of the accounting period for which the values are shown</p>
+        <em>Not applicable on opening balances</em>
+      </td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>as_at_date</td>
+      <td>
+        <p>Values shown are as at this date, starting from <code>accounting_period_start_date</code></p>
+        <em>Not applicable on opening balances</em>
+      </td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>currency</td>
+      <td>ISO code representing the company's native <a href="currencies.html">currency</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>capital_assets</td>
+      <td>
+        <p>Capital assets of the business, containing:</p>
+        <ul>
+          <li><code>accounts</code>: Array of capital asset accounts, each containing
+          the <code>name</code>, <code>nominal_code</code> and <code>total_debit_value</code>
+          of the account, rounded to the nearest integer</li>
+          <li><code>net_book_value</code>: Net book value of all capital asset accounts, rounded to
+          the nearest integer</li>
+        </ul>
+      </td>
+      <td>Object</td>
+    </tr>
+    <tr>
+      <td>current_assets</td>
+      <td>
+        <p>Current assets of the business, containing:</p>
+        <ul>
+          <li><code>accounts</code>: Array of current asset accounts, each containing
+          the <code>name</code>, <code>nominal_code</code> and <code>total_debit_value</code>
+          of the account, rounded to the nearest integer</li>
+        </ul>
+      </td>
+      <td>Object</td>
+    </tr>
+    <tr>
+      <td>current_liabilities</td>
+      <td>
+        <p>Current liabilities of the business, containing:</p>
+        <ul>
+          <li><code>accounts</code>: Array of current liability accounts, each containing
+          the <code>name</code>, <code>nominal_code</code> and <code>total_debit_value</code>
+          of the account, rounded to the nearest integer</li>
+        </ul>
+        <p>A negative total debit value indicates money owed by the business</p>
+      </td>
+      <td>Object</td>
+    </tr>
+    <tr>
+      <td>net_current_assets</td>
+      <td>Total value of all current asset and current liability account debit values added together,
+      rounded to the nearest integer</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>total_assets</td>
+      <td>Total value of all capital asset, current asset and current liability account debit values
+      added together, rounded to the nearest integer</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>owners_equity</td>
+      <td>
+        <p>Owner's equity, containing:</p>
+        <ul>
+          <li><code>accounts</code>: Array of equity accounts, each containing
+          the <code>name</code>, <code>nominal_code</code> and <code>total_debit_value</code>
+          of the account, rounded to the nearest integer</li>
+          <li><code>retained_profit</code>: Total retained profit, rounded to the nearest integer</li>
+        </ul>
+        <p>A negative value indicates money owed by the business to its owner</p>
+      </td>
+      <td>Object</td>
+    </tr>
+    <tr>
+      <td>total_owners_equity</td>
+      <td>Total owner's equity, rounded to the nearest integer. This number should always be the inverse of
+      the business's total assets</td>
+      <td>Integer</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="get-the-balance-sheet">Get the balance sheet</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/accounting/balance_sheet
+</code></pre><h3>Date Filters</h3><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/accounting/balance_sheet?as_at_date=2023-09-30
+</code></pre>
+<ul>
+<li><code>as_at_date</code> - Date in YYYY-MM-DD format (optional)</li>
+</ul>
+<h3>Response</h3>
+<p>If no <code>as_at_date</code> param is specified, the values returned are as at the current date, from the beginning
+of the ongoing annual accounting period.</p>
+
+<p>If <code>as_at_date</code> is specified, the values returned are for the annual accounting period containing <code>as_at_date</code>,
+up to the specified date.</p>
+<pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+    &quot;balance_sheet&quot;: {
+        &quot;accounting_period_start_date&quot;: &quot;2023-03-01&quot;,
+        &quot;as_at_date&quot;: &quot;2023-09-30&quot;,
+        &quot;currency&quot;: &quot;GBP&quot;,
+        &quot;capital_assets&quot;: {
+            &quot;accounts&quot;: [
+                {
+                    &quot;name&quot;: &quot;Other Capital Asset Brought Forward&quot;,
+                    &quot;nominal_code&quot;: &quot;601-4&quot;,
+                    &quot;total_debit_value&quot;: 800
+                },
+                {
+                    &quot;name&quot;: &quot;Other Capital Asset Purchase&quot;,
+                    &quot;nominal_code&quot;: &quot;602-4&quot;,
+                    &quot;total_debit_value&quot;: 1649
+                },
+                {
+                    &quot;name&quot;: &quot;Other Capital Asset Depreciation Brought Forward&quot;,
+                    &quot;nominal_code&quot;: &quot;605-4&quot;,
+                    &quot;total_debit_value&quot;: -533
+                },
+                {
+                    &quot;name&quot;: &quot;Other Capital Asset Depreciation&quot;,
+                    &quot;nominal_code&quot;: &quot;606-4&quot;,
+                    &quot;total_debit_value&quot;: -816
+                }
+            ],
+            &quot;net_book_value&quot;: 1099
+        },
+        &quot;current_assets&quot;: {
+            &quot;accounts&quot;: [
+                {
+                    &quot;name&quot;: &quot;Trade Debtors&quot;,
+                    &quot;nominal_code&quot;: &quot;681&quot;,
+                    &quot;total_debit_value&quot;: 2040
+                },
+                {
+                    &quot;name&quot;: &quot;Bank Account: Default bank account&quot;,
+                    &quot;nominal_code&quot;: &quot;750-1&quot;,
+                    &quot;total_debit_value&quot;: 21722
+                },
+                {
+                    &quot;name&quot;: &quot;VAT Reclaimed&quot;,
+                    &quot;nominal_code&quot;: &quot;818&quot;,
+                    &quot;total_debit_value&quot;: 78
+                }
+            ]
+        },
+        &quot;current_liabilities&quot;: {
+            &quot;accounts&quot;: [
+                {
+                    &quot;name&quot;: &quot;Trade Creditors&quot;,
+                    &quot;nominal_code&quot;: &quot;796&quot;,
+                    &quot;total_debit_value&quot;: -865
+                },
+                {
+                    &quot;name&quot;: &quot;VAT&quot;,
+                    &quot;nominal_code&quot;: &quot;817&quot;,
+                    &quot;total_debit_value&quot;: -5083
+                },
+                {
+                    &quot;name&quot;: &quot;Corporation Tax&quot;,
+                    &quot;nominal_code&quot;: &quot;820&quot;,
+                    &quot;total_debit_value&quot;: -4932
+                },
+                {
+                    &quot;name&quot;: &quot;Expense Account: Development Team&quot;,
+                    &quot;nominal_code&quot;: &quot;905-1&quot;,
+                    &quot;total_debit_value&quot;: -2055
+                },
+                {
+                    &quot;name&quot;: &quot;Suspense Account&quot;,
+                    &quot;nominal_code&quot;: &quot;999&quot;,
+                    &quot;total_debit_value&quot;: -100
+                }
+            ]
+        },
+        &quot;net_current_assets&quot;: 10806,
+        &quot;total_assets&quot;: 11905,
+        &quot;owners_equity&quot;: {
+            &quot;accounts&quot;: [
+                {
+                    &quot;name&quot;: &quot;Share Premium&quot;,
+                    &quot;nominal_code&quot;: &quot;670&quot;,
+                    &quot;total_debit_value&quot;: -30
+                }
+            ],
+            &quot;retained_profit&quot;: -11875
+        },
+        &quot;total_owners_equity&quot;: -11905
+    }
+}
+
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

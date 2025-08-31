@@ -1,0 +1,157 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Price List Items</h1>
+<p><em>Minimum access level</em>: <code>Invoices, Estimates and Files</code></p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the price list item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>code</td>
+      <td>A unique name / code used to identify the item when adding it to an <a href="invoices.html">invoice</a> or <a href="estimates.html">estimate</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>quantity</td>
+      <td>Item quantity</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>item_type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Hours</code></li>
+            <li><code>Days</code></li>
+            <li><code>Weeks</code></li>
+            <li><code>Months</code></li>
+            <li><code>Years</code></li>
+            <li><code>Products</code></li>
+            <li><code>Services</code></li>
+            <li><code>Training</code></li>
+            <li><code>Expenses</code></li>
+            <li><code>Comment</code></li>
+            <li><code>Bills</code></li>
+            <li><code>Discount</code></li>
+            <li><code>Credit</code></li>
+            <li><code>VAT</code></li>
+            <li><code>Stock</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>
+        String
+      </td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>description</td>
+      <td>Free-text description of the item</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>price</td>
+      <td>The unit price of one item</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>vat_status</td>
+      <td>
+        <p>[UK accounts only] One of the following:</p>
+        <ul>
+          <li><code>out_of_scope</code> (default)</li>
+          <li><code>reduced</code></li>
+          <li><code>standard</code></li>
+          <li><code>zero</code></li>
+        </ul>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_rate</td>
+      <td>[Universal and US accounts only] One of the standard <a href="sales_tax.html">sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_rate</td>
+      <td>[Universal accounts only] One of the standard <a href="sales_tax.html">second sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>category</td>
+      <td>Income <a href="categories.html">accounting category</a> of the item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>stock_item</td>
+      <td><a href="stock_items.html">Stock item</a>, if <code>item_type</code> is stock</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the price list item (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the price list item was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-price-list-items">List all price list items</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/price_list_items
+</code></pre><h4>Sort Orders</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/price_list_items?sort=created_at
+</code></pre>
+<ul>
+<li><code>created_at</code>: Sort by the time the price list item was created (default).</li>
+<li><code>code</code>: Sort by the price list item code.</li>
+<li><code>updated_at</code>: Sort by the time the price list item was updated.</li>
+</ul>
+
+<p>To sort in descending order, the sort parameter can be prefixed with a hyphen.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/price_list_items?sort=-created_at
+</code></pre><h3>Response</h3><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;price_list_items&quot;: [
+    {
+      &quot;url&quot;: &quot;https://api.freeagent.com/v2/price_list_items/1&quot;,
+      &quot;code&quot;: &quot;A001&quot;,
+      &quot;item_type&quot;: &quot;Products&quot;,
+      &quot;quantity&quot;: &quot;1.0&quot;,
+      &quot;price&quot;: &quot;10.99&quot;,
+      &quot;description&quot;: &quot;Apple&quot;,
+      &quot;sales_tax_rate&quot;: &quot;0.0&quot;,
+      &quot;second_sales_tax_rate&quot;: &quot;0.0&quot;,
+      &quot;vat_status&quot;: &quot;standard&quot;,
+      &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/2&quot;,
+      &quot;created_at&quot;:&quot;2023-05-22T09:22:45Z&quot;,
+      &quot;updated_at&quot;:&quot;2023-05-25T12:43:36Z&quot;
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

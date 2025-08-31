@@ -1,0 +1,109 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>The FreeAgent API</h1>
+<p>All API access is over HTTPS and accessed from <code>api.freeagent.com</code>.  JSON and XML formats are supported.  A user-agent must be specified to allow the FreeAgent API to identify your app.  Users can authenticate Apps using OAuth 2.0</p>
+
+<p>Four HTTP verbs are used to access resources:</p>
+
+<p><em>GET</em> - Use when requesting an existing resource</p>
+
+<p><em>POST</em> - Use when creating a new resource</p>
+
+<p><em>PUT</em> - Use when updating an existing resource</p>
+
+<p><em>DELETE</em> - Use when deleting a resource</p>
+
+<p>Use these verbs with the paths provided by the API.</p>
+<h2 id="company-api-and-accountancy-practice-api">Company API and Accountancy Practice API</h2>
+<p>FreeAgent offers two related but different products: online accounting for companies, and <a href="https://www.freeagent.com/accountants/practice-dashboard">a practice dashboard</a> for accountants and bookkeepers who have clients that use FreeAgent. API access is slightly different in the two cases. You’ll need different API Apps to access both - see details in the <a href="accountancy_practice_api.html">Accountancy Practice API section</a>.</p>
+<h2 id="about-request-and-response-formats">About Request and Response Formats</h2>
+<p>Requests and responses can be provided in either JSON or XML.  Set the HTTP Accept header to specify the response format and the HTTP Content-Type header to specify the request format.</p>
+
+<p>JSON</p>
+<pre class=prettyprint><code class=>Accept: application/json
+Content-Type: application/json
+</code></pre>
+<p>XML</p>
+<pre class=prettyprint><code class=>Accept: application/xml
+Content-Type: application/xml
+</code></pre><h2 id="formatting-xml">Formatting XML</h2>
+<p>There are five characters which must be substituted by XML Entities when creating XML.  These are:</p>
+
+<table border="1">
+<thead stlye="text-align: center;">
+<tr><th>Character</th><th>XML Entity</th></tr>
+</thead>
+<tbody>
+<tr><td>&amp;</td><td>&amp;amp;</td></tr>
+<tr><td>&lt;</td><td>&amp;lt;</td></tr>
+<tr><td>&gt;</td><td>&amp;gt;</td></tr>
+<tr><td>&quot;</td><td>&amp;quot;</td></tr>
+<tr><td>&apos;</td><td>&amp;apos;</td></tr>
+</tbody>
+</table>
+<h2 id="about-access-levels">About Access Levels</h2>
+<p>Access to FreeAgent resources is limited by user permissions.  The minimum required access level is specified for each resource.  The access levels are as follows:</p>
+<pre class=prettyprint><code class=>0 : No Access
+1 : Time
+2 : My Money
+3 : Contacts &amp; Projects
+4 : Invoices, Estimates &amp; Files
+5 : Bills
+6 : Banking
+7 : Tax, Accounting &amp; Users
+8 : Full
+</code></pre><h2 id="pagination">Pagination</h2>
+<p>API requests that returns multiple items, such as listing one of the resources, will be paginated (default to 25 items per page). A client can retrieve a specific page by providing the <code>page</code> param. In order to alter the number of records returned per page, a client can provide the <code>per_page</code> param (limited to 100 items per page).</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/invoices?page=5&amp;per_page=50
+</code></pre>
+<p>The pagination info is included in the Link header:</p>
+<pre class=prettyprint><code class=>Link: &lt;https://api.freeagent.com/v2/invoices?page=4&amp;per_page=50&gt;; rel=&quot;prev&quot;,
+&lt;https://api.freeagent.com/v2/invoices?page=6&amp;per_page=50&gt;; rel=&quot;next&quot;,
+&lt;https://api.freeagent.com/v2/invoices?page=1&amp;per_page=50&gt;; rel=&quot;first&quot;,
+&lt;https://api.freeagent.com/v2/invoices?page=10&amp;per_page=50&gt;; rel=&quot;last&quot;
+</code></pre>
+<p><em>line breaks are for display purposes only.</em></p>
+
+<p>The possible <code>rel</code> values are:</p>
+
+<ul>
+<li><code>prev</code>: The URL of the previous page of results.</li>
+<li><code>next</code>: The URI of the next page of results.</li>
+<li><code>first</code>: The URI of the first page of results.</li>
+<li><code>last</code>: The URI of the last page of results.</li>
+</ul>
+
+<p>In addition, the <code>X-Total-Count</code> header will contain the total number of entries that it is possible to paginate over:</p>
+<pre class=prettyprint><code class=text>    X-Total-Count: 26
+</code></pre><h2 id="rate-limits">Rate Limits</h2>
+<p>The following rate limits are enforced on our API.</p>
+
+<ul>
+<li>120 user requests per minute</li>
+<li>3600 user requests per hour</li>
+<li>15 token refreshes per minute</li>
+</ul>
+
+<p>These limits are per individual user of your integration and are reset at the start of every hour/minute.</p>
+
+<p>For users of the accountancy practice API, rate limits apply to individual clients (by sub-domain included in the headers),
+rather than to the number of requests made by the practice as a whole.</p>
+
+<p>If your integration exceeds these limits, our API will respond with a <a href="https://tools.ietf.org/html/rfc6585#section-4">429 (Too Many Requests)</a> status code until the restriction has expired.</p>
+<h3>Respecting the Rate Limits</h3>
+<p>Please ensure you take steps to have your integrations handle this response and back off before retrying. We will be reviewing apps which continue to make a high volume of requests to our API while rate limited, and may have to take action to further restrict apps which do not respect the limits.</p>
+
+<p>The returned HTTP response of any throttled API request gives the details you need to implement an effective back off strategy:</p>
+<pre class=prettyprint><code class=bash>curl -X POST https://api.freeagent.com/v2/token_endpoint\?client_id\=CLIENT_ID\&amp;client_secret\=CLIENT_SECRET\&amp;grant_type\=refresh_token\&amp;refresh_token\=TOKEN
+HTTP/1.1 429 Too Many Requests
+Date: Wed, 27 Mar 2019 20:47:40 GMT
+Retry-After: 60
+
+You must not exceed 15 requests per 60 seconds
+</code></pre>
+<p>In order for developers to test handling and back off strategy passing the custom header <code>X-RateLimit-Test</code> with a truthy value will artificially lower any API calls to the sandbox to 5 req/minute.</p>
+<pre class=prettyprint><code class=bash>curl -H &quot;X-RateLimit-Test: true&quot; -H &quot;Authorization: Bearer {token}&quot; https://api.sandbox.freeagent.com/v2/company
+</code></pre>
+        </section>
+      </div>

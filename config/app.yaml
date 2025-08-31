@@ -1,0 +1,174 @@
+# Stratus ERP Integration Service Configuration
+# Production-ready configuration with feature flags and scheduling
+
+# Global settings
+global:
+  timezone: "UTC"
+  log_level: "INFO"
+  log_format: "json"  # json or text
+  request_timeout: 30
+  max_retries: 3
+  backoff_factor: 2
+  backoff_jitter: true
+
+# Database settings
+database:
+  pool_size: 10
+  max_overflow: 20
+  pool_timeout: 30
+  pool_recycle: 3600
+
+# Scheduler settings
+scheduler:
+  job_defaults:
+    coalesce: false
+    max_instances: 1
+    misfire_grace_time: 300  # 5 minutes
+
+# Integration configurations
+integrations:
+  
+  # Shopify integration
+  shopify:
+    enabled: true
+    rate_limit_buffer: 0.8  # Stay at 80% of rate limit
+    
+    orders:
+      enabled: true
+      schedule: "0 * * * *"  # Every hour
+      lookback_hours: 24
+      batch_size: 250
+    
+    customers:
+      enabled: true
+      schedule: "10 * * * *"  # Every hour at :10
+      lookback_hours: 168  # 7 days
+      batch_size: 250
+    
+    products:
+      enabled: true
+      schedule: "0 */6 * * *"  # Every 6 hours
+      batch_size: 250
+  
+  # ShipBob integration
+  shipbob:
+    enabled: true
+    
+    inventory:
+      enabled: true
+      schedule: "20 * * * *"  # Every hour at :20
+      batch_size: 100
+    
+    status:
+      enabled: true
+      schedule: "*/30 * * * *"  # Every 30 minutes
+      lookback_hours: 24
+      batch_size: 100
+    
+    returns:
+      enabled: false  # Can be enabled later
+      schedule: "0 4 * * *"  # Daily at 4 AM
+      lookback_days: 7
+    
+    receiving:
+      enabled: false  # Can be enabled later
+      schedule: "30 4 * * *"  # Daily at 4:30 AM
+      lookback_days: 14
+    
+    products:
+      enabled: false  # Can be enabled later
+      schedule: "0 6 * * 0"  # Weekly on Sunday at 6 AM
+    
+    fulfillment_centers:
+      enabled: false  # Can be enabled later
+      schedule: "0 6 * * 1"  # Weekly on Monday at 6 AM
+  
+  # FreeAgent integration
+  freeagent:
+    enabled: true
+    
+    contacts:
+      enabled: true
+      schedule: "0 */12 * * *"  # Every 12 hours
+      lookback_days: 30
+      batch_size: 100
+    
+    invoices:
+      enabled: true
+      schedule: "0 2 * * *"  # Daily at 2 AM
+      lookback_days: 60
+      batch_size: 100
+    
+    bills:
+      enabled: true
+      schedule: "15 2 * * *"  # Daily at 2:15 AM
+      lookback_days: 60
+      batch_size: 100
+    
+    categories:
+      enabled: true
+      schedule: "0 3 * * *"  # Daily at 3 AM
+      batch_size: 100
+    
+    bank_accounts:
+      enabled: true
+      schedule: "10 3 * * *"  # Daily at 3:10 AM
+      batch_size: 100
+    
+    bank_transactions:
+      enabled: true
+      schedule: "0 */6 * * *"  # Every 6 hours
+      lookback_days: 60
+      batch_size: 100
+    
+    bank_transaction_explanations:
+      enabled: true
+      schedule: "15 */6 * * *"  # Every 6 hours at :15
+      lookback_days: 60
+      batch_size: 100
+    
+    transactions:
+      enabled: true
+      schedule: "30 3 * * *"  # Daily at 3:30 AM
+      lookback_days: 365
+      batch_size: 100
+    
+    users:
+      enabled: true
+      schedule: "40 3 * * *"  # Daily at 3:40 AM
+      batch_size: 100
+  
+  # Amazon integration (stubbed for now)
+  amazon:
+    enabled: false
+    
+    orders:
+      enabled: false
+      schedule: "0 1 * * *"  # Daily at 1 AM
+      lookback_hours: 48
+    
+    settlements:
+      enabled: false
+      schedule: "0 5 * * *"  # Daily at 5 AM
+      lookback_days: 7
+    
+    inventory:
+      enabled: false
+      schedule: "0 */4 * * *"  # Every 4 hours
+
+# Observability settings
+observability:
+  metrics:
+    enabled: true
+    port: 8000
+    path: "/metrics"
+  
+  health:
+    enabled: true
+    path: "/healthz"
+    
+  tracing:
+    enabled: false  # Can be enabled with Sentry/OTel
+    
+  alerting:
+    enabled: false  # Can be enabled later

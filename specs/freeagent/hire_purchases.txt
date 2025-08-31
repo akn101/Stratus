@@ -1,0 +1,72 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Hire purchases</h1>
+<p><em>Only available to UK companies</em></p>
+
+<p><em>Minimum access level</em>: <code>Bills</code></p>
+
+<p>Hire purchases can be created or removed by passing the relevant attribute to the <a href="bills.html">Bills API</a></p>
+<h2 id="read-only-attributes">Read-only Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the hire purchase</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>description</td>
+      <td>The free-text description of the hire purchase, taken from the bill</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bill</td>
+      <td>The unique identifier for the bill for this hire purchase</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the hire purchase</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>liabilities_over_one_year_category</td>
+      <td>The unique identifier for the hire purchase's account for liabilities over one year</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>liabilities_under_one_year_category</td>
+      <td>The unique identifier for the hire purchase's account for liabilities within a year</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-hire-purchases">List all hire purchases</h2>
+<p>Returns a list of hire purchases</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/hire_purchases
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;hire_purchases&quot;: [
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/hire_purchases/1&quot;,
+    &quot;description&quot;:&quot;My hire purchase bill&quot;,
+    &quot;bill&quot;:&quot;https://api.freeagent.com/v2/bills/1&quot;,
+    &quot;liabilities_over_one_year_category&quot;:&quot;https://api.freeagent.com/v2/categories/793-1&quot;,
+    &quot;liabilities_under_one_year_category&quot;:&quot;https://api.freeagent.com/v2/categories/792-1&quot;
+  }
+] }
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

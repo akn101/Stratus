@@ -1,0 +1,226 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Journal Sets</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting and Users</code>, unless stated otherwise.</p>
+
+<p>FreeAgent models journalled corrections to accounts in &#39;sets&#39; - collections of journal entries, all on the same day, which must balance to be valid.</p>
+<h2 id="journal-set-attributes">Journal Set Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the journal set</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>dated_on</td>
+      <td>
+        <p>The date on which the journal entries are entered, in <code>YYYY-MM-DD</code> format</p>
+        <em>Not applicable on opening balances</em>
+      </td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>description</td>
+      <td>Free-text description</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>journal_entries</td>
+      <td>Array of journal entry data structures. See <a href="#journal-entry-attributes">Journal Entry Attributes</a>.</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>tag</td>
+      <td>
+        <p>Free-text tag that can be used to identify journal sets created by your application, or to filter journal sets when searching</p>
+        <em>Tagged journal sets will not be editable by users in the app - updates can only be made via the API</em>
+      </td>
+      <td>String</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Opening Balances</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>bank_accounts</td>
+      <td>Read-only array of <a href="bank_accounts.html">bank account</a> opening balances</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>stock_items</td>
+      <td>Read-only array of <a href="stock_items.html">stock item</a> opening balances</td>
+      <td>Array</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="journal-entry-attributes">Journal Entry Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the journal entry</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>category</td>
+      <td>The <a href="categories.html">accounting category</a> of the journal entry</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>debit_value</td>
+      <td>The debit value of the journal entry</td>
+      <td>Decimal</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for capital asset categories requiring a sub-code (601-607)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>capital_asset_type</td>
+      <td>The <a href="capital_asset_types.html">capital asset type</a> for the journal</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for user categories</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>user</td>
+      <td>The <a href="users.html">user</a> for the journal</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for stock categories</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>stock_item</td>
+      <td>The <a href="stock_items.html">stock item</a> for the journal</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>stock_altering_quantity</td>
+      <td>The quantity change for the specified stock item</td>
+      <td>Integer</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for bank account categories</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>bank_account</td>
+      <td>
+        <p>The <a href="bank_accounts.html">bank account</a> for the journal</p>
+        <em>It is no longer possible to journal to/from bank accounts, so this is provided for historical data only</em>
+      </td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for UK Unincorporated Landlord companies (profit and loss categories only)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>?</td>
+      <td>property</td>
+      <td>
+        <p>The <a href="properties.html">property</a> linked to the journal entry</p>
+      </td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-journal-sets">List all journal sets</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/journal_sets
+</code></pre><h3>Filters</h3><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/journal_sets?from_date=2012-01-01&amp;to_date=2012-03-31&amp;tag=MYAPPTAG
+</code></pre><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/journal_sets?updated_since=2018-05-24T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+<li><code>updated_since</code></li>
+<li><code>tag</code></li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;journal_sets&quot;:[
+    {
+      &quot;url&quot;:&quot;https://api.freeagent.com/v2/journal_sets/1&quot;,
+      &quot;dated_on&quot;:&quot;2011-07-28&quot;,
+      &quot;description&quot;:&quot;An example journal set&quot;,
+      &quot;updated_at&quot;: &quot;2020-02-06T11:08:28.000Z&quot;,
+      &quot;tag&quot;:&quot;MYAPPTAG&quot;,
+      &quot;journal_entries&quot;:[
+        {
+          &quot;url&quot;:&quot;https://api.freeagent.com/v2/journal_entries/1&quot;,
+          &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/001&quot;,
+          &quot;description&quot;:&quot;A Sales Correction&quot;,
+          &quot;debit_value&quot;:&quot;-123.45&quot;
+        },
+        {
+          &quot;url&quot;:&quot;https://api.freeagent.com/v2/journal_entries/2&quot;,
+          &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/901&quot;,
+          &quot;user&quot;:&quot;https://api.freeagent.com/v2/users/1&quot;,
+          &quot;description&quot;:&quot;Director&#39;s Capital Introduced&quot;,
+          &quot;debit_value&quot;:&quot;123.45&quot;
+        }
+      ]
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

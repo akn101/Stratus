@@ -1,0 +1,100 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Capital Asset Types</h1>
+<p><em>Minimum access level</em>: <code>Full Access</code>.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the capital asset type</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>name</td>
+      <td>
+        Name of a user-created custom asset type or one of the system values from the following list:
+        <p>
+          <ul>
+            <li><code>Computer Equipment</code></li>
+            <li><code>Fixtures and Fittings</code></li>
+            <li><code>Motor Vehicles</code></li>
+            <li><code>Other Capital Asset</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>system_default</td>
+      <td><code>true</code> for default capital asset types, <code>false</code> if it was created by a user</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the capital asset type (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the capital asset type was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-capital-assets">List all capital assets</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/capital_asset_types
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+    &quot;capital_asset_types&quot;: [
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/capital_asset_types/397&quot;,
+            &quot;name&quot;: &quot;Computer Equipment&quot;,
+            &quot;system_default&quot;: true,
+            &quot;created_at&quot;: &quot;2020-04-22T11:32:24.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2020-04-22T11:32:24.000Z&quot;
+        },
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/capital_asset_types/398&quot;,
+            &quot;name&quot;: &quot;Fixtures and Fittings&quot;,
+            &quot;system_default&quot;: true,
+            &quot;created_at&quot;: &quot;2020-04-22T11:32:24.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2020-04-22T11:32:24.000Z&quot;
+        },
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/capital_asset_types/399&quot;,
+            &quot;name&quot;: &quot;Motor Vehicles&quot;,
+            &quot;system_default&quot;: true,
+            &quot;created_at&quot;: &quot;2020-04-22T11:32:24.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2020-04-22T11:32:24.000Z&quot;
+        },
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/capital_asset_types/400&quot;,
+            &quot;name&quot;: &quot;Other Capital Asset&quot;,
+            &quot;system_default&quot;: true,
+            &quot;created_at&quot;: &quot;2020-04-22T11:32:24.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2020-04-22T11:32:24.000Z&quot;
+        },
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/capital_asset_types/445&quot;,
+            &quot;name&quot;: &quot;User-Created Type&quot;,
+            &quot;system_default&quot;: false,
+            &quot;created_at&quot;: &quot;2020-05-20T20:48:05.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2020-05-20T20:48:05.000Z&quot;
+        }
+    ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;freeagent&gt;

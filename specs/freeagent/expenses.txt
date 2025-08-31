@@ -1,0 +1,463 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Expenses</h1>
+<p><em>Minimum access level</em>: <code>My Money</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the expense</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>user</td>
+      <td>Expense <a href="users.html">claimant</a></td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>category</td>
+      <td>One of the <a href="categories.html">accounting categories</a>, or <code>Mileage</code></td>
+      <td>URL / String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>dated_on</td>
+      <td>Date of expense in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>currency</td>
+      <td>Expense's <a href="currencies.html">currency</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>gross_value</td>
+      <td>
+        <p>Total value expressed in the given <code>currency</code>.</p>
+        <p><em>When a negative value is given, this will be a payment to the claimant. When a positive value is given, this will be a refund due from the claimant.</em></p>
+        <p><em>Required if <code>category</code> is not <code>Mileage</code></em></p>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>native_gross_value</td>
+      <td>
+        <p>Total value in the company's native <a href="currencies.html">currency</a></p>
+        <em>Automatically converted from <code>gross_value</code> unless specified</td></em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_rate</td>
+      <td>One of the standard <a href="sales_tax.html">sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_value</td>
+      <td>Total value of <a href="sales_tax.html">sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>native_sales_tax_value</td>
+      <td>Total value of <a href="sales_tax.html">sales tax</a> in the company's native currency</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_rate</td>
+      <td>[Universal accounts only] One of the standard <a href="sales_tax.html">second sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>manual_sales_tax_amount</td>
+      <td>Amount of <a href="sales_tax.html">sales tax</a> for the transaction, in the company's native currency</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_status</td>
+      <td>Indicates whether the item is <code>TAXABLE</code>, <code>EXEMPT</code> or <code>OUT_OF_SCOPE</code> for
+      <a href="sales_tax.html">sales tax</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_status</td>
+      <td>[Universal accounts only] Similar to sales_tax_status, returned only if the relevant
+      <a href="sales_tax_periods.html">sales tax period</a> defines a second sales tax</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ec_status</td>
+      <td>
+        Expense's VAT status for reporting purposes. One of the following:
+        <p>
+          <ul>
+            <li><code>UK/Non-EC</code></li>
+            <li><code>EC Goods</code></li>
+            <li><code>EC Services</code></li>
+            <li><code>Reverse Charge</code></li>
+          </ul>
+        </p>
+        <p><em>Please note that <code>EC Goods</code> and <code>EC Services</code> are no longer valid options if the expense is dated 1/1/2021 or later and the company is based in Great Britain (but not Northern Ireland), following the UK's withdrawal from the EU.</em></p>
+        <p><em><code>Reverse Charge</code> is only a valid status if the expense is dated 1/1/2021 or later.</em></p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>description</td>
+      <td>Free-text description</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>receipt_reference</td>
+      <td>Receipt reference</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>stock_item</td>
+      <td>
+        <a href="stock_items.html">Stock item</a> being purchased, required when category is set to <em>Purchase of stock</em>
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>stock_item_description</td>
+      <td>
+        Description of the expense's stock item, only returned when stock item is set</code>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>stock_altering_quantity</td>
+      <td>
+        Quantity of <code>stock_item</code> units purchased, required when category is set to <em>Purchase of stock</em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>project</td>
+      <td><a href="projects.html">Project</a> to rebill</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>rebill_type</td>
+      <td>
+        <p>One of the following, if rebilling a <a href="projects.html">project</a>:</p>
+        <ul>
+          <li><code>cost</code></li>
+          <li><code>markup</code></li>
+          <li><code>price</code></li>
+        </ul>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>rebill_factor</td>
+      <td>
+        <p>How much to rebill for</p>
+        <em>Required when <code>rebill_type</code> is <code>markup</code> or <code>price</code></em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>rebill_to_project</td>
+      <td>Same as <code>project</code></td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>rebilled_on_invoice</td>
+      <td><a href="invoices.html">Invoice</a> where the expense has been rebilled as an invoice item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>property</td>
+      <td>
+        The <a href="properties.html">property</a> pertaining to this expense.
+        Only accepted and required for companies with type <code>UkUnincorporatedLandlord</code>,
+        and only if the expense is not for a capital asset purchase.
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>recurring</td>
+      <td>
+        <p>Frequency at which the expense will recur. Can be one of the following:</p>
+        <p>
+          <ul>
+            <li><code>Weekly</code></li>
+            <li><code>Two Weekly</code></li>
+            <li><code>Four Weekly</code></li>
+            <li><code>Two Monthly</code></li>
+            <li><code>Quarterly</code></li>
+            <li><code>Biannually</code></li>
+            <li><code>Annually</code></li>
+            <li><code>2-Yearly</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>next_recurs_on</td>
+      <td>When expense recurs next, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>recurring_end_date</td>
+      <td>When expense stops recurring, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>attachment</td>
+      <td>
+        <p>New explanation attachment (max 5MB), in the following format:</p>
+        <ul>
+          <li><code>data</code> (binary data of the file being attached encoded as base64)</li>
+          <li><code>file_name</code></li>
+          <li><code>description</code></li>
+          <li>
+            <code>content_type</code> can be one of the following:
+            <ul>
+              <li><code>image/png</code></li>
+              <li><code>image/x-png</code></li>
+              <li><code>image/jpeg</code></li>
+              <li><code>image/jpg</code></li>
+              <li><code>image/gif</code></li>
+              <li><code>application/x-pdf</code></li>
+            </ul>
+          </li>
+        </ul>
+        <p>
+          <em>To link an existing attachment, you can use <code>file</code> instead.</em>
+        </p>
+      </td>
+      <td>Object</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the expense resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the expense resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for Mileage claims</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>mileage</td>
+      <td>Number of miles travelled</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>vehicle_type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Car</code></li>
+            <li><code>Motorcycle</code></li>
+            <li><code>Bicycle</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>engine_type</td>
+      <td>
+        <p>Applicable if <code>vehicle_type</code> is <code>Car</code> or <code>Motorcycle</code>:</p>
+        <ul>
+          <li><code>Petrol</code> (default)</li>
+          <li><code>Diesel</code></li>
+          <li><code>LPG</code></li>
+          <li><code>Electric</code></li>
+          <li><code>Electric (Home charger)</code></li>
+          <li><code>Electric (Public charger)</code></li>
+        </ul>
+        <span>
+          The valid electric options change over time. The electric options available on your mileage claim date are defined in <code>engine_type_and_size_options</code> from
+          <a href="expenses.html#get-mileage-settings">mileage_settings</a>.
+        </span>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>engine_size</td>
+      <td>
+        <p>Applicable if <code>vehicle_type</code> is <code>Car</code> or <code>Motorcycle</code>.</p>
+        <span>
+          For valid engine sizes, see <code>engine_type_and_size_options</code> from
+          <a href="expenses.html#get-mileage-settings">mileage_settings</a>.
+          Defaults to the first option for selected <code>engine_type</code>.
+        </span>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>reclaim_mileage</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>0</code> (Default - don't reclaim, just rebill)</li>
+            <li><code>1</code> (At Approved Mileage Allowance Payments (AMAP) rate)</li>
+          </ul>
+        </p>
+      </td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>initial_rate_mileage</td>
+      <td>Rate at which mileage is being reclaimed if under the <a href="https://www.freeagent.com/glossary/mileage-claim">HMRC threshold</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>reclaim_mileage_rate</td>
+      <td>Rate at which mileage is being reclaimed</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>rebill_mileage_rate</td>
+      <td>Rate at which mileage is being rebilled</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>have_vat_receipt</td>
+      <td><code>true</code> if having a VAT receipt when reclaiming, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for capital asset purchases</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>capital_asset</td>
+      <td>A link to the <a href="capital_assets.html">asset</a> purchased with this expense. Read-only.
+        See <a href="depreciation_profiles.html">depreciation profiles</a> for more details on
+        what to include in this field for create/update requests.
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>depreciation_schedule</td>
+      <td>
+        <p><b>Note!</b> This field is deprecated. Fetch the capital asset using the link
+        in the capital_asset field of the response to view full details of its depreciation profile.</p>
+        <p>Number of years over which the <a href="capital_assets.html">asset</a> should be depreciated for straight line depreciation, otherwise 0 for backwards compatibility while the field is deprecated.</p>
+      </td>
+      <td>String</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-expenses">List all expenses</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/expenses
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/expenses?view=recent
+</code></pre>
+<ul>
+<li><code>recent</code>: Show only recent expenses.</li>
+<li><code>recurring</code>: Show recurring expenses.</li>
+</ul>
+<h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/expenses?from_date=2012-01-01&amp;to_date=2012-03-31
+</code></pre><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/expenses?updated_since=2017-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+<li><code>updated_since</code></li>
+</ul>
+<h4>Project Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/expenses?project=https://api.freeagent.com/v2/projects/2
+</code></pre>
+<ul>
+<li><code>project</code>: show only expenses related to this project</li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;expenses&quot;:[
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/expenses/1&quot;,
+    &quot;user&quot;:&quot;https://api.freeagent.com/v2/users/1&quot;,
+    &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/285&quot;,
+    &quot;dated_on&quot;:&quot;2011-08-24&quot;,
+    &quot;currency&quot;:&quot;USD&quot;,
+    &quot;gross_value&quot;:&quot;-20.0&quot;,
+    &quot;native_gross_value&quot;:&quot;-12.0&quot;,
+    &quot;sales_tax_rate&quot;:&quot;1.0&quot;,
+    &quot;sales_tax_value&quot;: &quot;-0.2&quot;,
+    &quot;native_sales_tax_value&quot;: &quot;-0.12&quot;,
+    &quot;sales_tax_status&quot;: &quot;TAXABLE&quot;,
+    &quot;description&quot;:&quot;Some description&quot;,
+    &quot;rebilled_on_invoice&quot;: &quot;https://api.freeagent.com/v2/invoices/1&quot;,
+    &quot;manual_sales_tax_amount&quot;:&quot;0.12&quot;,
+    &quot;updated_at&quot;:&quot;2011-08-24T08:10:40Z&quot;,
+    &quot;created_at&quot;:&quot;2011-08-24T08:10:40Z&quot;,
+    &quot;attachment&quot;:
+      {
+        &quot;url&quot;:&quot;https://api.freeagent.com/v2/attachments/3&quot;,
+        &quot;content_src&quot;:&quot;https://s3.amazonaws.com/freeagent-dev/attachments/1/original.png?AWSAccessKeyId=1K3MW21E6T8KWBY84B02&amp;Expires=1314281186&amp;Signature=GFAKDo%2Bi%2FsUMTYEgg6ZWGysB4k4%3D&quot;,
+        &quot;content_type&quot;:&quot;image/png&quot;,
+        &quot;file_name&quot;:&quot;barcode.png&quot;,
+        &quot;file_size&quot;:7673
+      }
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

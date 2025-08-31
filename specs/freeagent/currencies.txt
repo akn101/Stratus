@@ -1,0 +1,108 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Currencies</h1>
+<p>Currencies are represented using three digit <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> codes. The following currencies are supported:</p>
+
+<ul>
+<li><code>AED</code> - United Arab Emirates Dirham</li>
+<li><code>AMD</code> - Armenian Dram</li>
+<li><code>AOA</code> - Angolan Kwanza</li>
+<li><code>ARS</code> - Argentine Peso</li>
+<li><code>AUD</code> - Australian Dollar</li>
+<li><code>AWG</code> - Aruban Florin</li>
+<li><code>AZN</code> - Azerbaijani Manat</li>
+<li><code>BBD</code> - Barbadian Dollar</li>
+<li><code>BDT</code> - Bangladeshi Taka</li>
+<li><code>BGN</code> - Bulgarian Lev</li>
+<li><code>BRL</code> - Brazil Real</li>
+<li><code>BWP</code> - Botswana Pula</li>
+<li><code>CAD</code> - Canadian Dollar</li>
+<li><code>CHF</code> - Swiss Franc</li>
+<li><code>CLP</code> - Chilean Peso</li>
+<li><code>CNY</code> - Chinese Yuan</li>
+<li><code>COP</code> - Colombian Peso</li>
+<li><code>CRC</code> - Costa Rican Colones</li>
+<li><code>CUC</code> - Cuban Convertible Peso</li>
+<li><code>CUP</code> - Cuban Peso</li>
+<li><code>CZK</code> - Czech Koruna</li>
+<li><code>DKK</code> - Danish Kroner</li>
+<li><code>DOP</code> - Dominican Peso</li>
+<li><code>EGP</code> - Egyptian Pound</li>
+<li><code>EUR</code> - Euro</li>
+<li><code>FJD</code> - Fijian Dollar</li>
+<li><code>GBP</code> - Pounds Sterling</li>
+<li><code>GEL</code> - Georgian Lari</li>
+<li><code>GHS</code> - Ghanaian Cedi</li>
+<li><code>GTQ</code> - Guatemalan Quetzales</li>
+<li><code>GYD</code> - Guyanese Dollar</li>
+<li><code>HKD</code> - Hong Kong Dollar</li>
+<li><code>HNL</code> - Honduran Lempira</li>
+<li><code>HRK</code> - Croatian Kuna</li>
+<li><code>HUF</code> - Hungarian Forint</li>
+<li><code>IDR</code> - Indonesian Rupiah</li>
+<li><code>ILS</code> - Israeli Sheckels</li>
+<li><code>INR</code> - Indian Rupee</li>
+<li><code>ISK</code> - Icelandic Króna</li>
+<li><code>JMD</code> - Jamaican Dollar</li>
+<li><code>JPY</code> - Japanese Yen</li>
+<li><code>KES</code> - Kenyan Shilling</li>
+<li><code>KRW</code> - South Korean Won</li>
+<li><code>KWD</code> - Kuwaiti Dinar</li>
+<li><code>KYD</code> - Caymanian Dollar</li>
+<li><code>KZT</code> - Kazakhstani Tenge</li>
+<li><code>LAK</code> - Lao Kip</li>
+<li><code>LBP</code> - Lebanese Pound</li>
+<li><code>LKR</code> - Sri Lankan Rupee</li>
+<li><code>LTL</code> - Lithuanian Lita</li>
+<li><code>LVL</code> - Latvian Lats</li>
+<li><code>MAD</code> - Moroccan Dirham</li>
+<li><code>MDL</code> - Moldovan Leu</li>
+<li><code>MGA</code> - Malagasy Ariary</li>
+<li><code>MUR</code> - Mauritian Rupee</li>
+<li><code>MVR</code> - Maldivian Rufiyaa</li>
+<li><code>MWK</code> - Malawian Kwacha</li>
+<li><code>MXN</code> - Mexican Peso</li>
+<li><code>MYR</code> - Malaysian Ringgit</li>
+<li><code>MZN</code> - Mozambican Metical</li>
+<li><code>NAD</code> - Namibian Dollar</li>
+<li><code>NGN</code> - Nigerian Naira</li>
+<li><code>NOK</code> - Norwegian Kroner</li>
+<li><code>NPR</code> - Nepalese Rupees</li>
+<li><code>NZD</code> - New Zealand Dollar</li>
+<li><code>OMR</code> - Omani Rial</li>
+<li><code>PEN</code> - Peruvian Nuevo Sol</li>
+<li><code>PHP</code> - Philippine Peso</li>
+<li><code>PKR</code> - Pakistani Rupee</li>
+<li><code>PLN</code> - Polish Złoty</li>
+<li><code>QAR</code> - Qatari Riyal</li>
+<li><code>RON</code> - Romanian New Leu</li>
+<li><code>RSD</code> - Serbian Dinar</li>
+<li><code>RUB</code> - Russian Rouble</li>
+<li><code>RWF</code> - Rwandan Franc</li>
+<li><code>SAR</code> - Saudi Riyal</li>
+<li><code>SCR</code> - Seychelles Rupee</li>
+<li><code>SEK</code> - Swedish Kronor</li>
+<li><code>SGD</code> - Singapore Dollar</li>
+<li><code>THB</code> - Thai Baht</li>
+<li><code>TND</code> - Tunisian Dinar</li>
+<li><code>TRY</code> - Turkish Lira</li>
+<li><code>TTD</code> - Trinidad and Tobago Dollar</li>
+<li><code>TWD</code> - New Taiwan Dollar</li>
+<li><code>TZS</code> - Tanzanian Shilling</li>
+<li><code>UAH</code> - Ukrainian Hryvnia</li>
+<li><code>UGX</code> - Ugandan Shilling</li>
+<li><code>USD</code> - US Dollar</li>
+<li><code>UYU</code> - Uruguayan Peso</li>
+<li><code>VEF</code> - Venezuelan Bolívar</li>
+<li><code>VND</code> - Vietnamese đồng</li>
+<li><code>VUV</code> - Vanuatu Vatu</li>
+<li><code>XAF</code> - Central African CFA Franc</li>
+<li><code>XCD</code> - East Carribean Dollar</li>
+<li><code>XOF</code> - West African CFA Franc</li>
+<li><code>ZAR</code> - South African Rand</li>
+<li><code>ZMK</code> - Zambian Kwacha</li>
+</ul>
+
+        </section>
+      </div>

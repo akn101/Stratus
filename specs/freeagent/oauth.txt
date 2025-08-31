@@ -1,0 +1,19 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>OAuth 2.0</h1>
+<p>OAuth 2.0 allows FreeAgent users to authorise third party apps to
+access their data without sharing their FreeAgent login details.
+Instead, an app will have one access token and one refresh token for
+each authorised FreeAgent user account.</p>
+
+<p>The FreeAgent API implements <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-22">OAuth 2.0 Draft 22</a>.  It has also been
+tested with the <a href="quick_start.html">Google OAuth 2.0 Playground</a> which implements OAuth 2.0 Draft 10.</p>
+
+<div class="infobox_wrapper">
+  <div class="infobox">
+    <p>
+      To use the sandbox API change the server in the examples below to:
+      <strong>https://api.sandbox.freeagent.com</strong>
+    </p>
+  </div>

@@ -1,0 +1,301 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Changes</h1><h2 id="2025">2025</h2><h2 id="12-august">12 August</h2>
+<ul>
+<li>Attachments require the same access level as the item they are attached to.</li>
+</ul>
+<h3>3 June</h3>
+<ul>
+<li>Allow for the <code>from_date</code> and/or <code>to_date</code> filters to be combined with the <code>updated_since</code> filter (where they are provided)</li>
+</ul>
+<h3>21 Apr</h3>
+<ul>
+<li>Add <code>updated_since</code> filter to <a href="contacts.html">Contacts</a> /v2/contacts endpoint</li>
+</ul>
+<h3>12 February</h3>
+<ul>
+<li>Add <code>statutory_neonatal_care_pay</code> to <a href="payroll.html">Payroll</a> endpoints</li>
+</ul>
+<h2 id="2024">2024</h2><h3>28 November</h3>
+<ul>
+<li>Add <code>currency</code> and <code>is_deletable</code> fields to the <a href="tasks.html">task endpoint</a>.</li>
+</ul>
+<h3>7 November</h3>
+<ul>
+<li>Add <code>bank_account</code>, <code>stock_item</code>, <code>capital_asset_type</code>, <code>hire_purchase</code> and <code>user</code> attributes to relevant <a href="categories.html">categories</a>.</li>
+</ul>
+<h3>9 October</h3>
+<ul>
+<li>Add address fields to the <a href="payroll_profiles.html">payroll profile endpoint</a>.</li>
+<li>Add the <code>title</code> field to the <a href="payroll_profiles.html">payroll profile endpoint</a>.</li>
+<li>Add the <code>date_of_birth</code> field to the <a href="payroll_profiles.html">payroll profile endpoint</a>.</li>
+<li>Add the <code>gender</code> field to the <a href="payroll_profiles.html">payroll profile endpoint</a>.</li>
+</ul>
+<h3>2 October</h3>
+<ul>
+<li>Remove deprecated <code>mark_as_cancelled</code> endpoint for <a href="credit_notes.html">Credit Notes</a></li>
+</ul>
+<h3>12 August</h3>
+<ul>
+<li>Add the <code>created_at</code> field to the <a href="payroll_profiles.html">payroll profile endpoint</a>.</li>
+<li>Add the <code>updated_at</code> field to the <a href="payroll_profiles.html">payroll profile endpoint</a>.</li>
+</ul>
+<h3>6 August</h3>
+<ul>
+<li>Include CoPilot clients in the <a href="accountancy_practice_api.html#list-clients"> accountancy practice
+clients endpoint</a>.</li>
+<li>Add the <code>copilot</code> option to the <code>view</code> parameter in the <a href="accountancy_practice_api.html#list-clients">
+accountancy practice clients endpoint</a>.</li>
+</ul>
+<h3>17 July</h3>
+<ul>
+<li>Add the <code>subdomain</code> attribute to the <a href="accountancy_practice_api.html#get-details-of-accountancy-practice">practice endpoint</a></li>
+</ul>
+<h3>7 March</h3>
+<ul>
+<li>Add support for new methods of calculating depreciation of capital assets via
+<a href="depreciation_profiles.html">depreciation profiles</a> when creating expenses,
+bank transaction explanations, and bills.</li>
+<li>Deprecate <code>depreciation_schedule</code> for <a href="expenses.html">expense</a> and
+<a href="bills.html">bill/bill item</a> requests and responses.</li>
+<li>Deprecate <code>asset_life_years</code> for <a href="bank_transaction_explanations.html">bank transaction explanation</a> requests and responses.</li>
+</ul>
+<h2 id="2023">2023</h2><h3>7 November</h3>
+<ul>
+<li>Add <a href="transactions.html">show a single transaction</a> endpoint</li>
+<li>Add the following attributes to <a href="transactions.html">show transactions</a> endpoints:
+
+<ul>
+<li><code>url</code></li>
+<li><code>category_name</code></li>
+</ul></li>
+</ul>
+<h3>23 October</h3>
+<ul>
+<li>Add <a href="corporation_tax_returns.html">Corporation Tax Returns</a> endpoints</li>
+<li>Add <a href="final_accounts_reports.html">Final Accounts Reports</a> endpoints</li>
+<li>Add <a href="self_assessment_returns.html">Self Assessment Returns</a> endpoints</li>
+<li>Add <a href="vat_returns.html">VAT Returns</a> endpoints</li>
+<li>Add payment details to <a href="payroll.html">Payroll</a> endpoints</li>
+</ul>
+<h3>9 October</h3>
+<ul>
+<li>Add <a href="balance_sheet.html">balance sheet report</a> endpoint</li>
+<li>Add <a href="transactions.html">show transactions report</a> endpoint</li>
+<li>Support specifying date ranges and annual accounting period when requesting a <a href="profit_and_loss.html">profit and loss report</a></li>
+<li>Add endpoint to <a href="accountancy_practice_api.html#get-details-of-accountancy-practice">retrieve data about accountancy practice</a></li>
+</ul>
+<h3>25 September</h3>
+<ul>
+<li>Add <code>account_owner</code> information to the <a href="accountancy_practice_api.html#list-clients">accountancy practice clients endpoint</a> response</li>
+</ul>
+<h2 id="2022">2022</h2><h3>9 November</h3>
+<ul>
+<li>Add new endpoints for fetching information about <a href="hire_purchases.html">Hire Purchases</a>.</li>
+<li>Add new <code>is_paid_by_hire_purchase</code> parameter to endpoints in <a href="bills.html">Bills</a>.</li>
+</ul>
+<h3>14 October</h3>
+<ul>
+<li>Add support for creating, updating and deleting <a href="price_list_items.html">Price List Items</a>.</li>
+</ul>
+<h3>12 October</h3>
+<ul>
+<li>Add new <code>attachments</code> parameter for send_email endpoints in <a href="invoices.html#email-an-invoice">Invoices</a>, <a href="credit_notes.html#email-a-credit-note">Credit Notes</a> and <a href="estimates/index.html#email-an-estimate">Estimates</a>.</li>
+</ul>
+<h3>6 October</h3>
+<ul>
+<li>Require <a href="bills.html#bill-item-attributes">bill item URL</a> when <a href="bills.html#update-a-bill">updating existing single-item bills</a>, matching multi-item bill behaviour.</li>
+</ul>
+<h3>11 August</h3>
+<ul>
+<li>Add stock attributes for <a href="expenses.html">Expenses</a>.</li>
+</ul>
+<h3>3 August</h3>
+<ul>
+<li>Add support for <code>UkUnincorporatedLandlord</code> companies. This includes a new <a href="properties.html">Properties</a> endpoint and a new <code>property</code> attribute for <a href="bank_transaction_explanations.html">Bank Transaction Explanations</a>, <a href="bills.html">Bills</a>, <a href="credit_notes.html">Credit Notes</a>, <a href="expenses.html">Expenses</a>, <a href="invoices.html">Invoices</a> and <a href="journal_sets.html">Journal Sets</a>.</li>
+</ul>
+<h3>28 June</h3>
+<ul>
+<li>Add support for zero to multiple <a href="bills.html#bill-item-attributes">bill items</a> for bills on the production FreeAgent API.</li>
+</ul>
+<h3>23 May</h3>
+<ul>
+<li>Add support for zero to multiple <a href="bills.html#bill-item-attributes">bill items</a> for bills, only on the <a href="quick_start.html">FreeAgent Sandbox</a>. <a href="https://api-discuss.freeagent.com/t/multi-item-bills-now-available-for-sandbox-testing/2879">Read announcement</a>.</li>
+</ul>
+<h2 id="2021">2021</h2><h3>8 December</h3>
+<ul>
+<li>Add endpoints for reading, updating and deleting <a href="invoices.html#default-additional-text">default additional text</a> for invoices and estimates.</li>
+</ul>
+<h3>2 November</h3>
+<ul>
+<li>Remove bill item fields (e.g. <code>total_value</code>, sales tax) from the default <a href="bills.html">Bills</a> endpoint response.</li>
+<li>Add new <code>nested_bill_items</code> parameter to include the <code>bill_items</code> details in <a href="bills.html#list-all-bills-with-nested-bill-items">Bills</a> endpoint responses.</li>
+<li>Require the <a href="bills.html#bill-item-attributes"><code>bill_items</code></a> nested attribute when creating or updating via the <a href="bills.html">Bills</a> endpoint.</li>
+<li>Obsolete: the <code>FreeAgent-Features: bill_items</code> header is no longer needed on the <a href="bills.html">Bills</a> endpoint as the new schema is default.</li>
+</ul>
+<h3>12 October</h3>
+<ul>
+<li>Add read-only <a href="payroll_profiles.html">Payroll Profiles</a> endpoint.</li>
+</ul>
+<h2 id="2020">2020</h2><h3>17 December</h3>
+<ul>
+<li>Add endpoints for creating, updating and deleting <a href="categories.html">accounting categories</a> and
+<a href="capital_asset_types.html">capital asset types</a>.</li>
+</ul>
+<h3>27 July</h3>
+<ul>
+<li>Allow retrieval of capital asset history, including capital allowance calculations. See
+<a href="capital_assets.html">Capital Assets</a> for details.</li>
+</ul>
+<h3>22 July</h3>
+<ul>
+<li>Add <a href="credit_note_reconciliations.html">Credit Note Reconciliations</a> endpoints</li>
+</ul>
+<h3>28 May</h3>
+<ul>
+<li>Allow creation of journal entries in capital asset categories that require a sub-code (601-607). This can be done
+by adding a URL to the relevant <a href="capital_asset_types.html">capital asset type</a> to your request. See
+<a href="journal_sets.html#journal-entry-attributes">Journal Entry Attributes</a> documentation for more details.</li>
+</ul>
+<h3>23 April</h3>
+<ul>
+<li>Add new sub_accounts parameter to the <a href="categories.html">Categories</a> endpoint.</li>
+</ul>
+<h3>30 April</h3>
+<ul>
+<li>Add a filter to the <a href="accountancy_practice_api.html#list-clients">/clients</a> endpoint in the <a href="accountancy_practice_api.html">Accountancy Practice API</a></li>
+</ul>
+<h3>3 February</h3>
+<ul>
+<li>Add <a href="credit_notes.html">Credit Note</a> endpoints</li>
+</ul>
+<h2 id="2018">2018</h2><h3>8 May</h3>
+<ul>
+<li>Add endpoint for company <a href="company.html#list-all-business-categories">Business Categories</a></li>
+</ul>
+<h3>8 March</h3>
+<ul>
+<li>Add read-only payroll profile to users</li>
+</ul>
+<h2 id="2017">2017</h2><h3>2 October</h3>
+<ul>
+<li>Updated <a href="sales_tax.html#ec-vat-moss">documentation</a> around EC VAT MOSS</li>
+</ul>
+<h3>20 September</h3>
+<ul>
+<li>Add endpoint for <a href="cis_bands.html">Construction Industry Scheme bands</a></li>
+<li>Add <code>cis_enabled</code> to companies</li>
+<li>Add the following CIS attributes to invoices:
+
+<ul>
+<li><code>cis_rate</code></li>
+<li><code>cis_deduction_rate</code></li>
+<li><code>cis_deduction</code></li>
+<li><code>cis_deduction_suffered</code></li>
+</ul></li>
+</ul>
+<h3>12 June</h3>
+<ul>
+<li>Add <code>payment_methods</code> flags to invoices</li>
+<li>Add <code>direct_debit_mandate_state</code> and <code>direct_debit_mandate</code> to contacts</li>
+<li>Add <code>direct_debit</code> resource to invoices (create only)</li>
+</ul>
+<h3>22 May</h3>
+<ul>
+<li>Add <code>updated_since</code> filter to following endpoints:
+
+<ul>
+<li>/v2/invoices</li>
+<li>/v2/bills</li>
+<li>/v2/timeslips</li>
+<li>/v2/estimates</li>
+<li>/v2/expenses</li>
+<li>/v2/bank_transactions</li>
+<li>/v2/bank<em>transaction</em>explanations</li>
+</ul></li>
+</ul>
+<h3>9 May</h3>
+<ul>
+<li>Add <code>status</code> attribute to bank accounts</li>
+</ul>
+<h3>4 May: Additional filters for bank transactions</h3>
+<ul>
+<li>Add <code>explained</code> and <code>marked_for_review</code> views to bank transactions list</li>
+<li>Add latest statement upload filter for bank transactions</li>
+</ul>
+<h3>4 Apr</h3>
+<ul>
+<li>Add <code>open</code> and <code>overdue</code> view filters for invoices</li>
+</ul>
+<h3>7 Mar</h3>
+<ul>
+<li>Add support for reading RTI payroll data</li>
+</ul>
+<h2 id="2016">2016</h2><h3>3 Oct</h3>
+<ul>
+<li>Add support for viewing, starting and stopping running timers on timeslips</li>
+<li>Allow timeslips to be filtered by state (all/unbilled/running)</li>
+</ul>
+<h3>28 Sep: Changes to Users endpoint</h3>
+<ul>
+<li>Brings the API behaviour in line with the FreeAgent web application</li>
+<li>It is no longer possible to set a password for a newly created user</li>
+<li>It is no longer possible to change a password for an existing user</li>
+<li>Invitations can be sent to users allowing them to choose their own password</li>
+</ul>
+<h3>22 Sep: Expenses link to rebilled invoice</h3>
+<ul>
+<li>If an expense has been rebilled on an invoice, a link to that invoice now appears when requesting expense details.</li>
+</ul>
+<h3>20 Sep: NIN / UTR</h3>
+<ul>
+<li>Add National Insurance Number and Unique Tax Reference attributes to users</li>
+</ul>
+<h3>19 Sep: Price List Item support</h3>
+<ul>
+<li>We now support listing of single and all Price List Items</li>
+</ul>
+<h3>31 Mar: Email Addresses</h3>
+<ul>
+<li>Clients can now fetch a list of verified email addresses available for sending invoices</li>
+</ul>
+<h3>28 Mar: Sales Tax Period support</h3>
+<ul>
+<li>Support for listing, creating, and updating sales tax periods for US and Universal companies</li>
+</ul>
+<h2 id="2014">2014</h2><h3>1st Jul: Journal Sets resource added</h3>
+<ul>
+<li><code>journal_sets</code> endpoint and documentation added</li>
+<li><code>stock_items</code> endpoint and documentation added</li>
+</ul>
+<h3>24 Jun: Ordering Support</h3>
+<ul>
+<li>Sorting options for listing of invoices and contacts added</li>
+</ul>
+<h3>3 Feb: API v1 No Longer Supported</h3>
+<ul>
+<li>API v1 documentation removed</li>
+</ul>
+<h2 id="2013">2013</h2><h3>30th Jan: Trial Balance API</h3>
+<ul>
+<li>Retrieve Trial Balance data via our API</li>
+</ul>
+<h3>17th Jan: Documentation Updates</h3>
+<ul>
+<li>Correction made to the sending invoice emails JSON example.</li>
+</ul>
+<h2 id="2012">2012</h2><h3>20th Nov: Sales Tax Documentation Updates</h3>
+<ul>
+<li>Sales tax documentation improved.</li>
+<li><code>notes</code> and <code>comments</code> fields added to the Estimate and Invoice documentation.</li>
+</ul>
+<h3>2nd Nov: Documentation Updates</h3>
+<ul>
+<li>Documentation examples corrected to show <code>url</code> field instead of <code>path</code>.</li>
+<li>Maximum attachment size updated.</li>
+<li>Sales tax documentation for expenses improved.</li>
+</ul>
+
+        </section>
+      </div>

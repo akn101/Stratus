@@ -1,0 +1,294 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Payroll</h1>
+<p><em>Minimum access level</em>: <code>Tax and Limited Accounting</code>. Only available for UK companies (i.e. those which support payroll in FreeAgent).</p>
+
+<p>Provides read-only access to RTI payroll data generated within FreeAgent, including details on payments due.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <thead>
+    <tr>
+      <th colspan="3">Period</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td>The unique identifier for the period</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>period</td>
+      <td>The pay period of the year (0-11)</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>frequency</td>
+      <td>The pay frequency (Monthly/Weekly)</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>dated_on</td>
+      <td>The date of pay for this period, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>status</td>
+      <td>
+        The filing status of this payroll period. One of:
+        <ul>
+          <li>unfiled</li>
+          <li>pending</li>
+          <li>rejected</li>
+          <li>partially_filed</li>
+          <li>filed</li>
+        </ul>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>employment_allowance_claimed</td>
+      <td>Was Employment Allowance claimed in this pay period</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>employment_allowance_amount</td>
+      <td>The amount of Employment Allowance claimed in this pay period</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>construction_industry_scheme_deduction</td>
+      <td>The amount of liability already witheld under the CIS scheme this period</td>
+      <td>Decimal</td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th colspan="3">Payment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>due_on</td>
+      <td>The date on which a particular payment is due</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>amount_due</td>
+      <td>The amount due on that date</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>status</td>
+      <td>One of `unpaid` or `marked_as_paid`. `paid` is reserved for future use. Key is omitted if there are no payments to be made.</td>
+      <td>Decimal</td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th colspan="3">Payslip</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>user</td>
+      <td>The unique identifier for the user being paid</td>
+      <td>URL</td>
+    <tr>
+      <td>tax_code</td>
+      <td>The HMRC tax code for the payslip</td>
+      <td>String</td>
+    <tr>
+      <td>dated_on</td>
+      <td>The date of the payslip in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    <tr>
+      <td>basic_pay</td>
+      <td>Basic pay this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>tax_deducted</td>
+      <td>Tax deducted this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>employee_ni</td>
+      <td>Employee NI payable this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>employer_ni</td>
+      <td>Employer NI payable this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>other_deductions</td>
+      <td>Other deductions this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>student_loan_deduction</td>
+      <td>Student loan deductions this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>postgrad_loan_deduction</td>
+      <td>Postgraduate loan deductions this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>overtime</td>
+      <td>Overtime paid this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>commission</td>
+      <td>Commission paid this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>bonus</td>
+      <td>Bonus paid this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>allowance</td>
+      <td>Allowance paid this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>statutory_sick_pay</td>
+      <td>SSP this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>statutory_maternity_pay</td>
+      <td>SMP this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>statutory_paternity_pay</td>
+      <td>SPP this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>statutory_adoption_pay</td>
+      <td>SAP this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>statutory_parental_bereavement_pay</td>
+      <td>SPBP this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>statutory_neonatal_care_pay</td>
+      <td>SNCP this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>absence_payments</td>
+      <td>Absence payments this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>other_payments</td>
+      <td>Other payments this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>employee_pension</td>
+      <td>Employee pension deductions this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>employer_pension</td>
+      <td>Employer pension deductions this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>attachments</td>
+      <td>Attachment deductions this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>payroll_giving</td>
+      <td>Payroll giving deductions this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>ni_calc_type</td>
+      <td>Calculation method for NI (Director/Employee)</td>
+      <td>String</td>
+    <tr>
+      <td>frequency</td>
+      <td>Pay frequency (Monthly/Weekly)</td>
+      <td>String</td>
+    <tr>
+      <td>additional_statutory_paternity_pay</td>
+      <td>ASPP this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>deductions_subject_to_nic_but_not_paye</td>
+      <td>Payroll deductions that are subject to NI but not income tax this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>other_deductions_from_net_pay</td>
+      <td>Other deductions this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>employee_pension_not_under_net_pay</td>
+      <td>Employee pension deductions not under net pay agreement this period</td>
+      <td>Decimal</td>
+    <tr>
+      <td>other_salary_sacrifice_deductions</td>
+      <td>Other salary sacrifice deductions, excluding pension contributions</td>
+      <td>Decimal</td>
+    <tr>
+      <td>employee_pension_salary_sacrifice</td>
+      <td>Employee pension contributions under the salary sacrifice scheme</td>
+      <td>Decimal</td>
+    <tr>
+      <td>ni_letter</td>
+      <td>HMRC NI classification for this employee</td>
+      <td>String</td>
+    <tr>
+      <td>deduct_student_loan</td>
+      <td>Are student loan payments being deducted?</td>
+      <td>Boolean</td>
+    <tr>
+      <td>student_loan_deductions_plan</td>
+      <td>The student loan plan type (Plan 1/Plan 2)</td>
+      <td>String</td>
+    <tr>
+      <td>deduct_postgrad_loan</td>
+      <td>Are postgraduate loan payments being deducted?</td>
+      <td>Boolean</td>
+    <tr>
+      <td>week_1_month_1_basis</td>
+      <td>Deductions calculated on a W1M1 basis</td>
+      <td>Boolean</td>
+    <tr>
+      <td>deduction_free_pay</td>
+      <td>Pay this period not subject to NI or income tax</td>
+      <td>Decimal</td>
+    <tr>
+      <td>hours_worked</td>
+      <td>The number of hours worked this period</td>
+      <td>Decimal</td>
+  </tbody>
+</table>
+<h2 id="list-all-periods-for-a-given-tax-year">List all periods for a given tax year</h2>
+<p>Returns the list of all payroll periods for the given year end. For example, for the payroll year April 2025 - March 2026, the <code>:year</code> parameter should be 2026.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/payroll/:year
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+    &quot;periods&quot;: [
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/payroll/2026/0&quot;,
+            &quot;period&quot;: 0,
+            &quot;frequency&quot;: &quot;Monthly&quot;,
+            &quot;dated_on&quot;: &quot;2020-04-25&quot;,
+            &quot;status&quot;: &quot;filed&quot;,
+            &quot;employment_allowance_claimed&quot;: true,
+            &quot;employment_allowance_amount&quot;: &quot;0.0&quot;,
+            &quot;construction_industry_scheme_deduction&quot;: &quot;0.0&quot;,
+            &quot;created_at&quot;: &quot;2025-04-17T11:31:58.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-04-17T12:42:54.000Z&quot;
+        }
+    ],
+    &quot;payments&quot;: [
+        {
+            &quot;due_on&quot;: &quot;2025-05-22&quot;,
+            &quot;amount_due&quot;: &quot;738.19&quot;,
+            &quot;status&quot;: &quot;unpaid&quot;
+        }
+    ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

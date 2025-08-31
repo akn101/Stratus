@@ -1,0 +1,212 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Projects</h1>
+<p><em>Minimum access level</em>: <code>Contacts and Projects</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the project</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>contact</td>
+      <td><a href="contacts.html">Contact</a> to bill for the project</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>name</td>
+      <td>Free-text project name</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>status</td>
+      <td>
+        One of the  following:
+        <p>
+          <ul>
+            <li><code>Active</code></li>
+            <li><code>Completed</code></li>
+            <li><code>Cancelled</code></li>
+            <li><code>Hidden</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>contract_po_reference</td>
+      <td>Contract / Purchase order reference</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>uses_project_invoice_sequence</td>
+      <td><code>true</code> if <a href="invoices.html">invoice</a> sequence is project-level, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>currency</td>
+      <td><a href="currencies.html">Currency</a> code of the project (e.g. <code>USD</code>, <code>GBP</code>, <code>EUR</code>, &#8230;)</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>budget</td>
+      <td>Leave as zero if this project doesn't have a budget</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>budget_units</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Hours</code></li>
+            <li><code>Days</code></li>
+            <li><code>Monetary</code> (ex-VAT)</li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>hours_per_day</td>
+      <td>Hours per day (e.g. 1:30 hours &rarr; use <code>1.5</code>)</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>normal_billing_rate</td>
+      <td>Normal billing rate</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>billing_period</td>
+      <td>
+        <p>Unit for the <code>normal_billing_rate</code>:</p>
+        <ul>
+          <li><code>hour</code></li>
+          <li><code>day</code></li>
+        </ul>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_ir35</td>
+      <td><code>true</code> if this project comes under IR35 as de facto employment, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>starts_on</td>
+      <td>
+        <p>Start date of the project in <code>YYYY-MM-DD</code> format</p>
+        <em>Leave blank if this project doesn't have a starting date</em>
+      </td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ends_on</td>
+      <td>
+        <p>End date of the proejct in <code>YYYY-MM-DD</code> format</p>
+        <em>Leave blank if this project doesn't have an ending date</em>
+      </td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>include_unbilled_time_in_profitability</td>
+      <td><code>true</code> if this project includes unbilled time in the profitiability report, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_deletable</td>
+      <td><code>true</code> if this project can be deleted, <code>false</code> otherwise. Only returned in the <a href="#get-a-single-project">single project GET</a> response.</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the project resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the project resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-projects">List all projects</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/projects
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/projects?view=active
+</code></pre>
+<ul>
+<li><code>active</code>: Show only active projects.</li>
+<li><code>completed</code>: Show only completed projects.</li>
+<li><code>cancelled</code>: Show only cancelled projects.</li>
+<li><code>hidden</code>: Show only hidden projects.</li>
+</ul>
+<h4>Sort Orders</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/projects?sort=updated_at
+</code></pre>
+<ul>
+<li><code>name</code>: Sort by project name (default).</li>
+<li><code>contact_name</code>: Sort by the concatenation of <code>organisation_name</code>, <code>last_name</code> and <code>first_name</code> of the contact.</li>
+<li><code>contact_display_name</code>: Sort by the concatenation of <code>organisation_name</code>, <code>first_name</code> and <code>last_name</code> of the contact.</li>
+<li><code>created_at</code>: Sort by the time the project was created.</li>
+<li><code>updated_at</code>: Sort by the time the project was last modified.</li>
+</ul>
+
+<p>To sort in descending order, the sort parameter can be prefixed with a hyphen.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/projects?sort=-updated_at
+</code></pre><h4>Nested Response</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/projects?nested=true
+</code></pre>
+<ul>
+<li><code>true</code>: Return full contact details for each project as a nested json object.  See <a href="contacts.html">Contact</a></li>
+<li><code>false</code>: Return a RESTful reference to the contact for each project and the contact&#39;s display name</li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;projects&quot;:[
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/projects/1&quot;,
+    &quot;name&quot;:&quot;Test Project&quot;,
+    &quot;contact&quot;:&quot;https://api.freeagent.com/v2/contacts/1&quot;,
+    &quot;contact_name&quot;:&quot;Acme Trading&quot;,
+    &quot;budget&quot;:0,
+    &quot;is_ir35&quot;:false,
+    &quot;status&quot;:&quot;Active&quot;,
+    &quot;budget_units&quot;:&quot;Hours&quot;,
+    &quot;normal_billing_rate&quot;:&quot;0.0&quot;,
+    &quot;hours_per_day&quot;:&quot;8.0&quot;,
+    &quot;uses_project_invoice_sequence&quot;:false,
+    &quot;currency&quot;:&quot;GBP&quot;,
+    &quot;billing_period&quot;:&quot;hour&quot;,
+    &quot;include_unbilled_time_in_profitability&quot;:true,
+    &quot;created_at&quot;:&quot;2011-09-14T16:05:57Z&quot;,
+    &quot;updated_at&quot;:&quot;2011-09-14T16:05:57Z&quot;
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

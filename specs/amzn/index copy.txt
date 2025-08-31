@@ -1,0 +1,335 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Estimates</h1>
+<p><em>Minimum access level</em>: <code>Estimates and Invoices</code>, unless stated otherwise.</p>
+<h2 id="estimate-attributes">Estimate Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the estimate</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>status</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Draft</code></li>
+            <li><code>Sent</code></li>
+            <li><code>Open</code></li>
+            <li><code>Approved</code></li>
+            <li><code>Rejected</code></li>
+            <li><code>Invoiced</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>estimate_type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Estimate</code></li>
+            <li><code>Quote</code></li>
+            <li><code>Proposal</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>contact</td>
+      <td>The <a href="../contacts.html">contact</a> for whom the estimate is created</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>project</td>
+      <td><a href="../projects.html">Project</a> being estimated</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>reference</td>
+      <td>Free-text reference</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>dated_on</td>
+      <td>Date of estimate in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>currency</td>
+      <td>Estimate's <a href="../currencies.html">currency</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>notes</td>
+      <td>Additional text</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>discount_percent</td>
+      <td>The discount applied across the whole estimate</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>client_contact_name</td>
+      <td>This name will override the default <a href="../contacts.html">contact</a> name on this estimate</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ec_status</td>
+      <td>
+        Estimate's VAT status for reporting purposes. One of the following:
+        <p>
+          <ul>
+            <li><code>UK/Non-EC</code></li>
+            <li><code>EC Goods</code></li>
+            <li><code>EC Services</code></li>
+            <li><code>Reverse Charge</code></li>
+            <li><code>EC VAT MOSS</code></li>
+          </ul>
+        </p>
+        <p><em>Please note that <code>EC Goods</code> and <code>EC Services</code> are no longer valid options if the estimate is dated 1/1/2021 or later and the company is based in Great Britain (but not Northern Ireland), following the UK's withdrawal from the EU.</em></p>
+        <p><em><code>Reverse Charge</code> is only a valid status if the estimate is dated 1/1/2021 or later.</em></p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>place_of_supply</td>
+      <td>
+        Place of supply when <code>ec_status</code> is <a href="../sales_tax.html#ec-vat-moss"><code>EC VAT MOSS</code></a>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>estimate_items</td>
+      <td>
+        Items for this estimate. See <a href="#estimate-item-attributes">Estimate Item Attributes</a>.
+      </td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>net_value</td>
+      <td>Total value of the estimate calculated from its estimate items</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+    <tr>
+      <td></td>
+      <td>include_sales_tax_on_total_value</td>
+      <td>
+        <p>Include or exclude sales tax from the totals shown on the estimate</p>
+        <em>Defaults to <code>true</code></em>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the estimate resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the estimate resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="estimate-item-attributes">Estimate Item Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the estimate item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>position</td>
+      <td>Position on the estimate, starting at 1</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>item_type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Hours</code></li>
+            <li><code>Days</code></li>
+            <li><code>Weeks</code></li>
+            <li><code>Months</code></li>
+            <li><code>Years</code></li>
+            <li><code>-no unit-</code></li>
+            <li><code>Products</code></li>
+            <li><code>Services</code></li>
+            <li><code>Training</code></li>
+            <li><code>Expenses</code></li>
+            <li><code>Comments</code></li>
+            <li><code>Bills</code></li>
+            <li><code>Discount</code></li>
+            <li><code>Credit</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>quantity</td>
+      <td>Quantity</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>price</td>
+      <td>Price</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>description</td>
+      <td>Free-text description</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_rate</td>
+      <td>One of the standard <a href="../sales_tax.html">sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_value</td>
+      <td>Total amount of sales tax</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_rate</td>
+      <td>[Universal accounts only] One of the standaard second sales tax rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_status</td>
+      <td>Indicates whether the item is <code>TAXABLE</code> or <code>EXEMPT</code> from
+      <a href="../sales_tax.html">sales tax</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_status</td>
+      <td>[Universal accounts only] Similar to sales_tax_status, returned only if the relevant <a href="../sales_tax_periods.html">sales tax period</a> defines a second sales tax</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_value</td>
+      <td>[Universal accounts only]Total amount of second sales tax</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>category</td>
+      <td><a href="../categories.html">Accounting category</a> the estimate item falls under</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the estimate item</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the estimate item was last updated</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-estimates">List all estimates</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/estimates
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/estimates?view=recent
+</code></pre>
+<ul>
+<li><code>all</code>: (default)</li>
+<li><code>recent</code>: Show only recent estimates.</li>
+<li><code>draft</code>: Show only estimates marked as draft.</li>
+<li><code>non_draft</code>: Show only estimates the not marked as draft.</li>
+<li><code>sent</code>: Show only estimates marked as sent.</li>
+<li><code>approved</code>: Show only estimates marked as approved.</li>
+<li><code>rejected</code>: Show only estimates marked as rejected.</li>
+<li><code>invoiced</code>: Show only estimates marked as invoiced.</li>
+</ul>
+<h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/estimates?from_date=2012-01-01&amp;to_date=2012-03-21
+</code></pre><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/estimates?updated_since=2017-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+<li><code>updated_since</code></li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;estimates&quot;: [
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/estimates/1&quot;,
+    &quot;contact&quot;:&quot;https://api.freeagent.com/v2/contacts/1&quot;,
+    &quot;reference&quot;:&quot;001&quot;,
+    &quot;estimate_type&quot;:&quot;Estimate&quot;,
+    &quot;dated_on&quot;:&quot;2011-09-15&quot;,
+    &quot;status&quot;:&quot;Draft&quot;,
+    &quot;notes&quot;:&quot;An example of some additional text.&quot;,
+    &quot;currency&quot;:&quot;GBP&quot;,
+    &quot;net_value&quot;:&quot;25.22&quot;,
+    &quot;sales_tax_value&quot;:&quot;5.04266&quot;,
+    &quot;sales_tax_status&quot;: &quot;TAXABLE&quot;,
+    &quot;include_sales_tax_on_total_value&quot;:true,
+    &quot;updated_at&quot;:&quot;2011-09-15T10:30:32Z&quot;,
+    &quot;created_at&quot;:&quot;2011-09-15T10:29:51Z&quot;
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

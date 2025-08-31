@@ -1,0 +1,102 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Properties</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting &amp; Users</code></p>
+
+<p>Only applicable for companies of type <code>UkUnincorporatedLandlord</code>. Other company types cannot have or create properties.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <th>Required</th>
+    <th>Attribute</th>
+    <th>Description</th>
+    <th>Kind</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the property</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>address1</td>
+      <td>The first line of the address of the property</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>address2</td>
+      <td>The second line of the address of the property (if applicable)</td>
+      <td>String | null</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>address3</td>
+      <td>The third line of the address of the property (if applicable)</td>
+      <td>String | null</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>town</td>
+      <td>The third line of the address of the property (if applicable)</td>
+      <td>String | null</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>region</td>
+      <td>The region of the address of the property</td>
+      <td>String | null</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>postcode</td>
+      <td>The postcode of the address of the property</td>
+      <td>String | null</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>country</td>
+      <td>The country of the address of the property. This currently defaults to United Kingdom and cannot be overriden.</td>
+      <td>String</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-properties">List all properties</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/properties
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;properties&quot;: [
+    {
+      &quot;url&quot;: &quot;https://api.freeagent.com/v2/properties/4&quot;,
+      &quot;address1&quot;: &quot;Apartment 1901&quot;,
+      &quot;address2&quot;: &quot;Elliott Bay Towers&quot;,
+      &quot;town&quot;: &quot;Seattle&quot;,
+      &quot;region&quot;: &quot;Washingon&quot;,
+      &quot;postcode&quot;: &quot;98101&quot;,
+      &quot;country&quot;: &quot;United Kingdom&quot;
+    },
+    {
+        &quot;url&quot;: &quot;https://api.freeagent.com/v2/properties/5&quot;,
+        &quot;address1&quot;: &quot;Sherlock Holmes Museum&quot;,
+        &quot;address2&quot;: &quot;221B Baker Street&quot;,
+        &quot;address3&quot;: &quot;Marylebone&quot;,
+        &quot;town&quot;: &quot;London&quot;,
+        &quot;region&quot;: &quot;City of London&quot;,
+        &quot;postcode&quot;: &quot;NW1 6XE&quot;,
+        &quot;country&quot;: &quot;United Kingdom&quot;
+    },
+    {
+        &quot;url&quot;: &quot;https://api.freeagent.com/v2/properties/3&quot;,
+        &quot;address1&quot;: &quot;Wayne Manor&quot;,
+        &quot;address2&quot;: &quot;Wayne Manor Estate&quot;,
+        &quot;address3&quot;: &quot;1007 Mountain Drive&quot;,
+        &quot;town&quot;: &quot;Gotham City&quot;,
+        &quot;region&quot;: &quot;New Jersey&quot;,
+        &quot;postcode&quot;: &quot;12345&quot;,
+        &quot;country&quot;: &quot;United Kingdom&quot;
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

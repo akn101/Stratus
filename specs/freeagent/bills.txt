@@ -1,0 +1,642 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Bills</h1>
+<p><em>Minimum access level</em>: <code>Bills</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the bill</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>contact</td>
+      <td><a href="contacts.html">Contact</a> being billed</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>reference</td>
+      <td>Free-text reference</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>dated_on</td>
+      <td>Date of bill</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>due_on</td>
+      <td>Due date of bill</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>paid_on</td>
+      <td>Date of most recent payment, only returned for fully paid bills and bill refunds [<a href="https://support.freeagent.com/hc/en-gb/articles/115001222824-Record-a-bill-credit-note">Learn more about bill refunds</a>]</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>status</td>
+      <td>
+        <p>Bill's payment status, determined based on the presence of associated <a href="bank_transaction_explanations.html">bank transaction explanations</a>. Can be one of the following:</p>
+        <p>
+          <ul>
+            <li><code>Zero Value</code></li>
+            <li><code>Open</code></li>
+            <li><code>Paid</code></li>
+            <li><code>Overdue</code></li>
+            <li><code>Refunded</code> - if the bill's total value is a negative number (making it a <a href="https://support.freeagent.com/hc/en-gb/articles/115001222824-Record-a-bill-credit-note">bill refund</a>), and it's been fully paid</li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>long_status</td>
+      <td>
+        <p>Bill's payment status along with the due date as a relative date to 'today' </p>
+        <p>
+          For example: <i>Open - due in 21 days</i>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>currency</td>
+      <td>
+        <p>Bill's <a href="currencies.html">currency</a></p>
+        <em>Defaults to the company's native currency</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>input_total_values_inc_tax</td>
+      <td>
+        <p>
+          Whether bill items are entered including or excluding sales tax on the web app or mobile app. From the API, either `total_value` or `total_value_ex_tax` can be used interchangeably by an API integration as desired to set or retrieve the amount with or without sales tax.
+        </p>
+        <em>Defaults to <code>false</code> if the bill is in native currency, and to <code>true</code> otherwise</em>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>total_value</td>
+      <td>
+        <p>Total value of the bill, calculated from the bill item totals</p>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>due_value</td>
+      <td>
+        <p>Due value of the bill</p>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>native_due_value</td>
+      <td>
+        <p>Due value of the bill in the company's native <a href="currencies.html">currency</a>, calculated using the exchange rate on the bill's <code>paid_on</code> date if the bill is fully paid or a bill refund; Otherwise, today's <code>exchange_rate</code> is used instead</p>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>net_value</td>
+      <td>
+        <p>Net value of the bill</p>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>exchange_rate</td>
+      <td>
+        <p>Rate at which bill amount is converted into company's native <a href="currencies.html">currency</a></p>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_value</td>
+      <td>Total value of sales tax, calculated from the bill item amounts</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_value</td>
+      <td>[Universal accounts only] Total value of second sales tax, calculated from the bill item amounts</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_paid_by_hire_purchase</td>
+      <td>
+        <p>Whether the bill will be paid using a hire purchase agreement</p>
+        <em>Defaults to <code>false</code></em>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ec_status</td>
+      <td>
+        Bill's VAT status for reporting purposes. One of the  following:
+        <p>
+          <ul>
+            <li><code>UK/Non-EC</code></li>
+            <li><code>EC Goods</code></li>
+            <li><code>EC Services</code></li>
+            <li><code>Reverse Charge</code></li>
+          </ul>
+        </p>
+        <p><em>Please note that <code>EC Goods</code> and <code>EC Services</code> are no longer valid options if the bill is dated 1/1/2021 or later and the company is based in Great Britain (but not Northern Ireland), following the UK's withdrawal from the EU.</em></p>
+        <p><em><code>Reverse Charge</code> is only a valid status if the bill is dated 1/1/2021 or later.</em></p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>comments</td>
+      <td>Free-text comments</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>project</td>
+      <td><a href="projects.html">Project</a> billed for</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>rebill_type</td>
+      <td>
+        <p>One of the following, if rebilling a project:</p>
+        <ul>
+          <li><code>cost</code></li>
+          <li><code>markup</code></li>
+          <li><code>price</code></li>
+        </ul>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>rebill_factor</td>
+      <td>
+        <p>How much to rebill for</p>
+        <em>Required when <code>rebill_type</code> is <code>markup</code> or <code>price</code></em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>rebill_to_project</td>
+      <td>Same as <code>project</code></td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>property</td>
+      <td>
+        The <a href="properties.html">property</a> pertaining to this bill.
+        Only accepted and required for companies with type <code>UkUnincorporatedLandlord</code>.
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>recurring</td>
+      <td>
+        <p>Frequency at which the bill will recur. Can be one of the following:</p>
+        <p>
+          <ul>
+            <li><code>Weekly</code></li>
+            <li><code>Two Weekly</code></li>
+            <li><code>Four Weekly</code></li>
+            <li><code>Two Monthly</code></li>
+            <li><code>Quarterly</code></li>
+            <li><code>Biannually</code></li>
+            <li><code>Annually</code></li>
+            <li><code>2-Yearly</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>recurring_end_date</td>
+      <td>When the bill should stop recurring in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>attachment</td>
+      <td>
+        <p>Explanation attachment (max 5MB), in the following format:</p>
+        <ul>
+          <li><code>data</code> (binary data of the file being attached encoded as base64)</li>
+          <li><code>file_name</code></li>
+          <li><code>description</code></li>
+          <li>
+            <code>content_type</code> can be one of the following:
+            <ul>
+              <li><code>image/png</code></li>
+              <li><code>image/x-png</code></li>
+              <li><code>image/jpeg</code></li>
+              <li><code>image/jpg</code></li>
+              <li><code>image/gif</code></li>
+              <li><code>application/x-pdf</code></li>
+            </ul>
+          </li>
+        </ul>
+      </td>
+      <td>Object</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction_band</td>
+      <td>
+        <p>
+          The CIS band of the bill, taken from the CIS band of the contact when the bill is created, specified as
+          the name of a <a href="cis_bands.html">Construction Industry Scheme band</a>. One of the following:
+        </p>
+        <ul>
+          <li><code>cis_gross</code></li>
+          <li><code>cis_standard</code></li>
+          <li><code>cis_higher</code></li>
+        </ul>
+        <em>
+          This attribute will be present if the bill has any <code>bill_items</code> with a CIS for Contractors
+          <code>category</code> (using codes 096-099)
+        </em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction_rate</td>
+      <td>
+        <p>
+          The CIS deduction rate of the bill, taken from the rate of the contact when the bill was created,
+          as a decimal number
+        </p>
+        <em>
+          This attribute will be present if the bill has any <code>bill_items</code> with a CIS for Contractors
+          <code>category</code> (using codes 096-099)
+        </em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction</td>
+      <td>
+        <p>
+          The value of the CIS deduction on the bill
+        </p>
+        <em>
+          This attribute will be present if the bill has any <code>bill_items</code> with a CIS for Contractors
+          <code>category</code> (using codes 096-099)
+        </em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction_suffered</td>
+      <td>
+        <p>
+          The value of the CIS deduction suffered on payments for the bill
+        </p>
+        <em>
+          This attribute will be present if the bill has any <code>bill_items</code> with a CIS for Contractors
+          <code>category</code> (using codes 096-099)
+        </em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>bill_items</td>
+      <td>Array of bill item data structures, up to a maximum of 40. See <a href="#bill-item-attributes">Bill Item Attributes</a>.</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the bill resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the bill resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="bill-item-attributes">Bill Item Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>Identifier of the bill item to update/delete, or blank to create a new bill item. Optional when creating bills, required when updating.</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bill</td>
+      <td>The parent bill of the item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>category</td>
+      <td><a href="categories.html">Accounting category</a> of the bill item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>description</td>
+      <td>
+        <p>Description of the bill item <em>Required when <code>category</code> is of <a href="capital_asset_types.html">capital asset type</a></em><p>
+        <p><em>Not relevant when <code>unit</code> is <code>Stock</code>.</em></p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>total_value</td>
+      <td>
+        <p>Value of the item including taxes</p>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>total_value_ex_tax</td>
+      <td>
+        <p>Value of the item excluding taxes, may be used instead of <code>total_value</code></p>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>manual_sales_tax_amount</td>
+      <td>Amount of <a href="sales_tax.html">sales tax</a> for the bill item, in the company's native currency</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_rate</td>
+      <td>One of the standard <a href="sales_tax.html">sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_rate</td>
+      <td>[Universal accounts only] One of the standard <a href="sales_tax.html">second sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_status</td>
+      <td>Indicates whether the item is <code>TAXABLE</code>, <code>EXEMPT</code> or <code>OUT_OF_SCOPE</code> for
+      <a href="sales_tax.html">sales tax</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_status</td>
+      <td>[Universal accounts only] <a href="sales_tax_periods.html">Sales tax period</a> defines a second sales tax</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>unit</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>-no unit-</code> (default)</li>
+            <li><code>Hours</code></li>
+            <li><code>Days</code></li>
+            <li><code>Weeks</code></li>
+            <li><code>Months</code></li>
+            <li><code>Years</code></li>
+            <li><code>Products</code></li>
+            <li><code>Services</code></li>
+            <li><code>Training</code></li>
+            <li><code>Stock</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>quantity</td>
+      <td>
+        <p>Quantity of the <code>unit</code></p>
+        <p><em>Present when <code>category</code> is not of <a href="capital_asset_types.html">capital asset type</a> or Purchase of Stock</em></p>
+        <em>Presently this will be defaulted to <code>1</code></em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>stock_item</td>
+      <td>
+        <a href="stock_items.html">Stock item</a> being purchased, required when category is set to <em>Stock</em>
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>stock_item_description</td>
+      <td>
+        Description of the bill item's stock item, only returned when stock item is set</code>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>stock_altering_quantity</td>
+      <td>
+        Quantity of <code>stock_item</code> units purchased, required when category is set to <em>Stock</em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>depreciation_schedule</td>
+      <td>
+        <p><b>Note!</b> This field is deprecated. Fetch the capital asset using the link in
+        the capital_asset field of the response to view full details of its depreciation profile.</p>
+        <p>Number of years over which the <a href="capital_assets.html">asset</a> should be depreciated for straight line depreciation, otherwise 0 for backwards compatibility while the field is deprecated.</p>
+        <em>Only relevant for capital asset purchase.<em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>capital_asset</td>
+      <td>A link to the <a href="capital_assets.html">asset</a> purchased with this bill item. Read-only.
+        See <a href="depreciation_profiles.html">depreciation profiles</a> for more details on
+        what to include in this field for create/update requests.
+        <em>Only relevant for capital asset purchase.<em>
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>project</td>
+      <td>The <a href="projects.html">project</a> being billed</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction_rate</td>
+      <td>
+        <p>
+          The CIS deduction rate of the bill item, taken from the rate of the contact when the bill was created,
+          as a decimal number
+        </p>
+        <em>
+          This attribute will be present if the bill item has a CIS for Contractors <code>category</code>
+          (using codes 096-099)
+        </em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes when updating a bill item</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>url</td>
+      <td>URL to identify the bill item to update</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes when deleting a bill item</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>url</td>
+      <td>URL to identify the bill item to delete</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>_destroy</td>
+      <td>Should be equal to <code>1</code></td>
+      <td>Integer</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-bills">List all bills</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bills
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bills?view=open
+</code></pre>
+<ul>
+<li><code>all</code>: (default)</li>
+<li><code>open</code>: Show only open bills.</li>
+<li><code>overdue</code>: Show only overdue bills.</li>
+<li><code>open_or_overdue</code>: Show only open or overdue bills.</li>
+<li><code>open_or_overdue_payments</code>: Show only open or overdue bill payments (bills with positive total value).</li>
+<li><code>open_or_overdue_refunds</code>: Show only open or overdue bill refunds (bills with negative total value).</li>
+<li><code>paid</code>: Show only paid bills.</li>
+<li><code>recurring</code>: Show only recurring bills.</li>
+<li><code>hire_purchase</code>: Show only hire purchase bills.</li>
+<li><code>cis</code>: Show only bills with any CIS bill items.</li>
+</ul>
+<h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bills?from_date=2012-01-01&amp;to_date=2012-03-31
+</code></pre><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bills?updated_since=2017-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+<li><code>updated_since</code></li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;bills&quot;:[{
+  &quot;url&quot;:&quot;https://api.freeagent.com/v2/bills/1&quot;,
+  &quot;contact&quot;:&quot;https://api.freeagent.com/v2/contacts/1&quot;,
+  &quot;reference&quot;:&quot;acsad&quot;,
+  &quot;dated_on&quot;:&quot;2020-07-28&quot;,
+  &quot;due_on&quot;:&quot;2020-08-27&quot;,
+  &quot;currency&quot;:&quot;GBP&quot;,
+  &quot;total_value&quot;:&quot;213.0&quot;,
+  &quot;net_value&quot;:&quot;-177.5&quot;,
+  &quot;exchange_rate&quot;:&quot;0.09702361&quot;,
+  &quot;paid_value&quot;:&quot;164.5&quot;,
+  &quot;due_value&quot;:&quot;13.0&quot;,
+  &quot;native_due_value&quot;:&quot;1.27&quot;,
+  &quot;sales_tax_value&quot;:&quot;-35.5&quot;,
+  &quot;status&quot;:&quot;Open&quot;,
+  &quot;long_status&quot;: &quot;Open - due in about 1 month&quot;,
+  &quot;rebill_type&quot;: &quot;price&quot;,
+  &quot;rebill_factor&quot;: &quot;20&quot;,
+  &quot;rebill_to_project&quot;: &quot;https://api.freeagent.com/v2/projects/1&quot;,
+  &quot;rebilled_on_invoice_item&quot;: &quot;https://api.freeagent.com/v2/invoices/1&quot;,
+  &quot;updated_at&quot;:&quot;2020-07-28T12:43:36Z&quot;,
+  &quot;created_at&quot;:&quot;2020-07-28T12:43:36Z&quot;,
+  &quot;attachment&quot;:
+    {
+        &quot;url&quot;:&quot;https://api.freeagent.com/v2/attachments/3&quot;,
+        &quot;content_src&quot;:&quot;https://s3.amazonaws.com/freeagent-dev/attachments/1/original.png?AWSAccessKeyId=1K3MW21E6T8KWBY84B02&amp;Expires=1314281186&amp;Signature=GFAKDo%2Bi%2FsUMTYEgg6ZWGysB4k4%3D&quot;,
+        &quot;content_type&quot;:&quot;image/png&quot;,
+        &quot;file_name&quot;:&quot;barcode.png&quot;,
+        &quot;file_size&quot;:7673
+    },
+  &quot;cis_deduction_band&quot;:&quot;cis_standard&quot;,
+  &quot;cis_deduction_rate&quot;:&quot;0.2&quot;,
+  &quot;cis_deduction&quot;:&quot;35.5&quot;,
+  &quot;cis_deduction_suffered&quot;:&quot;32.9&quot;,
+  &quot;is_paid_by_hire_purchase&quot;:false
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

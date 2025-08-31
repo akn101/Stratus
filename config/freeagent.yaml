@@ -1,0 +1,43 @@
+features:
+  contacts: true
+  invoices: true
+  bills: true
+  bank_accounts: true
+  bank_transactions: true
+  bank_transaction_explanations: true
+  categories: true
+  transactions: true
+  users: true
+  changes: true
+  # Phase FA-2 features (disabled for now)
+  credit_notes: false
+  estimates: false
+  expenses: false
+  attachments: false
+  # Phase FA-3 features (disabled for now)  
+  projects: false
+  tasks: false
+  timeslips: false
+  stock_items: false
+  price_list_items: false
+  # Phase FA-4 features (disabled for now)
+  reports: false
+  trial_balance: false
+  profit_and_loss: false
+  balance_sheet: false
+  sales_tax: false
+  vat_returns: false
+  payroll: false
+
+# API Configuration
+api:
+  max_retries: 3
+  backoff_factor: 2
+  timeout: 30
+  rate_limit_delay: 0.5
+
+# Sync Configuration  
+sync:
+  default_lookback_days: 30
+  batch_size: 100
+  max_pages: 1000

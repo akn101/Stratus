@@ -1,0 +1,46 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Construction Industry Scheme Bands</h1>
+<p><em>Only available to UK companies enrolled in the Construction Industry Scheme for Subcontractors</em></p>
+
+<p><em>Minimum access level</em>:</p>
+
+<ul>
+<li><code>Estimates &amp; Invoices</code></li>
+</ul>
+<h2 id="list-all-cis-bands-for-a-company">List all CIS bands for a company</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/cis_bands
+</code></pre>
+<p>These are the Construction Industry Scheme bands that have been selected for the company in the
+CIS for Subcontractors settings.</p>
+
+<p>Since these bands do not change frequently, we suggest caching them client-side and updating
+every once in a while, for example once a day or at app start-up. Use the names of the bands in
+conjunction with the <code>cis_rate</code> attribute on invoices.</p>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;available_bands&quot;: [
+    {
+      &quot;name&quot;: &quot;cis_gross&quot;,
+      &quot;deduction_rate&quot;: &quot;0.0&quot;,
+      &quot;income_description&quot;: &quot;CIS Income (Gross)&quot;,
+      &quot;deduction_description&quot;: &quot;CIS Deduction (Gross)&quot;,
+      &quot;nominal_code&quot;: &quot;061&quot;
+    },
+    {
+      &quot;name&quot;: &quot;cis_standard&quot;,
+      &quot;deduction_rate&quot;: &quot;0.2&quot;,
+      &quot;income_description&quot;: &quot;CIS Income (20%)&quot;,
+      &quot;deduction_description&quot;: &quot;CIS Deduction (20%)&quot;,
+      &quot;nominal_code&quot;: &quot;062&quot;
+    },
+    {
+      &quot;name&quot;: &quot;cis_higher&quot;,
+      &quot;deduction_rate&quot;: &quot;0.3&quot;,
+      &quot;income_description&quot;: &quot;CIS Income (30%)&quot;,
+      &quot;deduction_description&quot;: &quot;CIS Deduction (30%)&quot;,
+      &quot;nominal_code&quot;: &quot;063&quot;
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

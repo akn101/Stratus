@@ -1,0 +1,26 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Depreciation Profiles</h1>
+<p>A depreciation profile specifies how the depreciation of a <a href="capital_assets.html">capital asset</a>  should
+be calculated. The depreciation profile should be included in the request when creating or updating the entity
+which relates to the purchase of the asset.
+The depreciation profile will be included in the response when fetching a capital asset.</p>
+
+<p>The entities which can relate to the purchase of a capital asset are:</p>
+
+<ul>
+<li><a href="bank_transaction_explanations.html">bank transaction explanations</a></li>
+<li><a href="bills.html#bill-item-attributes">bill items</a></li>
+<li><a href="expenses.html">expenses</a></li>
+</ul>
+
+<p>The depreciation profile should be nested inside a capital asset namespace and have the following structure:</p>
+<div class="highlight-json"><pre class=prettyprint><code class=json>&quot;capital_asset&quot;: {
+  &quot;depreciation_profile&quot;: {
+    &quot;method&quot;: &quot;straight_line&quot;,
+    &quot;asset_life_years&quot;: 12,
+    &quot;frequency&quot;: &quot;annually&quot;
+  }
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

@@ -1,0 +1,119 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Profit &amp; Loss</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting &amp; Users</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>from</td>
+      <td>Start date of the P&L report</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>to</td>
+      <td>End date of the P&L report</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>income</td>
+      <td>Income at the end of the report's period, in the company's native <a href="currencies.html">currency</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>expenses</td>
+      <td>Expenses at the end of the report's priod, in the company's native <a href="currencies.html">currency</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>operating_profit</td>
+      <td>Profit from the business' day-to-day trading and activities, at the end of the report's period, in the company's native <a href="currencies.html">currency</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>less</td>
+      <td>
+        <p>Totals which are subtracted from the operating profit in order to calculate the retained profit. Each item has the following elements:</p>
+        <ul>
+          <li><code>title</code>: What is being subtracted</li>
+          <li><code>total</code>: Amount subtracted, in company's native <a href="currencies.html">currency</a></li>
+        </ul>
+      </td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td>retained_profit</td>
+      <td>Retained profit at the end of the report's period</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>retained_profit_brought_forward</td>
+      <td>Retained profit brought forward from previous year</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>retained_profit_carried_forward</td>
+      <td>Distributable profit at the end of the report's period</td>
+      <td>Decimal</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="get-the-p-amp-l-summary">Get the P&amp;L summary</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/accounting/profit_and_loss/summary
+</code></pre><h4>Date Filters</h4>
+<p><em>Note:</em> Requested date periods must be equal to or less than 12 months or be contained within a single accounting year.</p>
+
+<p>The request can be filtered either with an annual accounting period or by specifying start and end dates.
+When no parameters are provided the default time period will be the current accounting year
+to date.</p>
+
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+</ul>
+
+<p>The <code>from_date</code> and <code>to_date</code> params should be in the format <code>YYYY-MM-DD</code>. If specifying only one of the date params,
+the other will default: <code>from_date</code> to the start of the current accounting period and <code>to_date</code> to today.</p>
+
+<ul>
+<li><code>accounting_period</code></li>
+</ul>
+
+<p>The accounting period parameter should be in the format <code>2022/23</code>, indicating the start and end year of the period.</p>
+<h3>Response</h3>
+<p>The profit and loss for the current accounting period.</p>
+<pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;profit_and_loss_summary&quot;: {
+    &quot;from&quot;: &quot;2016-06-01&quot;,
+    &quot;to&quot;: &quot;2016-09-05&quot;,
+    &quot;income&quot;: &quot;3800&quot;,
+    &quot;expenses&quot;: &quot;8200&quot;,
+    &quot;operating_profit&quot;: &quot;-4400&quot;,
+    &quot;less&quot;: [
+      {
+        &quot;title&quot;: &quot;Corp. Tax&quot;,
+        &quot;total&quot;: &quot;0&quot;
+      },
+      {
+        &quot;title&quot;: &quot;Dividends&quot;,
+        &quot;total&quot;: &quot;50&quot;
+      },
+      {
+        &quot;title&quot;: &quot;Adjustments&quot;,
+        &quot;total&quot;: &quot;0&quot;
+      }
+    ],
+    &quot;retained_profit&quot;: &quot;-4450&quot;,
+    &quot;retained_profit_brought_forward&quot;: &quot;15817&quot;,
+    &quot;retained_profit_carried_forward&quot;: &quot;11367&quot;
+  }
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

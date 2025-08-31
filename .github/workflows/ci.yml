@@ -1,0 +1,174 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_stratus
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    
+    - name: Load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+    
+    - name: Install dependencies
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: poetry install --no-interaction --no-root --with dev
+    
+    - name: Install project
+      run: poetry install --no-interaction
+    
+    - name: Lint with ruff
+      run: |
+        poetry run ruff check src/ tests/
+        poetry run ruff format --check src/ tests/
+    
+    - name: Format with black
+      run: poetry run black --check src/ tests/
+    
+    - name: Type check with mypy
+      run: poetry run mypy src/
+    
+    - name: Test with pytest
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_stratus
+        PYTHONPATH: .
+      run: |
+        poetry run pytest --cov=src --cov-report=xml --cov-report=term-missing
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: true
+    
+    - name: Configuration validation
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_stratus
+        SHOPIFY_SHOP: test-shop
+        SHOPIFY_ACCESS_TOKEN: test-token
+        SHIPBOB_TOKEN: test-token
+        FREEAGENT_ACCESS_TOKEN: test-token
+      run: |
+        poetry run python main.py --validate-config
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    
+    - name: Install dependencies
+      run: poetry install --no-interaction --no-root --with dev
+    
+    - name: Security check with ruff
+      run: poetry run ruff check --select S src/
+    
+    - name: Check for hardcoded secrets
+      run: |
+        # Check for common secret patterns
+        if grep -r -i "password.*=" src/ || grep -r -i "token.*=" src/ || grep -r -i "key.*=" src/; then
+          echo "Found potential hardcoded secrets"
+          exit 1
+        fi
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint-and-test, security]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    
+    - name: Build package
+      run: poetry build
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path: dist/
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [lint-and-test, security]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false
+        tags: stratus-erp:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    - name: Test Docker image
+      run: |
+        docker run --rm stratus-erp:${{ github.sha }} python -c "import src.config.loader; print('Docker image works')"

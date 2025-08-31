@@ -1,0 +1,132 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Payroll Profiles</h1>
+<p><em>Minimum access level</em>: <code>Tax and Limited Accounting</code>. Only available for UK companies (i.e. those which support payroll in FreeAgent).</p>
+
+<p>Provides read-only access to payroll profiles set up in FreeAgent.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>user</td>
+      <td>The unique identifier for the user being paid</td>
+      <td>URL</td>
+    </tr>
+    <tr>
+      <td>address_line_1</td>
+      <td>The first line of the address for the user being paid</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>address_line_2</td>
+      <td>The second line of the address for the user being paid</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>address_line_3</td>
+      <td>The third line of the address for the user being paid</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>address_line_4</td>
+      <td>The fourth line of the address for the user being paid</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>postcode</td>
+      <td>The postcode for the user being paid - only users in the UK will have a postcode</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>country</td>
+      <td>The country for the user being paid - only users outside the UK, Isle of Man or Channel Islands will have a country listed here</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>title</td>
+      <td>The title or honorific of the user being paid</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>gender</td>
+      <td>The current gender of the user being paid. The options are defined by HMRC.</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>date_of_birth</td>
+      <td>The date of birth of the user being paid.</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>total_pay_in_previous_employment</td>
+      <td>The total amount the user was paid in previous employment during the tax year</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>total_tax_in_previous_employment</td>
+      <td>The total amount the user was taxed in previous employment during the tax year</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>employment_starts_on</td>
+      <td>Date the employee started. Only present if the employee started during the tax year.</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>created_at</td>
+      <td>Date and time at which the payroll profile was created</td>
+      <td>Datetime</td>
+    </tr>
+    <tr>
+      <td>updated_at</td>
+      <td>Date and time at which the payroll profile was last edited</td>
+      <td>Datetime</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-profiles-for-a-given-tax-year">List all profiles for a given tax year</h2>
+<p>Returns the list of all payroll profiles for the given year end. For example, for the payroll year April 2020 - March 2021, the <code>:year</code> parameter should be 2021.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/payroll_profiles/:year
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+    &quot;profiles&quot;: [
+        {
+            &quot;user&quot;: &quot;https://api.freeagent.com/v2/users/107&quot;,
+            &quot;address_line_1&quot;: &quot;133 Fountainbridge&quot;,
+            &quot;address_line_2&quot;: &quot;Tollcross&quot;,
+            &quot;address_line_3&quot;: &quot;Edinburgh&quot;,
+            &quot;address_line_4&quot;: &quot;City of Edinburgh&quot;,
+            &quot;postcode&quot;: &quot;EH3 9QJ&quot;,
+            &quot;title&quot;: &quot;Dr&quot;,
+            &quot;gender&quot;: &quot;Female&quot;,
+            &quot;date_of_birth&quot;: &quot;1990-08-17&quot;,
+            &quot;total_pay_in_previous_employment&quot;: &quot;1000.0&quot;,
+            &quot;total_tax_in_previous_employment&quot;: &quot;200.0&quot;,
+            &quot;created_at&quot;: &quot;2024-08-07T14:27:32.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2024-08-07T14:27:32.000Z&quot;
+        },
+        {
+            &quot;user&quot;: &quot;https://api.freeagent.com/v2/users/96&quot;,
+            &quot;address_line_1&quot;: &quot;31 Rue du Soleil&quot;,
+            &quot;address_line_2&quot;: &quot;Paris&quot;,
+            &quot;country&quot;: &quot;France&quot;,
+            &quot;title&quot;: &quot;Mx&quot;,
+            &quot;gender&quot;: &quot;Male&quot;,
+            &quot;date_of_birth&quot;: &quot;2001-07-14&quot;,
+            &quot;total_pay_in_previous_employment&quot;: &quot;0.0&quot;,
+            &quot;total_tax_in_previous_employment&quot;: &quot;0.0&quot;,
+            &quot;employment_starts_on&quot;: &quot;2024-06-29&quot;,
+            &quot;created_at&quot;: &quot;2024-06-07T15:13:24.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2024-07-11T17:31:04.000Z&quot;
+        }
+    ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

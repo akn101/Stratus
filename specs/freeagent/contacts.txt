@@ -1,0 +1,390 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Contacts</h1>
+<p><em>Minimum access level</em>: <code>Time</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the contact</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>first_name</td>
+      <td>
+        <p>First name</p>
+        <em>Required if <code>organisation_name</code> is not specified</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>last_name</td>
+      <td>
+        <p>Last name</p>
+        <em>Required if <code>organisation_name</code> is not specified</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>organisation_name</td>
+      <td>
+        <p>Organisation name</p>
+        <em>Required if <code>first_name</code> and <code>last_name</code> are not specified</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>active_projects_count</td>
+      <td>Numer of active <a href="projects.html">projects</a> belonging to the contact</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>direct_debit_mandate_state</td>
+      <td>
+        <p>Included if the contact has a current pre-authorised GoCardless Direct Debit agreement.</p>
+        <ul>
+          <li><code>setup</code>: the agreement has been created in the FreeAgent UI and the email is to be sent to the customer</li>
+          <li><code>pending</code>: the customer has been sent the mandate email</li>
+          <li><code>inactive</code>: the customer has completed the mandate agreement and we are waiting on confirmation from GoCardless</li>
+          <li><code>active</code>: GoCardless have confirmed the mandate and it is now usable</li>
+          <li><code>failed</code>: agreement failed, the customer's details were rejected by GoCardless (or the Bank) as invalid</li>
+        </ul>
+      </td>
+      <td>
+        String
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the contact resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the contact resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes available to users with Contacts &amp; Projects permission</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>email</td>
+      <td>
+        <p>Email</p>
+        <em>Max 2 addresses can be entered during free trial</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>billing_email</td>
+      <td>
+        <p>Billing Email</p>
+        <em>Max 2 addresses can be entered during free trial</em>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>phone_number</td>
+      <td>Telephone</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>mobile</td>
+      <td>Mobile number</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>address1</td>
+      <td>First line of the address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>address2</td>
+      <td>Second line of the address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>address3</td>
+      <td>Third line of the address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>town</td>
+      <td>Town</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>region</td>
+      <td>Region or State</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>postcode</td>
+      <td>Post / Zip Code</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>country</td>
+      <td>Country</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>uses_contact_invoice_sequence</td>
+      <td>
+        <p><code>true</code> if using contact-level invoice sequence, <code>false</code> otherwise</p>
+        <em>Can be overridden by project-level sequences</em>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>contact_name_on_invoices</td>
+      <td>
+        <code>true</code> if invoices should show the contact name as well as an organization name,
+        <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>charge_sales_tax</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Auto</code> (default)</li>
+            <li><code>Always</code></li>
+            <li><code>Never</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_registration_number</td>
+      <td>
+        If applicable, and needing to be displayed on invoices.
+        Also required if EC Sales of Goods or Services to this contact need to be reported.
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>status</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Active</code></li>
+            <li><code>Hidden</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>default_payment_terms_in_days</td>
+      <td>
+        Default payment terms in days
+      </td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>locale</td>
+      <td>
+        Invoice / Estimate language. One of the following:
+        <p>
+          <ul>
+            <li><code>bg</code>: Bulgarian</li>
+            <li><code>ca</code>: Catalan</li>
+            <li><code>cy</code>: Welsh</li>
+            <li><code>cz</code>: Czech</li>
+            <li><code>de</code>: German</li>
+            <li><code>dk</code>: Danish</li>
+            <li><code>en</code>: English</li>
+            <li><code>en-US</code>: English (United States)</li>
+            <li><code>es</code>: Spanish</li>
+            <li><code>et</code>: Estonian</li>
+            <li><code>fi</code>: Finnish</li>
+            <li><code>fr</code>: French</li>
+            <li><code>fr-BE</code>: French (Belgium)</li>
+            <li><code>fr-CA</code>: French (Canada)</li>
+            <li><code>is</code>: Icelandic</li>
+            <li><code>it</code>: Italian</li>
+            <li><code>lv-LV</code>: Latvian</li>
+            <li><code>nl</code>: Dutch</li>
+            <li><code>nl-BE</code>: Dutch (Belgium)</li>
+            <li><code>nk</code>: Norwegian</li>
+            <li><code>pl-PL</code>: Polish</li>
+            <li><code>pt-BR</code>: Brazilian Portuguese</li>
+            <li><code>ro</code>: Romanian</li>
+            <li><code>rs</code>: Serbian</li>
+            <li><code>ru</code>: Russian</li>
+            <li><code>se</code>: Swedish</li>
+            <li><code>sk</code>: Slovak</li>
+            <li><code>tr</code>: Turkish</li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_cis_subcontractor</td>
+      <td>
+        <p>
+          <code>true</code> if contact is a CIS subcontractor,
+          <code>false</code> otherwise
+        </p>
+        <em>This attribute will not be present if CIS for Contractors is not enabled for the company</em>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>cis_deduction_rate</td>
+      <td>
+        <p>
+          The current CIS band of the contact, specified as the name of a
+          <a href="cis_bands.html">Construction Industry Scheme band</a>. One of the following:
+        </p>
+        <ul>
+          <li><code>cis_gross</code></li>
+          <li><code>cis_standard</code></li>
+          <li><code>cis_higher</code></li>
+        </ul>
+        <em>
+          This attribute will not be present if CIS for Contractors is not enabled for the company.
+          Required if <code>is_cis_subcontractor</code> is <code>true</code>
+        </em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>unique_tax_reference</td>
+      <td>
+        <p>
+          The Unique Tax Reference of the contact. Should be 10 numbers without spaces
+        </p>
+        <em>This attribute will not be present if CIS for Contractors is not enabled for the company</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>subcontractor_verification_number</td>
+      <td>
+        <p>
+          The Subcontractor Verification Number of the contact, received from HMRC. Should begin with V,
+          then 10 numbers, then optionally up to 2 letters
+        </p>
+        <em>This attribute will not be present if CIS for Contractors is not enabled for the company or it is blank</em>
+      </td>
+      <td>String</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-contacts">List all contacts</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/contacts
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/contacts?view=active
+</code></pre>
+<ul>
+<li><code>all</code>: Show all contacts.</li>
+<li><code>active</code>: Show only active contacts (default).</li>
+<li><code>clients</code>: Show all clients.</li>
+<li><code>suppliers</code>: Show only active suppliers.</li>
+<li><code>active_projects</code>: Show only clients with active projects.</li>
+<li><code>completed_projects</code>: Show only clients with completed invoices.</li>
+<li><code>open_clients</code>: Show only clients with open invoices.</li>
+<li><code>open_suppliers</code>: Show only suppliers with open bills.</li>
+<li><code>hidden</code>: Show only hidden contacts.</li>
+</ul>
+<h4>Sort Orders</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/contacts?sort=updated_at
+</code></pre>
+<ul>
+<li><code>name</code>: Sort by the concatenation of <code>organisation_name</code>, <code>last_name</code> and <code>first_name</code> (default).</li>
+<li><code>created_at</code>: Sort by the time the contact was created.</li>
+<li><code>updated_at</code>: Sort by the time the contact was last modified.</li>
+</ul>
+
+<p>To sort in descending order, the sort parameter can be prefixed with a hyphen.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/contacts?sort=-updated_at
+</code></pre><h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/contacts?updated_since=2025-03-15T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>updated_since</code>: Only return contacts that have been updated since the provided date and time (format ISO 8601).</li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;contacts&quot;:[
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/contacts/2&quot;,
+    &quot;first_name&quot;:&quot;test&quot;,
+    &quot;last_name&quot;:&quot;me&quot;,
+    &quot;organisation_name&quot;:&quot;Acme Ltd&quot;,
+    &quot;email&quot;:&quot;test@example.com&quot;,
+    &quot;billing_email&quot;:&quot;billing@example.com&quot;,
+    &quot;phone_number&quot;:&quot;12345678&quot;,
+    &quot;mobile&quot;:&quot;9876543210&quot;,
+    &quot;address1&quot;:&quot;11 George Street&quot;,
+    &quot;address2&quot;: &quot;South Court&quot;,
+    &quot;address3&quot;: &quot;Flat 6&quot;,
+    &quot;town&quot;:&quot;London&quot;,
+    &quot;region&quot;: &quot;Southwark&quot;,
+    &quot;postcode&quot;:&quot;SE1 6HA&quot;,
+    &quot;country&quot;:&quot;United Kingdom&quot;,
+    &quot;contact_name_on_invoices&quot;:true,
+    &quot;default_payment_terms_in_days&quot;:30,
+    &quot;locale&quot;:&quot;en&quot;,
+    &quot;account_balance&quot;:&quot;-100.0&quot;,
+    &quot;uses_contact_invoice_sequence&quot;:false,
+    &quot;charge_sales_tax&quot;:&quot;Auto&quot;,
+    &quot;sales_tax_registration_number&quot;:&quot;ST12345&quot;,
+    &quot;active_projects_count&quot;:1,
+    &quot;direct_debit_mandate_state&quot;:&quot;active&quot;,
+    &quot;status&quot;:&quot;Active&quot;,
+    &quot;is_cis_subcontractor&quot;:true,
+    &quot;cis_deduction_rate&quot;:&quot;cis_standard&quot;,
+    &quot;unique_tax_reference&quot;:&quot;1234567890&quot;,
+    &quot;subcontractor_verification_number&quot;:&quot;V1234567890&quot;,
+    &quot;created_at&quot;:&quot;2011-09-14T16:00:41Z&quot;,
+    &quot;updated_at&quot;:&quot;2011-09-16T09:34:41Z&quot;
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

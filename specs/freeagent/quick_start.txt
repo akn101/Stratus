@@ -1,0 +1,50 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Quick start - using the Google OAuth 2.0 Playground</h1><h2 id="introduction">Introduction</h2>
+<p>The <a href="https://code.google.com/oauthplayground/#step3&url=https%3A//&content_type=application/json&http_method=GET&useDefaultOauthCred=unchecked&oauthEndpointSelect=Custom&oauthAuthEndpointValue=https%3A//api.sandbox.freeagent.com/v2/approve_app&oauthTokenEndpointValue=https%3A//api.sandbox.freeagent.com/v2/token_endpoint&includeCredentials=unchecked" title="Google OAuth 2.0 Playground">Google OAuth 2.0 Playground</a> enables developers to explore OAuth 2.0 compatible APIs without writing code.</p>
+
+<p>To get set up to work with companies using FreeAgent, follow the steps below.</p>
+
+<p>To get set up to work with accountancy practices and bookkeepers using FreeAgent, and allow them to access their client data, head over to the <a href="accountancy_practice_api.html">Accountancy Practice API</a> docs and follow those steps.</p>
+
+<p>To use the FreeAgent API for companies with the Google OAuth 2.0 Playground, you must do the following:</p>
+
+<ol>
+<li>Create a free temporary FreeAgent account. If building for companies, use the <a href="https://signup.sandbox.freeagent.com/signup">FreeAgent Sandbox</a>.  <em>We&#39;ll link the OAuth Playground to this FreeAgent account.</em></li>
+<li>Sign into the company and complete the setup stages. If you don&#39;t do this, you will receive unexpected error messages when using the API.</li>
+<li>Create an App at the <a href="https://dev.freeagent.com/">FreeAgent Developer Dashboard</a>. Once created, take note of the <em>OAuth identifier</em> and <em>OAuth secret</em>.</li>
+<li>Finally, it&#39;s time to get an Access Token which can then be used with the <code>OAuth Playground</code>, <code>curl</code> or your own apps during development. The following section explains exactly how to generate the Access and Refresh Tokens.</li>
+</ol>
+<h2 id="generate-access-amp-refresh-tokens">Generate Access &amp; Refresh tokens</h2>
+<p>This process can be broken into 3 steps.</p>
+<h3>Configure the OAuth Playground</h3>
+<p>Go to the <a href="https://code.google.com/oauthplayground/#step3&url=https%3A//&content_type=application/json&http_method=GET&useDefaultOauthCred=unchecked&oauthEndpointSelect=Custom&oauthAuthEndpointValue=https%3A//api.sandbox.freeagent.com/v2/approve_app&oauthTokenEndpointValue=https%3A//api.sandbox.freeagent.com/v2/token_endpoint&includeCredentials=unchecked" title="Google OAuth 2.0 Playground">Google OAuth 2.0 Playground</a></p>
+
+<p>The URL above sets up the Playground with FreeAgent&#39;s <code>sandbox</code> endpoints:</p>
+
+<table><thead>
+<tr>
+<th>Endpoint type</th>
+<th>Endpoint</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>OAuth Authorization Endpoint</td>
+<td><a href="https://api.sandbox.freeagent.com/v2/approve_app">https://api.sandbox.freeagent.com/v2/approve_app</a></td>
+</tr>
+<tr>
+<td>OAuth Token Endpoint</td>
+<td><a href="https://api.sandbox.freeagent.com/v2/token_endpoint">https://api.sandbox.freeagent.com/v2/token_endpoint</a></td>
+</tr>
+</tbody></table>
+
+<p>Once the <code>OAuth 2.0 Playground</code> page has loaded, you will notice that the cog button at the top right is clicked and a dialog is already visible, allowing you to enter the OAuth Client ID and OAuth Client Secret from <code>Step 3</code> in the previous section.</p>
+
+<div class="infobox_wrapper">
+  <div class="infobox">
+    <p>
+      To use the production API (instead of the sandbox one) change the two endpoints to reference
+      <strong>api.freeagent.com</strong> instead of api.sandbox.freeagent.com
+    </p>
+  </div>

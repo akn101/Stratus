@@ -1,0 +1,156 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Sales Tax and VAT</h1>
+<p>There are several different ways to set the <code>sales_tax_rate</code> or
+<code>manual_sales_tax</code> amount, depending on what is passed in the request and which
+resource you are requesting. Depending on what is set, the API will respond
+with different fields.</p>
+<h2 id="expenses-bills-and-bill-items">Expenses, Bills and Bill items</h2>
+<p>Normally there is no need to specify the <code>sales_tax_rate</code> or the
+<code>manual_sales_tax_amount</code> for an expense, bill or bill item yourself. If you leave both of these
+fields out, the correct <code>sales_tax_rate</code> will be set for the category of the
+expense or bill. The same will happen if you include <code>&quot;sales_tax_rate&quot;: &quot;Auto&quot;</code> in your request body.
+If you later retrieve an expense or bill set in this manner, the response will
+include the <code>sales_tax_rate</code> field, as well as the calculated <code>sales_tax_value</code>.</p>
+
+<p>If you include a <code>sales_tax_rate</code> when creating an expense, bill or bill item through the API this
+is used to calculate a <code>sales_tax_value</code>. This <code>sales_tax_value</code> is calculated from the
+gross value and the <code>sales_tax_rate</code> percentage supplied. It will be returned in the
+response and in future requests in addition to the rate.</p>
+
+<p>For example, if you posted the JSON below, the response would include
+a <code>sales_tax_value</code> of 16.67, 20% of 83.33. These two amounts, when
+added together, give the gross value of 100.</p>
+<pre class=prettyprint><code class=>{ &quot;expense&quot;:
+    {
+        &quot;user&quot;: &quot;https://api.freeagent.com/v2/users/1&quot;,
+        &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/285&quot;,
+        &quot;dated_on&quot;: &quot;2019-10-22&quot;,
+        &quot;gross_value&quot;: &quot;-100.0&quot;,
+        &quot;sales_tax_rate&quot;: &quot;20&quot;,
+        &quot;description&quot;: &quot;Example of setting a sales_tax_rate manually&quot;,
+        &quot;receipt_reference&quot;: &quot;001&quot;,
+    }
+}
+</code></pre>
+<p>If you include a <code>manual_sales_tax_amount</code> when creating an expense, bill or bill item through the
+API, it will set this and return the <code>manual_sales_tax_amount</code> alongside <code>sales_tax_value</code>
+in the response and for all other requests for this expense, bill or bill item in the future. No
+<code>sales_tax_rate</code> will be returned but you can calculate it yourself, as shown below.</p>
+
+<p>If you specify both a <code>manual_sales_tax_amount</code> and a <code>sales_tax_rate</code>, the
+<code>sales_tax_rate</code> will be ignored and the <code>sales_tax_value</code> will be calculated based only
+on the <code>manual_sales_tax_amount</code> (both value and amount will be returned in the response).</p>
+
+<p>To calculate the <code>sales_tax_rate</code> from the <code>manual_sales_tax_amount</code> and the
+<code>gross_value</code> you can use the following formula:</p>
+<pre class=prettyprint><code class=>net_value = abs(gross_value) - manual_sales_tax_amount
+sales_tax_rate = (manual_sales_tax_amount / net_value) * 100
+</code></pre>
+<p>If you need to manually mark an expense/bill/bill item as sales tax exempt or out of scope, you can use <code>&quot;sales_tax_status&quot;:
+&quot;EXEMPT</code> or <code>&quot;sales_tax_status&quot;: &quot;OUT_OF_SCOPE&quot;</code> in your request.</p>
+<h2 id="invoices">Invoices</h2>
+<p>Invoices are much simpler than expenses and bills; their sales tax should always be set using the <code>sales_tax_rate</code>
+parameter for each <code>invoice_item</code>. An example of this is shown below.</p>
+<pre class=prettyprint><code class=>{ &quot;invoice&quot;:
+  {
+    &quot;contact&quot;:&quot;https://api.freeagent.com/v2/contacts/2&quot;,
+    &quot;dated_on&quot;:&quot;2019-12-12T00:00:00+00:00&quot;,
+    &quot;due_on&quot;:&quot;2019-12-17T00:00:00+00:00&quot;,
+    &quot;reference&quot;:&quot;003&quot;,
+    &quot;currency&quot;:&quot;GBP&quot;,
+    &quot;exchange_rate&quot;:&quot;1.0&quot;,
+    &quot;net_value&quot;:&quot;0.0&quot;,
+    &quot;status&quot;:&quot;Draft&quot;,
+    &quot;comments&quot;:&quot;An example invoice comment.&quot;,
+    &quot;omit_header&quot;:false,
+    &quot;payment_terms_in_days&quot;:5,
+    &quot;ec_status&quot;:&quot;EC Goods&quot;,
+    &quot;invoice_items&quot;:[
+      {
+        &quot;description&quot;:&quot;Test InvoiceItem&quot;,
+        &quot;item_type&quot;:&quot;Hours&quot;,
+        &quot;price&quot;:&quot;100.0&quot;,
+        &quot;quantity&quot;:&quot;1.0&quot;,
+        &quot;sales_tax_rate&quot;:&quot;20&quot;
+      }
+    ]
+  }
+}
+</code></pre>
+<p>The <code>sales_tax_rate</code> field specifies what percentage of the item&#39;s price will be added to the invoice as sales tax.
+It is recommended that it is included for every new invoice item. If <code>sales_tax_rate</code> isn&#39;t included explicitly in
+the API request body, the invoice&#39;s sales tax settings will be determined by the contact&#39;s <code>charge_sales_tax</code>
+attribute which can be set to <code>Always</code>, <code>Never</code> or <code>Auto</code> (which, for a VAT-registered UK-based company, is
+equivalent to the &quot;Only if contact is also based in the United Kingdom VAT area&quot; option from the FreeAgent web UI).</p>
+
+<p>If you need to manually mark an invoice item as sales tax exempt, you can use <code>&quot;sales_tax_status&quot;: &quot;EXEMPT</code> instead
+of a rate in your request.</p>
+
+<p>The created invoice will include an additional <code>sales_tax_value</code> attribute which is the sum of sales tax from all
+invoice items. This is a read-only attribute which cannot be set manually.</p>
+<h2 id="ec-vat-moss">EC VAT MOSS</h2>
+<p>Sales can be tagged as VAT MOSS by providing an <code>ec_status</code> of <code>EC VAT MOSS</code>.</p>
+
+<p>When creating a MOSS Invoice or Estimate you must also provide a <code>place_of_supply</code>.
+When creating a Bank Transaction Explanation, you must provide a <code>place_of_supply</code>
+and a <code>sales_tax_rate</code>.</p>
+
+<p>The <code>place_of_supply</code> field must be a country name from the following list of EU members:</p>
+
+<ul>
+<li>Austria</li>
+<li>Belgium</li>
+<li>Bulgaria</li>
+<li>Croatia</li>
+<li>Cyprus</li>
+<li>Czech Republic</li>
+<li>Denmark</li>
+<li>Estonia</li>
+<li>Finland</li>
+<li>France</li>
+<li>Germany</li>
+<li>Greece</li>
+<li>Hungary</li>
+<li>Ireland</li>
+<li>Italy</li>
+<li>Latvia</li>
+<li>Lithuania</li>
+<li>Luxembourg</li>
+<li>Malta</li>
+<li>Netherlands</li>
+<li>Poland</li>
+<li>Portugal</li>
+<li>Romania</li>
+<li>Slovakia</li>
+<li>Slovenia</li>
+<li>Spain</li>
+<li>Sweden</li>
+</ul>
+
+<p>You can get the available MOSS rates for the <code>sales_tax_rate</code> field from the following endpoint:</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/ec_moss/sales_tax_rates?country=Austria&amp;date=2017-01-01
+</code></pre>
+<ul>
+<li>country - The country specified as <code>place_of_supply</code></li>
+<li>date - The transaction date in <code>YYYY-MM-DD</code> format</li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;sales_tax_rates&quot;: [
+    {
+      &quot;percentage&quot;: &quot;20.0&quot;,
+      &quot;band&quot;: &quot;Standard&quot;
+    },
+    {
+      &quot;percentage&quot;: &quot;13.0&quot;,
+      &quot;band&quot;: &quot;Reduced&quot;
+    },
+    {
+      &quot;percentage&quot;: &quot;12.0&quot;,
+      &quot;band&quot;: &quot;Parking&quot;
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

@@ -1,0 +1,62 @@
+# Pre-commit configuration for Stratus ERP Integration Service
+# Ensures code quality and consistency across the project
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-json
+      - id: pretty-format-json
+        args: ['--autofix']
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.5
+    hooks:
+      # Run the linter
+      - id: ruff
+        args: ['--fix', '--exit-non-zero-on-fix']
+      # Run the formatter
+      - id: ruff-format
+
+  - repo: https://github.com/psf/black
+    rev: 23.9.1
+    hooks:
+      - id: black
+        language_version: python3.11
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-PyYAML, types-requests]
+        args: [--ignore-missing-imports]
+        exclude: ^tests/
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: poetry run pytest
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        args: [--no-cov]  # Skip coverage in pre-commit for speed
+
+      - id: security-check
+        name: security check
+        entry: poetry run ruff check --select S
+        language: system
+        types: [python]
+        pass_filenames: false
+
+default_language_version:
+  python: python3.11

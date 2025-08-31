@@ -1,0 +1,73 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Notes</h1>
+<p><em>Minimum access level</em> <code>Contacts and Projects</code>, unless stated otherwise.</p>
+
+<p>Contacts and Projects can both have Notes.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the note</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>note</td>
+      <td>The content of the note</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>parent_url</td>
+      <td>URL to the <a href="projects.html">project</a> or <a href="contacts.html">contact</a> which the note belongs to</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>author</td>
+      <td>Name of the <a href="users.html">user</a> that created the note</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>When the note was created (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the note was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-notes-for-a-contact">List all notes for a contact</h2>
+<p>Requires the contact to be specified</p>
+<pre class=prettyprint><code class=>GET  https://api.freeagent.com/v2/notes?contact=https://api.freeagent.com/v2/contact/1
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;notes&quot;: [
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/notes/1&quot;,
+            &quot;note&quot;: &quot;A new note&quot;,
+            &quot;parent_url&quot;: &quot;https://api.freeagent.com/v2/contacts/1&quot;,
+            &quot;author&quot;: &quot;Development Team&quot;,
+            &quot;created_at&quot;: &quot;2012-05-30T10:22:34Z&quot;,
+            &quot;updated_at&quot;: &quot;2012-05-30T10:22:34Z&quot;
+        }
+    ]
+}
+
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

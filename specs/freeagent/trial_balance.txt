@@ -1,0 +1,66 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Trial Balance</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting &amp; Users</code>, unless stated otherwise.</p>
+<h2 id="get-the-trial-balance-summary">Get the trial balance summary</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/accounting/trial_balance/summary
+</code></pre>
+<p>Date Filters</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/accounting/trial_balance/summary?to_date=2014-05-01
+GET https://api.freeagent.com/v2/accounting/trial_balance/summary?from_date=2014-01-01&amp;to_date=2014-05-01
+</code></pre>
+<ul>
+<li><code>from_date</code> - Date in YYYY-MM-DD format (optional)</li>
+<li><code>to_date</code> - Date in YYYY-MM-DD format</li>
+</ul>
+<h3>Response</h3>
+<p>If no dates are specified, the summary is for the current date.</p>
+
+<p>If only <code>to_date</code> is specified, the summary is for a period containing the
+specified date. The trial balance figures are from the beginning of the
+accounting period up to the specified date.</p>
+
+<p>If both <code>from_date</code> and <code>to_date</code> are specified, the summary is for a period
+with the specified custom range.</p>
+<h4>Note regarding response attributes</h4>
+<p>The <code>display_nominal_code</code> attribute always returns the full category code as it&#39;s displayed on accounting reports
+in the FreeAgent web UI, and should be used in most circumstances instead of <code>nominal_code</code>. The <code>nominal_code</code>
+attribute maintains legacy behaviour where, for bank account and user categories (codes 750 and 900-910), the second
+part of the code refers to the ID of the related resource (bank account or user) rather than the category sub-code.</p>
+<pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;trial_balance_summary&quot;: [
+    {
+      &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/101&quot;,
+      &quot;nominal_code&quot;: &quot;101&quot;,
+      &quot;display_nominal_code&quot;: &quot;101&quot;,
+      &quot;name&quot;: &quot;Cost of Sales&quot;,
+      &quot;total&quot;: &quot;275.0&quot;
+    },
+    {
+      &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/750&quot;,
+      &quot;nominal_code&quot;: &quot;750-65345&quot;,
+      &quot;display_nominal_code&quot;: &quot;750-1&quot;,
+      &quot;name&quot;: &quot;Bank Account Default bank account&quot;,
+      &quot;total&quot;: &quot;-12860.0&quot;,
+      &quot;bank_account&quot;: &quot;https://api.freeagent.com/v2/bank_accounts/10&quot;
+    },
+    {
+      &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/902&quot;,
+      &quot;nominal_code&quot;: &quot;902-6465&quot;,
+      &quot;display_nominal_code:&quot;: &quot;902-1&quot;,
+      &quot;name&quot;: &quot;Salary and Bonuses: Bob Bobson&quot;,
+      &quot;total&quot;: &quot;-9062.64&quot;,
+      &quot;user&quot;: &quot;https://api.freeagent.com/v2/users/5&quot;
+    },
+    {
+     &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/606&quot;,
+     &quot;nominal_code&quot;: &quot;606-4&quot;,
+     &quot;display_nominal_code&quot;: &quot;606-4&quot;,
+     &quot;name&quot;: &quot;Other Capital Asset Depreciation&quot;,
+     &quot;total&quot;: &quot;-448.62&quot;
+    },
+  ]
+}
+
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

@@ -1,0 +1,119 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>How-to Guides</h1>
+<p>Our practical guides covering specific tasks and problems.</p>
+<h2 id="connecting-payroll-software-to-freeagent-39-s-api">Connecting payroll software to FreeAgent&#39;s API</h2>
+<p>Welcome to the integration guide for third-party developers looking to connect payroll software to FreeAgent’s API. These documents provide step-by-step instructions, best practices, and technical details to ensure an optimal integration and user experience. Let’s get started!</p>
+
+<p>When deciding how to push payroll-related data into FreeAgent, there are two options to choose from:</p>
+
+<ul>
+<li><a href="#include-individual-records-for-each-employee">include individual records for each employee</a></li>
+<li><a href="#merge-the-employee-records-together">merge the employee records together</a></li>
+</ul>
+<h2 id="include-individual-records-for-each-employee">Include individual records for each employee</h2><h3>FreeAgent API documentation</h3>
+<p><a href="journal_sets.html"><a href="journal_sets.html">https://dev.freeagent.com/docs/journal_sets</a></a></p>
+<h3>Information required</h3>
+<p>You will need to know the following about each individual on the pay run:</p>
+
+<ul>
+<li>Name</li>
+<li>Whether they are an employee or a director</li>
+<li>Gross pay</li>
+<li>PAYE tax deducted</li>
+<li>Amount of employee’s National Insurance (NI) that has been deducted</li>
+<li>Amount of employer&#39;s National Insurance (NI) that the business will pay for them</li>
+<li>Net pay</li>
+<li>Amount of pension contributions</li>
+</ul>
+<h3>Payroll-related categories in FreeAgent</h3>
+<ul>
+<li><strong>401 Salaries</strong> - gross pay for employee(s)</li>
+<li><strong>402 Employer NICs</strong> - the amount of employer&#39;s NICs</li>
+<li><strong>403 Staff Pensions</strong> - the employer’s pension contribution amount</li>
+<li><strong>407 Directors&#39; Salaries</strong> - gross pay for director(s)</li>
+<li><strong>408 Directors&#39; Employer NICs</strong> - the amount of employer&#39;s NICs</li>
+<li><strong>813 Pension Creditor</strong> - the amount being paid to the pension provider(s)</li>
+<li><strong>814 PAYE/NI</strong> - the total amount of tax and NICs due to HMRC</li>
+<li><strong>815</strong> - Other Payroll Deductions - used for any other payroll deductions</li>
+<li><strong>902-X</strong> Salary and Bonuses - net pay</li>
+</ul>
+
+<p><em>Note that 902 is a parent category that contains subcategories for each user. For example, Nathan Barley as the first user on the account (ID=1) would be 902-1 and Jack Smith as the second user on the account (ID=2) would be 902-2.</em></p>
+
+<p>As the payroll journals include a breakdown for each employee, you will need to know which user corresponds to each subaccount of 902 Salary and Bonuses. To do this you can call the <a href="categories.html">Categories API</a> with subaccounts set to <code>true</code> which will now include the FreeAgent ID and name of the user alongside any 90x-y accounts. As long as you have a mapping to FreeAgent users in your system, you’ll be able to identify the salary account for any specific user by comparing that value.</p>
+
+<p>Should you wish to know if the user is an employee or a director, you can call the <a href="users.html">Users API</a>, and the role value tells you if they&#39;re a director or not.</p>
+<h3>Example payrun</h3>
+<p>For an employee who earned £2,000 each week, before tax and NI, the following would apply:</p>
+
+<ul>
+<li>For the first week of June, their PAYE tax due might be £275.20 and employee&#39;s NI would be £167.76. Subtracting these means that their net pay will be £1,557.04</li>
+<li>The employer could have to pay £194.71 in employer&#39;s NICs</li>
+<li>The employee has also asked the employer to deduct £100 from their net wages each week to pay into a pension fund</li>
+<li>The employer also contributes £50 to the fund</li>
+</ul>
+
+<p>To reflect this in FreeAgent, the following journal entries would be created, dated the same day as the employee’s payslip for the first week of June:</p>
+
+<ul>
+<li>Debit code ‘401 Salaries’: £2,000 (the employee’s gross pay)</li>
+<li>Debit code ‘402 Employer NICs’: £194.71</li>
+<li>Credit code ‘814 PAYE/NI’: £637.67 (the total amount of tax and NICs due to HMRC: £275.20 + £167.76 + £194.71)</li>
+<li>Credit code ‘902 Salary and Bonuses’ for the correct user: £1,557.04 (the employee’s net pay)</li>
+</ul>
+
+<p><em>For pensions specifically</em>:
+* Debit code ‘902 Salary and Bonuses’ for the correct user: £100 (the amount that the employee’s net pay will be reduced by)
+* Credit code ‘813 Pension Creditor’: £150 (both pension contribution amounts)
+* Debit code ‘403 Staff Pensions’: £50 (the employer’s pension contribution amount)
+This would be done via the API as follows, assuming the employee user is identified by <code>https://api.freeagent.com/v2/users/1</code></p>
+<pre class=prettyprint><code class=>POST https://api.freeagent.com/v2/journal_sets
+</code></pre>
+<p>Payload should have a root journal_set element, containing elements listed under Journal Set Attributes.</p>
+<div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;journal_set&quot;:{
+    &quot;dated_on&quot;:&quot;2024-07-07&quot;,
+    &quot;description&quot;:&quot;June Payroll Week 1&quot;,
+    &quot;journal_entries&quot;:[{
+        &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/401&quot;,
+        &quot;description&quot;:&quot;Gross Pay&quot;,
+        &quot;debit_value&quot;:&quot;2000.00&quot;
+      },
+      {
+        &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/402&quot;,
+        &quot;description&quot;:&quot;Employer’s NIC&quot;,
+        &quot;debit_value&quot;:&quot;194.71&quot;
+      },
+      {
+        &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/814&quot;,
+        &quot;description&quot;:&quot;Tax &amp; NI Due to HMRC&quot;,
+        &quot;debit_value&quot;:&quot;-637.67&quot;
+      },
+      {
+        &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/902&quot;,
+        &quot;user&quot;:&quot;https://api.freeagent.com/v2/users/1&quot;,
+        &quot;description&quot;:&quot;Net Pay&quot;,
+        &quot;debit_value&quot;:&quot;-1557.04&quot;
+      },
+      {
+        &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/902&quot;,
+        &quot;user&quot;:&quot;https://api.freeagent.com/v2/users/1&quot;,
+        &quot;description&quot;:&quot;Employee&#39;s Pension Contribution&quot;,
+        &quot;debit_value&quot;:&quot;100&quot;
+      },
+      {
+        &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/813&quot;,
+        &quot;description&quot;:&quot;Pension Contributions&quot;,
+        &quot;debit_value&quot;:&quot;-150&quot;
+      },
+      {
+        &quot;category&quot;:&quot;https://api.freeagent.com/v2/categories/403&quot;,
+        &quot;description&quot;:&quot;Employer&#39;s Pension Contribution&quot;,
+        &quot;debit_value&quot;:&quot;50&quot;
+      }
+    ]
+  }
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

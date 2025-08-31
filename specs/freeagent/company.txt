@@ -1,0 +1,339 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Company</h1>
+<p><em>Minimum access level</em>: <code>Time</code>, unless stated otherwise.</p>
+
+<p>The company object represents the company for which FreeAgent is managing the accounts.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td>The API endpoint for the authenticated company</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>id</td>
+      <td>The ID of the company</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>Company name</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>subdomain</td>
+      <td>Company subdomain</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>UkLimitedCompany</code></li>
+            <li><code>UkSoleTrader</code></li>
+            <li><code>UkPartnership</code></li>
+            <li><code>UkLimitedLiabilityPartnership</code></li>
+            <li><code>UsSoleProprietor</code></li>
+            <li><code>UsPartnership</code></li>
+            <li><code>UsLimitedLiabilityCompany</code></li>
+            <li><code>UsSCorp</code></li>
+            <li><code>UsCCorp</code></li>
+            <li><code>UniversalCompany</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>currency</td>
+      <td>Base <a href="currencies.html">accounting currency</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>mileage_units</td>
+      <td>Either <code>miles</code> or <code>kilometers</code></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>company_start_date</td>
+      <td>Date the business or company was started in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>trading_start_date</td>
+      <td>Date company commenced trading (if it is different from <code>company_start_date</code>)</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>first_accounting_year_end</td>
+      <td>
+        Date the company's first set of annual accounts are drawn up to.
+        (normally this will be one year after the end of the month company was started
+        for limited companies and the end of the tax year for sole traders and partnerships)
+      </td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>annual_accounting_periods</td>
+      <td>The periods covered by each of the company's sets of annual accounts</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td>freeagent_start_date</td>
+      <td>
+        Transactions dated on or after this date will be used by FreeAgent to calculate accounts
+        (normally the start of an accounting year to keep things simple)
+      </td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>address1</td>
+      <td>First line of address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>address2</td>
+      <td>Second line of address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>address3</td>
+      <td>Third line of address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>town</td>
+      <td>Town</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>region</td>
+      <td>Region or State</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>postcode</td>
+      <td>Post / Zip Code</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>country</td>
+      <td>Country</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>company_registration_number</td>
+      <td>Company registration number</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>contact_email</td>
+      <td>Contact email address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>contact_phone</td>
+      <td>Contact phone number</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>website</td>
+      <td>Website address</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>business_type</td>
+      <td>Free-text description of the business</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>business_category</td>
+      <td>Company's <a href="#list-all-business-categories">business category</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>short_date_format</td>
+      <td>
+        <p>Date format to use throughout the FreeAgent account:</p>
+        <ul>
+          <li><code>dd mmm yy</code></li>
+          <li><code>dd-mm-yyyy</code></li>
+          <li><code>mm/dd/yyyy</code></li>
+          <li><code>yyyy-mm-dd</code></li>
+        </ul>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>sales_tax_name</td>
+      <td>Name of current <a href="sales_tax.html">sales tax</a> e.g. VAT, GST, Sales Tax</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>sales_tax_registration_number</td>
+      <td>Current <a href="sales_tax.html">sales tax</a> registration number</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>sales_tax_effective_date</td>
+      <td>When current <a href="sales_tax.html">sales tax</a> took or will take effect, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>sales_tax_rates</td>
+      <td>Current <a href="sales_tax.html">sales tax</a> rates applicable to the company</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td>sales_tax_is_value_added</td>
+      <td><code>true</code> if VAT applies, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>cis_enabled</td>
+      <td>
+        <p><code>true</code> if Construction Industry Scheme for Subcontractors is enabled, <code>false</code> otherwise</p>
+        <em>Also aliased as:</em> <code>cis_subcontractor</code>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>cis_subcontractor</td>
+      <td>
+        <p><code>true</code> if Construction Industry Scheme for Subcontractors is enabled, <code>false</code> otherwise</p>
+        <em>Also aliased as:</em> <code>cis_enabled</code>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>cis_contractor</td>
+      <td><code>true</code> if Construction Industry Scheme for Contractors is enabled, <code>false</code> otherwise
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>locked_attributes</td>
+      <td>List of attributes that cannot be modified</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td>created_at</td>
+      <td>Creation of the company resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>updated_at</td>
+      <td>When the company resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for VAT-registered UK companies</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>vat_first_return_period_ends_on</td>
+      <td>When the first VAT return period ends</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>initial_vat_basis</td>
+      <td>
+        <p>VAT accounting basis on the VAT registration date:</p>
+        <ul>
+          <li><code>Invoice</code></li>
+          <li><code>Cash</code></li>
+        </ul>
+        <em>Only affects the automatically-created initial VAT Returns</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>initially_on_frs</td>
+      <td>
+        <code>true</code> if company was on a Flat Rate Scheme on the VAT registration date,
+        <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>initial_vat_frs_type</td>
+      <td>Flat Rate Scheme the company has registered under</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>sales_tax_deregistration_effective_date</td>
+      <td>Date of VAT de-registration, if <code>sales_tax_registration_status</code> is <code>De-registered</code></td>
+      <td>Date</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for US and Universal companies</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>second_sales_tax_name</td>
+      <td>Name of current <a href="sales_tax.html">second sales tax</a> e.g. PST in some Canadian provinces</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>second_sales_tax_rates</td>
+      <td>Current <a href="sales_tax.html">second sales tax</a> rates applicable to the company</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td>second_sales_tax_is_compound</td>
+      <td>
+        <code>true</code> if it is applied on top of the main <a href="sales_tax.html">sales tax</a> instead of independently,
+        <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="general-company-information">General company information</h2>
+<p>The list of basic information about a company held by FreeAgent.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/company
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;company&quot;:
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/company&quot;,
+    &quot;id&quot;:&quot;12345&quot;,
+    &quot;name&quot;:&quot;My Company&quot;,
+    &quot;subdomain&quot;:&quot;mycompany&quot;,
+    &quot;type&quot;:&quot;UkLimitedCompany&quot;,
+    &quot;currency&quot;:&quot;GBP&quot;,
+    &quot;mileage_units&quot;:&quot;miles&quot;,
+    &quot;company_start_date&quot;:&quot;2020-05-01&quot;,
+    &quot;freeagent_start_date&quot;:&quot;2020-05-01&quot;,
+    &quot;first_accounting_year_end&quot;:&quot;2011-04-30&quot;,
+    &quot;annual_accounting_periods&quot;: [
+      { &quot;starts_on&quot;:&quot;2020-05-01&quot;, &quot;ends_on&quot;:&quot;2021-04-30&quot; },
+      { &quot;starts_on&quot;:&quot;2021-05-01&quot;, &quot;ends_on&quot;:&quot;2022-04-30&quot; }
+    ],
+    &quot;company_registration_number&quot;:&quot;123456&quot;,
+    &quot;sales_tax_registration_status&quot;:&quot;Registered&quot;,
+    &quot;sales_tax_registration_number&quot;:&quot;123456&quot;,
+    &quot;cis_enabled&quot;: true,
+    &quot;cis_subcontractor&quot;: true,
+    &quot;cis_contractor&quot;: false
+  }
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

@@ -1,0 +1,44 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Using the FreeAgent API with Curl</h1>
+<p>Getting started is easy.  First, <a href="quick_start.html">get an Access Token</a>. </p>
+
+<p>Open a terminal and paste in the following command, replacing <strong>TOKEN</strong> with the Access Token:</p>
+<pre class=prettyprint><code class=>curl https://api.freeagent.com/v2/company \
+  -H &quot;Authorization: Bearer TOKEN&quot; \
+  -H &quot;Accept: application/xml&quot; \
+  -H &quot;Content-Type: application/xml&quot; \
+  -X GET 
+</code></pre>
+<p>You should see the response:</p>
+<pre class=prettyprint><code class=>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;freeagent&gt;
+  &lt;company&gt;
+    &lt;url&gt;https://api.freeagent.com/v2/company&lt;/url&gt;
+    &lt;name&gt;My Company&lt;/name&gt;
+    &lt;subdomain&gt;mycompany&lt;/subdomain&gt;
+    &lt;type&gt;UkLimitedCompany&lt;/type&gt;
+    &lt;currency&gt;GBP&lt;/currency&gt;
+    &lt;mileage-units&gt;miles&lt;/mileage-units&gt;
+    &lt;company-start-date type=&quot;date&quot;&gt;2010-05-01&lt;/company-start-date&gt;
+    &lt;freeagent-start-date type=&quot;date&quot;&gt;2010-05-01&lt;/freeagent-start-date&gt;
+    &lt;first-accounting-year-end type=&quot;date&quot;&gt;2010-05-01&lt;/first-accounting-year-end&gt;
+    &lt;sales-tax-registration-status&gt;Registered&lt;/sales-tax-registration-status&gt;
+    &lt;sales-tax-registration-number&gt;123456&lt;/sales-tax-registration-number&gt;
+  &lt;/company&gt;
+&lt;/freeagent&gt;
+</code></pre>
+<p>By modifying the above command you can access all of the FreeAgent API.  </p>
+
+<div class="infobox_wrapper">
+  <div class="infobox">
+    <p>
+      To use the sandbox API change the server in the examples above to:
+      <strong>https://api.sandbox.freeagent.com</strong>
+    </p>
+    <p>
+      To use JSON instead of XML change <strong>application/xml</strong> to
+      <strong>application/json</strong>
+    </p>
+  </div>

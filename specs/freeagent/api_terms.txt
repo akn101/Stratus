@@ -1,0 +1,11 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <div class="infobox_wrapper">
+  <div class="infobox">
+    <p>
+      Version 2.1: These terms were last updated on 28th February 2025. They may
+      be updated in the future and we'll post the new version here on our
+      website.
+    </p>
+  </div>

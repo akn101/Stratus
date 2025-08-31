@@ -1,0 +1,81 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Bank Feeds</h1>
+<p><em>Minimum access level</em>: <code>Banking</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the Bank Feed</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>bank_account</td>
+      <td>The URL of the bank account which the feed will import transactions into</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>state</td>
+      <td>The current status of the feed</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the feed resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the feed resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>feed_type</td>
+      <td>The type of the feed. Can be "api" or "open_banking".</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bank_service_name</td>
+      <td>The display string for the name of the bank service this feed is connected to.</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sca_expires_at</td>
+      <td>The Date and Time at which the SCA (Strong Customer Authentication) will expire on a API Bank Feed, formated in ISO 8601. Only provided for <code>api</code> feed types. This time may be in the past if the SCA has already expired.</td>
+      <td>DateTime</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="reading-an-api-bank-feed">Reading an API Bank Feed</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_feeds/:id
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+    &quot;bank_feed&quot;: {
+        &quot;url&quot;: &quot;http://api.freeagent.com/v2/bank_feeds/7&quot;,
+        &quot;bank_account&quot;: &quot;https://api.freeagent.com/v2/bank_accounts/22&quot;,
+        &quot;state&quot;: &quot;enabled&quot;,
+        &quot;created_at&quot;: &quot;2020-11-17T09:50:02.000Z&quot;,
+        &quot;updated_at&quot;: &quot;2020-11-17T09:50:02.000Z&quot;,
+        &quot;feed_type&quot;: &quot;api&quot;,
+        &quot;bank_service_name&quot;: &quot;Mettle&quot;,
+        &quot;sca_expires_at&quot;: &quot;2021-01-01T01:01:01.000Z&quot;
+    }
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

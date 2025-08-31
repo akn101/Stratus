@@ -1,0 +1,123 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>VAT Returns</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting &amp; Users</code>, unless stated otherwise.</p>
+
+<p>This endpoint allows API applications to retrieve information on a company&#39;s VAT Returns, including details on payments due and filing status.</p>
+<h2 id="attributes">Attributes</h2>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+<th>Kind</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>url</td>
+<td>Unique identifier for the record</td>
+<td>URI</td>
+</tr>
+<tr>
+<td>period_ends_on</td>
+<td>The end date of the period covered by the return</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>period_starts_on</td>
+<td>The start date of the period covered by the return</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>payments</td>
+<td>An array of <a href="#payment-attributes">Payments</a></td>
+<td>Array</td>
+</tr>
+<tr>
+<td>filing_due_on</td>
+<td>The date on which submission is due</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>filing_status</td>
+<td>One of <code>unfiled</code>, <code>pending</code>, <code>rejected</code>, <code>filed</code> or <code>marked_as_filed</code>.</td>
+<td>String</td>
+</tr>
+<tr>
+<td>filed_at</td>
+<td>For returns which have been filed online, the date and time at which that happened</td>
+<td>Datetime</td>
+</tr>
+<tr>
+<td>filed_reference</td>
+<td>For returns which have been filed online, the form bundle number returned by the submission</td>
+<td>String</td>
+</tr>
+</tbody></table>
+<h2 id="payment-attributes">Payment Attributes</h2>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+<th>Kind</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>label</td>
+<td>A human-readable name for the payment</td>
+<td>String</td>
+</tr>
+<tr>
+<td>due_on</td>
+<td>The date on which a payment is due</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>amount_due</td>
+<td>The amount due on that date. May be negative in the case of a refund.</td>
+<td>Decimal</td>
+</tr>
+<tr>
+<td>status</td>
+<td>One of <code>unpaid</code> or <code>marked_as_paid</code>. <code>paid</code> is reserved for future use. Key is omitted if <code>amount_due</code> is zero or negative.</td>
+<td>String</td>
+</tr>
+</tbody></table>
+<h2 id="list-vat-returns-for-a-company">List VAT Returns for a Company</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/vat_returns
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+    &quot;vat_returns&quot;: [
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/vat_returns/2023-07-31&quot;,
+            &quot;period_ends_on&quot;: &quot;2023-07-31&quot;,
+            &quot;period_starts_on&quot;: &quot;2023-05-01&quot;,
+            &quot;payments&quot;: [
+                {
+                    &quot;label&quot;: &quot;Payment Due&quot;,
+                    &quot;amount_due&quot;: &quot;5450.91&quot;,
+                    &quot;due_on&quot;: &quot;2023-09-07&quot;,
+                    &quot;status&quot;: &quot;unpaid&quot;
+                }
+            ],
+            &quot;filing_due_on&quot;: &quot;2023-09-07&quot;,
+            &quot;filing_status&quot;: &quot;filed&quot;,
+            &quot;filed_at&quot;: &quot;2023-10-10T10:32:49.000+00:00&quot;,
+            &quot;filed_reference&quot;: &quot;00000000001&quot;
+        },
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/vat_returns/2023-10-31&quot;,
+            &quot;period_ends_on&quot;: &quot;2023-10-31&quot;,
+            &quot;period_starts_on&quot;: &quot;2023-08-01&quot;,
+            &quot;payments&quot;: [
+                {
+                    &quot;label&quot;: &quot;Refund Due&quot;,
+                    &quot;amount_due&quot;: &quot;-62.89&quot;,
+                    &quot;due_on&quot;: &quot;2023-12-07&quot;
+                }
+            ],
+            &quot;filing_due_on&quot;: &quot;2023-12-07&quot;,
+            &quot;filing_status&quot;: &quot;unfiled&quot;
+        }
+    ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

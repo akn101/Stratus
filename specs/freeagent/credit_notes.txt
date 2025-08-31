@@ -1,0 +1,523 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Credit Notes</h1>
+<p><em>Minimum access level</em>: <code>Estimates and Invoices</code>, unless stated otherwise.</p>
+<h2 id="credit-note-attributes">Credit Note Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the credit note</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>status</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Draft</code></li>
+            <li><code>Open</code></li>
+            <li><code>Overdue</code></li>
+            <li><code>Refunded</code></li>
+            <li><code>Written-off</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>long_status</td>
+      <td>
+        Credit note status along with the due date as a relative date to 'today'
+        <p>For example:</p>
+        <p>
+          <ul>
+            <li><code>Open – due in about 1 month</code></li>
+            <li><code>Overdue – due about 1 month ago</code></li>
+            <li><code>Refunded on – 21 Mar 20</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>contact</td>
+      <td>The <a href="contacts.html">contact</a> being credited</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>project</td>
+      <td>The <a href="projects.html">project</a> being credited</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>property</td>
+      <td>
+        The <a href="properties.html">property</a> pertaining to this invoice.
+        Only accepted and required for companies with type <code>UkUnincorporatedLandlord</code>.
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>reference</td>
+      <td>
+        <p>Credit note reference (using global invoice sequencing)</p>
+        <em>If omitted, next invoice reference will be used</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>dated_on</td>
+      <td>Date of credit note in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>due_on</td>
+      <td>When credit note is due, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>payment_terms_in_days</td>
+      <td>Set to zero to display 'Due on Receipt' on the credit note</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>currency</td>
+      <td>
+        <p>Credit note's <a href="currencies.html">currency</a></p>
+        <em>Defaults to the company's native currency</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_rate</td>
+      <td>
+        <p>One of the following:</p>
+        <ul>
+          <li><code>null</code>
+          <li>Name of a <a href="cis_bands.html">Construction Industry Scheme band</a></li>
+        </ul>
+      </td>
+      <td>String | null</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction_rate</td>
+      <td>Percentage of CIS deduction for the <code>cis_rate</code> set</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction</td>
+      <td>Total CIS deduction for this credit note, in its currency</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction_suffered</td>
+      <td>CIS deduction already paid for this credit note, in its currency</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>comments</td>
+      <td>Additional text added to the bottom of the credit note</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>discount_percent</td>
+      <td>The discount applied across the whole credit note</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>client_contact_name</td>
+      <td>This name will override the default <a href="contacts.html">contact</a> name on this credit note</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>payment_terms</td>
+      <td>This will override the normal payment terms and credit note due date</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>po_reference</td>
+      <td>This PO reference will override any PO set for the <a href="projects.html">project</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bank_account</td>
+      <td>This will be used to display remittance advice on this credit note</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>omit_header</td>
+      <td>
+        <code>true</code> to omit your logo and company address, <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>show_project_name</td>
+      <td>
+        <code>true</code> to display the <a href="projects.html">project</a> name in the Other Information section, <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ec_status</td>
+      <td>
+        Credit note's VAT status for reporting purposes. One of the following:
+        <p>
+          <ul>
+            <li><code>UK/Non-EC</code></li>
+            <li><code>EC Goods</code></li>
+            <li><code>EC Services</code></li>
+            <li><code>Reverse Charge</code></li>
+            <li><code>EC VAT MOSS</code></li>
+          </ul>
+        </p>
+        <p><em>Please note that <code>EC Goods</code> and <code>EC Services</code> are no longer valid options if the credit note is dated 1/1/2021 or later and the company is based in Great Britain (but not Northern Ireland), following the UK's withdrawal from the EU.</em></p>
+        <p><em><code>Reverse Charge</code> is only a valid status if the credit note is dated 1/1/2021 or later.</em></p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>place_of_supply</td>
+      <td>
+        Place of supply when <code>ec_status</code> is <a href="sales_tax.html#ec-vat-moss"><code>EC VAT MOSS</code></a>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>net_value</td>
+      <td>Net value</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>exchange_rate</td>
+      <td>Rate at which credit note amount is converted into company's native <a href="currencies.html">currency</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>involves_sales_tax</td>
+      <td><code>true</code> if <a href="sales_tax.html">sales tax</a> applies to the credit note, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_value</td>
+      <td>Total value of <a href="sales_tax.html">sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_value</td>
+      <td>[Universal accounts only] Total value of <a href="sales_tax.html">second sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>total_value</td>
+      <td>Gross value</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>refunded_value</td>
+      <td>Amount refunded so far</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>due_value</td>
+      <td>Amount yet to be refunded</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_interim_uk_vat</td>
+      <td>
+        <code>true</code> if VAT status was <code>Registration Applied For</code> at credit note date,
+        <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>refunded_on</td>
+      <td>When the credit note was fully refunded, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>written_off_date</td>
+      <td>When the credit note was written off, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>credit_note_items</td>
+      <td>Array of credit note item data structures. See <a href="#credit-note-item-attributes">Credit Note Item Attributes</a>.</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the credit note resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the credit note resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="credit-note-item-attributes">Credit Note Item Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the credit note item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>position</td>
+      <td>Position in the credit note, starting at 1</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>item_type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Hours</code></li>
+            <li><code>Days</code></li>
+            <li><code>Weeks</code></li>
+            <li><code>Months</code></li>
+            <li><code>Years</code></li>
+            <li><code>Products</code></li>
+            <li><code>Services</code></li>
+            <li><code>Training</code></li>
+            <li><code>Expenses</code></li>
+            <li><code>Comment</code></li>
+            <li><code>Bills</code></li>
+            <li><code>Discount</code></li>
+            <li><code>Credit</code></li>
+            <li><code>VAT</code></li>
+          </ul>
+        </p>
+        <em>Leave blank for 'No Unit'</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>quantity</td>
+      <td>
+        <p>Quantity of the <code>item_type</code></p>
+        <em>Defaults to <code>0</code></em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>description</td>
+      <td>Credit note item details</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>price</td>
+      <td>
+        <p>Unit price</p>
+        <em>Required if <code>invoice_item</code> is given and <code>item_type</code> is non time based</em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_rate</td>
+      <td>One of the standard <a href="sales_tax.html">sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_rate</td>
+      <td>[Universal accounts only] One of the standard <a href="sales_tax.html">second sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_status</td>
+      <td>Indicates whether the item is <code>TAXABLE</code>, <code>EXEMPT</code> or <code>OUT_OF_SCOPE</code> for
+      <a href="sales_tax.html">sales tax</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_status</td>
+      <td>[Universal accounts only] Similar to sales_tax_status, returned only if the relevant
+      <a href="sales_tax_periods.html">sales tax period</a> defines a second sales tax</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>stock_item</td>
+      <td><a href="stock_items.html">Stock item</a> being credited, if <code>item_type</code> is <code>Stock</code></td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>category</td>
+      <td><a href="categories.html">Accounting category</a> of the credit note item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>project</td>
+      <td>The <a href="projects.html">project</a> being credited</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes when updating an credit note item</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>id</td>
+      <td>ID of the credit note item to update</td>
+      <td>Integer</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes when deleting an credit note item</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>id</td>
+      <td>ID of the credit note item to delete</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>_destroy</td>
+      <td>Should be equal to <code>1</code></td>
+      <td>Integer</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-credit-notes">List all credit notes</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/credit_notes
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/credit_notes?view=recent_open_or_overdue
+</code></pre>
+<ul>
+<li><code>all</code>: Show all credit notes (default)</li>
+<li><code>recent_open_or_overdue</code>: Show only recent, open, or overdue invoices.</li>
+<li><code>open</code>: Show only open credit notes.</li>
+<li><code>overdue</code>: Show only overdue credit notes.</li>
+<li><code>open_or_overdue</code>: Show only open or overdue credit notes.</li>
+<li><code>draft</code>: Show only draft credit notes.</li>
+<li><code>refunded</code>: Show only refunded credit notes.</li>
+<li><code>last_N_months</code>: Show only credit notes from the last <code>N</code> months.</li>
+</ul>
+<h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/credit_notes?updated_since=2017-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>updated_since</code></li>
+</ul>
+<h4>Sort Orders</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/credit_notes?sort=updated_at
+</code></pre>
+<ul>
+<li><code>created_at</code>: Sort by the time the credit note was created (default).</li>
+<li><code>updated_at</code>: Sort by the time the credit note was last modified.</li>
+</ul>
+
+<p>To sort in descending order, the sort parameter can be prefixed with a hyphen.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/credit_notes?sort=-updated_at
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;credit_notes&quot;: [
+    {
+      &quot;url&quot;:&quot;https://api.freeagent.com/v2/credit_notes/1&quot;,
+      &quot;contact&quot;:&quot;https://api.freeagent.com/v2/contacts/2&quot;,
+      &quot;dated_on&quot;:&quot;2011-08-29&quot;,
+      &quot;due_on&quot;:&quot;2011-09-28&quot;,
+      &quot;reference&quot;:&quot;001&quot;,
+      &quot;currency&quot;:&quot;GBP&quot;,
+      &quot;exchange_rate&quot;:&quot;1.0&quot;,
+      &quot;net_value&quot;:&quot;0.0&quot;,
+      &quot;sales_tax_value&quot;:&quot;0.0&quot;,
+      &quot;involves_sales_tax&quot;:true,
+      &quot;is_interim_uk_vat&quot;:false,
+      &quot;total_value&quot;: &quot;200.0&quot;,
+      &quot;refunded_value&quot;: &quot;50.0&quot;,
+      &quot;due_value&quot;: &quot;150.0&quot;,
+      &quot;status&quot;:&quot;Open&quot;,
+      &quot;long_status&quot;:&quot;Open – due in about 1 month&quot;,
+      &quot;comments&quot;:&quot;An example credit note comment.&quot;,
+      &quot;omit_header&quot;:false,
+      &quot;payment_terms_in_days&quot;:30,
+      &quot;created_at&quot;:&quot;2019-12-17T10:14:07.000Z&quot;,
+      &quot;updated_at&quot;:&quot;2019-12-17T10:14:15.000Z&quot;,
+      &quot;bank_account&quot;: &quot;https://api.freeagent.com/v2/bank_accounts/1&quot;,
+      &quot;contact_name&quot;:&quot;Nathan Barley&quot;
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

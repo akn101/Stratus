@@ -1,0 +1,94 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Corporation Tax Returns</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting &amp; Users</code>, unless stated otherwise.</p>
+
+<p>This endpoint allows API applications to retrieve information on a company&#39;s Corporation Tax Returns, including amount due, deadlines and filing/payment status.</p>
+<h2 id="attributes">Attributes</h2>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+<th>Kind</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>url</td>
+<td>Unique identifier for the record</td>
+<td>URI</td>
+</tr>
+<tr>
+<td>period_ends_on</td>
+<td>The end date of the period covered by the return</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>period_starts_on</td>
+<td>The start date of the period covered by the return</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>amount_due</td>
+<td>Amount to be paid by <code>payment_due_on</code></td>
+<td>Decimal</td>
+</tr>
+<tr>
+<td>payment_due_on</td>
+<td>The date on which payment is due</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>payment_status</td>
+<td>For returns which require payment, one of <code>unpaid</code> or <code>marked_as_paid</code>. <code>paid</code> is reserved for future use. Key is omitted if there are no payments to be made.</td>
+<td>String</td>
+</tr>
+<tr>
+<td>filing_due_on</td>
+<td>The date on which submission is due</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>filing_status</td>
+<td>One of <code>draft</code>, <code>unfiled</code>, <code>pending</code>, <code>rejected</code>, <code>filed</code> or <code>marked_as_filed</code>.</td>
+<td>String</td>
+</tr>
+<tr>
+<td>filed_at</td>
+<td>For returns which have been filed online, the date and time at which that happened</td>
+<td>Datetime</td>
+</tr>
+<tr>
+<td>filed_reference</td>
+<td>For returns which have been filed online, the IRMark returned by the submission</td>
+<td>String</td>
+</tr>
+</tbody></table>
+<h2 id="list-corporation-tax-returns-for-a-company">List Corporation Tax Returns for a company</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/corporation_tax_returns
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+    &quot;corporation_tax_returns&quot;: [
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/corporation_tax_returns/2022-12-31&quot;,
+            &quot;period_ends_on&quot;: &quot;2022-12-31&quot;,
+            &quot;period_starts_on&quot;: &quot;2022-01-01&quot;,
+            &quot;amount_due&quot;: &quot;0.0&quot;,
+            &quot;payment_due_on&quot;: &quot;2023-10-01&quot;,
+            &quot;filing_due_on&quot;: &quot;2023-12-31&quot;,
+            &quot;filing_status&quot;: &quot;filed&quot;,
+            &quot;filed_at&quot;: &quot;2023-10-09T17:13:34.119+00:00&quot;,
+            &quot;filed_reference&quot;: &quot;4CQXAEAVNA656F6XM3DHYBF6Y37I3S43&quot;
+        },
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/corporation_tax_returns/2023-12-31&quot;,
+            &quot;period_ends_on&quot;: &quot;2023-12-31&quot;,
+            &quot;period_starts_on&quot;: &quot;2023-01-01&quot;,
+            &quot;amount_due&quot;: &quot;2724.03&quot;,
+            &quot;payment_due_on&quot;: &quot;2024-10-01&quot;,
+            &quot;payment_status&quot;: &quot;unpaid&quot;,
+            &quot;filing_due_on&quot;: &quot;2024-12-31&quot;,
+            &quot;filing_status&quot;: &quot;draft&quot;
+        }
+    ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

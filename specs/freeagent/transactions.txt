@@ -1,0 +1,152 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Transactions</h1>
+<p><em>Minimum access level</em>: <code>Tax, Accounting &amp; Users</code>, unless stated otherwise.</p>
+
+<p>Displays transactions in each of the different account categories in FreeAgent
+for the specified period.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td>The unique identifier for the transaction</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>dated_on</td>
+      <td>Date of transaction in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>created_at</td>
+      <td>When the transaction was created</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>updated_at</td>
+      <td>When the transaction was last updated</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>The description of the source of the transaction, for example the reference of a bill</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>category</td>
+      <td>
+      The unique identifier for the <a href="categories.html#get-a-single-category">category</a>
+      associated with the transaction
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>category_name</td>
+      <td>The name of the category associated with the transaction</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>nominal_code</td>
+      <td>The nominal code of the category</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>debit_value</td>
+      <td>The debit value for this transaction. Credit values will be negative</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>source_item_url</td>
+      <td>
+        The unique identifier for the source of the accounting transaction. Depending on
+        the type of the source item, this may or may not be present
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>foreign_currency_data</td>
+      <td>
+        Empty unless the transaction is in a currency other than the native currency.
+        If the transaction is in a foreign currency this field will contain the following:
+        <ul>
+          <li><code>currency_code</code> - the ISO code for the currency</li>
+          <li><code>debit_value</code> - the debit value in the foreign currency. Credit values are negative</li>
+        </ul>
+      </td>
+      <td>Object</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-transactions">List all transactions</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/accounting/transactions
+</code></pre>
+<p>Specifying no time period will return transactions dated between the start of the current
+accounting period and the current date.</p>
+<h4>Date Filters</h4>
+<p><em>Note:</em> Requested date periods must be equal or less than 12 months or be contained within a single accounting year.</p>
+
+<p>Date params should be in the format <code>YYYY-MM-DD</code>.</p>
+
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+</ul>
+<h4>View Filters</h4>
+<ul>
+<li><code>nominal_code</code></li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+    &quot;transactions&quot;: [
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/accounting/transactions/1&quot;,
+            &quot;dated_on&quot;: &quot;2023-01-02&quot;,
+            &quot;created_at&quot;: &quot;2023-04-20T10:12:44.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2023-04-20T10:12:44.000Z&quot;,
+            &quot;description&quot;: &quot;Sale&quot;,
+            &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/750&quot;,
+            &quot;category_name&quot;: &quot;Bank Account&quot;,
+            &quot;nominal_code&quot;: &quot;750-1&quot;,
+            &quot;debit_value&quot;: &quot;30.0&quot;,
+            &quot;source_item_url&quot;: &quot;https://api.freeagent.com/v2/bank_transaction_explanations/1&quot;,
+            &quot;foreign_currency_data&quot;: {}
+        },
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/accounting/transactions/2&quot;,
+            &quot;dated_on&quot;: &quot;2023-06-22&quot;,
+            &quot;created_at&quot;: &quot;2023-04-20T10:12:44.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2023-07-23T15:13:24.000Z&quot;,
+            &quot;description&quot;: &quot;Jane Doe - Bill TEST001&quot;,
+            &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/359&quot;,
+            &quot;category_name&quot;: &quot;Books and Journals&quot;,
+            &quot;nominal_code&quot;: &quot;359&quot;,
+            &quot;debit_value&quot;: &quot;-30.0&quot;,
+            &quot;source_item_url&quot;: &quot;https://api.freeagent.com/v2/bills/2&quot;,
+            &quot;foreign_currency_data&quot;: {
+                &quot;currency_code&quot;: &quot;USD&quot;,
+                &quot;debit_value&quot;: &quot;-37.61&quot;
+            }
+        },
+        {
+            &quot;url&quot;: &quot;https://api.freeagent.com/v2/accounting/transactions/3&quot;,
+            &quot;dated_on&quot;: &quot;2023-04-30&quot;,
+            &quot;created_at&quot;: &quot;2023-04-20T13:04:22.000Z&quot;,
+            &quot;updated_at&quot;: &quot;2023-04-20T13:04:22.000Z&quot;,
+            &quot;description&quot;: &quot;VAT Return 04 23*&quot;,
+            &quot;category&quot;: &quot;https://api.freeagent.com/v2/categories/819&quot;,
+            &quot;category_name&quot;: &quot;VAT Charged&quot;,
+            &quot;nominal_code&quot;: &quot;819&quot;,
+            &quot;debit_value&quot;: &quot;-120.0&quot;,
+            &quot;foreign_currency_data&quot;: {}
+        }
+    ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

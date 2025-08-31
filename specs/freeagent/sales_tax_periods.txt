@@ -1,0 +1,182 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Sales Tax Periods</h1>
+<p><em>Only available to US and Universal companies</em></p>
+
+<p><em>Minimum access level</em>:</p>
+
+<ul>
+<li><code>Estimates &amp; Invoices</code> to <strong>read</strong></li>
+<li><code>Full Access</code> to <strong>create, update</strong>, or <strong>delete</strong></li>
+</ul>
+<h2 id="attributes">Attributes</h2>
+<p>Attributes marked <em>Required</em> should be present in the request to create new
+sales tax periods.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the sales tax period</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>sales_tax_name</td>
+      <td>Name of <a href="sales_tax.html">sales tax</a> e.g. VAT, GST, Sales Tax</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>sales_tax_registration_status</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Not Registered</code></li>
+            <li><code>Registered</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>sales_tax_rate_1</td>
+      <td>First rate of the <a href="sales_tax.html">sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_rate_2</td>
+      <td>Second rate of the <a href="sales_tax.html">sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_rate_3</td>
+      <td>Third rate of the <a href="sales_tax.html">sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>sales_tax_is_value_added</td>
+      <td><code>true</code> if you can reclaim tax on what you buy, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_registration_number</td>
+      <td>
+        Do not specify if no registration number is required
+      </td>
+      <td>String</td>
+    </tr>
+
+    <tr>
+      <td>&#10004;</td>
+      <td>effective_date</td>
+      <td>When the sales tax period takes effect, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td>is_locked</td>
+      <td><code>true</code> if no changes can be made, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td>locked_reason</td>
+      <td>The reason for the sales tax period being locked</td>
+      <td>Boolean</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /></p>
+<h4>Extra attributes for Universal companies</h4>
+<p>All attributes displayed below are optional.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>second_sales_tax_name</td>
+      <td>
+        <p>Name of <a href="sales_tax.html">second sales tax</a> (e.g. PST in some Canadian provinces)</p>
+        <em>Do not specify if no second Sales Tax is to be charged</em>
+      </td>
+      <td>String</td>
+    </tr>
+
+    <tr>
+      <td>second_sales_tax_rate_1</td>
+      <td>First rate of the <a href="sales_tax.html">second sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+
+    <tr>
+      <td>second_sales_tax_rate_2</td>
+      <td>Second rate of the <a href="sales_tax.html">second sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+
+    <tr>
+      <td>second_sales_tax_rate_3</td>
+      <td>Third rate of the <a href="sales_tax.html">second sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+
+    <tr>
+      <td>second_sales_tax_is_compound</td>
+      <td>
+        <code>true</code> if applied on top of the main sales tax instead of independently, <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-sales-tax-periods-for-a-company">List all sales tax periods for a company</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/sales_tax_periods
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;sales_tax_periods&quot;: [
+    {
+      &quot;url&quot;: &quot;https://api.freeagent.com/v2/sales_tax_periods/1&quot;,
+      &quot;sales_tax_name&quot;: &quot;First Tax&quot;,
+      &quot;sales_tax_rate_1&quot;: &quot;2.0&quot;,
+      &quot;sales_tax_rate_2&quot;: &quot;3.0&quot;,
+      &quot;sales_tax_rate_3&quot;: &quot;4.0&quot;,
+      &quot;sales_tax_is_value_added&quot;: true,
+      &quot;sales_tax_registration_status&quot;: &quot;Registered&quot;,
+      &quot;sales_tax_registration_number&quot;: &quot;12345678&quot;,
+      &quot;effective_date&quot;: &quot;2016-09-21&quot;,
+      &quot;is_locked&quot;: false,
+      &quot;second_sales_tax_name&quot;: &quot;Second Tax&quot;,
+      &quot;second_sales_tax_rate_1&quot;: &quot;10.0&quot;,
+      &quot;second_sales_tax_rate_2&quot;: &quot;20.0&quot;,
+      &quot;second_sales_tax_rate_3&quot;: &quot;50.0&quot;,
+      &quot;second_sales_tax_is_compound&quot;: true
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

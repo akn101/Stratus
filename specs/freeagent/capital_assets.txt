@@ -1,0 +1,171 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Capital Assets</h1>
+<p><em>Minimum access level</em>: <code>Banking</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td>The unique identifier for the capital asset</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Free-text description</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>asset_life_years</td>
+      <td>
+        <b>Note!</b> This field is deprecated. See the depreciation_profile field instead.
+        This field will contain the asset life in years for straight line depreciation,
+        otherwise it will be 0.
+      </td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+    <td>depreciation_profile</td>
+    <td>
+      Details of the method used for calculating depreciation, along with its frequency.
+      See <a href="depreciation_profiles.html">depreciation profiles</a> for more details.
+    </td>
+    <td>Object</td>
+    </tr>
+    <tr>
+      <td>asset_type</td>
+      <td>
+        A user created custom asset type or one of the system values from the following list:
+        <p>
+          <ul>
+            <li><code>Computer Equipment</code></li>
+            <li><code>Fixtures and Fittings</code></li>
+            <li><code>Motor Vehicles</code></li>
+            <li><code>Other Capital Asset</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>purchased_on</td>
+      <td>When the asset was purchased, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>disposed_on</td>
+      <td>When the asset was disposed of, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>created_at</td>
+      <td>Creation of the capital asset resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>updated_at</td>
+      <td>When the capital asset resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>capital_asset_history</td>
+      <td>Array of events in the capital asset life cycle. See <a href="#capital-asset-history-attributes">Capital Asset History attributes</a></td>
+      <td>Array</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="capital-asset-history-attributes">Capital Asset History attributes</h2>
+<p>Returned if <code>include_history=true</code> is added
+to the request URL when listing all capital assets or getting a single capital asset.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>type</td>
+      <td>Type of event, e.g. <code>purchase</code>, <code>depreciation</code>, <code>annual_investment_allowance</code>, <code>disposal</code></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Description of the event</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>date</td>
+      <td>When the event occurred</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td>Value of the underlying transaction </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>tax_value</td>
+      <td>Value of tax included in the underlying transaction</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>link</td>
+      <td>URI reference to a related Bill, Bank Transaction Explanation or Expense, if available</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-capital-assets">List all capital assets</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/capital_assets
+</code></pre><h4>View filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/capital_assets?view=all
+</code></pre>
+<ul>
+<li><code>all</code></li>
+<li><code>disposed</code></li>
+<li><code>disposable</code></li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;capital_assets&quot;: [
+    {
+      &quot;url&quot;: &quot;https://api.freeagent.com/v2/capital_assets/1&quot;,
+      &quot;description&quot;: &quot;Computer&quot;,
+      &quot;asset_life_years&quot;: 2,
+      &quot;asset_type&quot;: &quot;Computer Equipment Purchase&quot;,
+      &quot;purchased_on&quot;: &quot;2015-10-07&quot;,
+      &quot;created_at&quot;: &quot;2015-12-07T10:19:27.000Z&quot;,
+      &quot;updated_at&quot;: &quot;2015-12-07T10:39:45.000Z&quot;
+    },
+    {
+      &quot;url&quot;: &quot;https://api.freeagent.com/v2/capital_assets/2&quot;,
+      &quot;description&quot;: &quot;Productivity suite subscription&quot;,
+      &quot;asset_life_years&quot;: 4,
+      &quot;asset_type&quot;: &quot;Other Capital Asset Purchase&quot;,
+      &quot;purchased_on&quot;: &quot;2015-10-07&quot;,
+      &quot;created_at&quot;: &quot;2015-12-07T10:20:57.000Z&quot;,
+      &quot;updated_at&quot;: &quot;2015-12-07T10:39:55.000Z&quot;
+    },
+    {
+      &quot;url&quot;: &quot;https://api.freeagent.com/v2/capital_assets/3&quot;,
+      &quot;description&quot;: &quot;Workstation&quot;,
+      &quot;asset_life_years&quot;: 2,
+      &quot;asset_type&quot;: &quot;Computer Equipment Purchase&quot;,
+      &quot;purchased_on&quot;: &quot;2014-10-07&quot;,
+      &quot;disposed_on&quot;: &quot;2015-12-07&quot;,
+      &quot;created_at&quot;: &quot;2014-10-07T10:41:21.000Z&quot;,
+      &quot;updated_at&quot;: &quot;2014-10-07T10:41:43.000Z&quot;
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;freeagent&gt;

@@ -1,0 +1,174 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Timeslips</h1>
+<p><em>Minimum access level</em>: <code>Time</code>, unless stated otherwise.</p>
+<h2 id="timeslip-attributes">Timeslip Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the timeslip</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>task</td>
+      <td><a href="tasks.html">Task</a> that was completed</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>user</td>
+      <td><a href="users.html">User</a> that completed the <code>task</code></td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>project</td>
+      <td><a href="projects.html">Project</a> for which the <code>task</code> was completed</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>dated_on</td>
+      <td>Date of the timeslip, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>hours</td>
+      <td>
+        <p>Number of hours worked</p>
+        <em>For e.g. 1:30 hours, use 1.5</em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>comment</td>
+      <td>Free-text comment</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>billed_on_invoice</td>
+      <td><a href="invoices.html">Invoice</a> billing the timeslip, if any exists</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the timeslip resource (UTC)</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the timeslip resource was last updated (UTC)</td>
+      <td>Date</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for timeslips with running timers</th>
+    </tr>
+  </thead>
+  <tbody>
+    <td></td>
+    <td>timer</td>
+    <td>See <a href="#timer-attributes">Timer Attributes</a></td>
+    <td>Object</td>
+  </tbody>
+</table>
+
+<p><br></p>
+<h4>Nested Response</h4>
+<p>For endpoints that return timeslips in the response, the following URL parameter can be used for to retrieve full
+details of resources associated with the timeslip(s) - such as <a href="users.html">user</a>,
+<a href="projects.html">project</a>, <a href="tasks.html">task</a> - as nested JSON objects rather than URL
+references.</p>
+
+<ul>
+<li><code>nested</code>
+
+<ul>
+<li><code>true</code>: Return associated resources as nested JSON objects</li>
+<li><code>false</code>: Return a URL reference to each associated resource</li>
+</ul></li>
+</ul>
+
+<p>For example:</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/timeslips?nested=true
+</code></pre><h2 id="timer-attributes">Timer Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>running</td>
+      <td>Will always be <code>true</code> as this is not exposed unless a timer is running</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>start_from</td>
+      <td>
+        Effective start date of the timer.
+        This will include any time already recorded, so to get the current elapsed time subtract this from the current time.
+      </td>
+      <td>Datetime</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-timeslips">List all timeslips</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/timeslips
+</code></pre><h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/timeslips?from_date=2012-01-01&amp;to_date=2012-03-31&amp;view=all
+</code></pre><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/timeslips?updated_since=2017-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+<li><code>updated_since</code></li>
+</ul>
+<h4>Other Filters</h4>
+<ul>
+<li><code>view</code>
+
+<ul>
+<li><code>all</code> - return all timeslips (default when omitted)</li>
+<li><code>unbilled</code> - return only timeslips which have not yet been rebilled to a project.</li>
+<li><code>running</code> - return show only timeslips which have running timers.</li>
+</ul></li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;timeslips&quot;:[
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/timeslips/25&quot;,
+    &quot;user&quot;:&quot;https://api.freeagent.com/v2/users/1&quot;,
+    &quot;project&quot;:&quot;https://api.freeagent.com/v2/projects/1&quot;,
+    &quot;task&quot;:&quot;https://api.freeagent.com/v2/tasks/1&quot;,
+    &quot;dated_on&quot;:&quot;2011-08-15&quot;,
+    &quot;hours&quot;:&quot;12.0&quot;,
+    &quot;timer&quot;: {
+      &quot;running&quot;: true,
+      &quot;start_from&quot;: &quot;2011-08-16T01:32:00Z&quot;
+    },
+    &quot;updated_at&quot;:&quot;2011-08-16T13:32:00Z&quot;,
+    &quot;created_at&quot;:&quot;2011-08-16T13:32:00Z&quot;
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

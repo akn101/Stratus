@@ -1,0 +1,78 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Attachments</h1>
+<p><em>Minimum access level</em>: To access attachments you must have the same access level as the item the file is attached to.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td>The unique identifier for the attachment</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>content_src</td>
+      <td>URL to the original full-size file</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>content_src_medium</td>
+      <td>URL to a medium-size thumbnail (if a thumbnail exists)</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>content_src_small</td>
+      <td>URL to a small-size thumbnail (if a thumbnail exists)</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>expires_at</td>
+      <td>When the <code>content_src</code> URLs expire. New URLs should be fetched from the API once this timestamp passes.</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td>content_type</td>
+      <td>MIME-type</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>file_name</td>
+      <td>Original name of the file</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>file_size</td>
+      <td>Size of original file in bytes</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Free-text description</td>
+      <td>String</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="show-a-single-attachment">Show a single attachment</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/attachments/:id
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{  &quot;attachment&quot;:
+     {
+        &quot;url&quot;:&quot;https://api.freeagent.com/v2/attachments/3&quot;,
+        &quot;content_src&quot;:&quot;https://s3.amazonaws.com/freeagent-dev/attachments/1/original.png?AWSAccessKeyId=1K3MW21E6T8KWBY84B02&amp;Expires=1314281186&amp;Signature=GFAKDo%2Bi%2FsUMTYEgg6ZWGysB4k4%3D&quot;,
+        &quot;content_src_medium&quot;: &quot;https://5tak8uqfvj.execute-api.eu-west-1.amazonaws.com/thumbnail/freeagent-production-attachments/eyJrZXkiOiJhdHRhY2htZW50cy8yNDk5NzY3Ni9vcmlnaW5hbC5wbmciLCJyZWdpb24iOiJldS13ZXN0LTEiLCJ3aWR0aCI6NTAwLCJoZWlnaHQiOjUwMH0=&quot;,
+        &quot;content_src_small&quot;: &quot;https://5tak8uqfvj.execute-api.eu-west-1.amazonaws.com/thumbnail/freeagent-production-attachments/eyJrZXkiOiJhdHRhY2htZW50cy8yNDk5NzY3Ni9vcmlnaW5hbC5wbmciLCJyZWdpb24iOiJldS13ZXN0LTEiLCJ3aWR0aCI6MjUwLCJoZWlnaHQiOjI1MH0=&quot;,
+        &quot;expires_at&quot;: &quot;2020-12-03T10:27:52.000Z&quot;,
+        &quot;content_type&quot;:&quot;image/png&quot;,
+        &quot;file_name&quot;:&quot;barcode.png&quot;,
+        &quot;file_size&quot;:7673,
+        &quot;description&quot;:&quot;Receipt for coffee&quot;
+      }
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

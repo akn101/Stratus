@@ -1,0 +1,114 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Accountancy Practice API</h1>
+<p>If you are an Accountancy Practice with a FreeAgent dashboard you can
+use the API to securely access your clients’ data.</p>
+<h2 id="setup-instructions">Setup Instructions</h2>
+<p>To use the FreeAgent API for accountancy practices, with the Google OAuth 2.0 Playground, you must do the following:</p>
+
+<ol>
+<li>Contact the integrations team (<a href="mailto:integrationsrequests@freeagent.com">integrationsrequests@freeagent.com</a>) for a free temporary FreeAgent <a href="https://www.freeagent.com/accountants/practice-dashboard">Practice Dashboard</a> account on our sandbox. <em>We&#39;ll link the OAuth Playground to this FreeAgent account.</em></li>
+<li>Sign into the practice and complete the setup stages, including <a href="https://support.freeagent.com/hc/en-gb/articles/115001223284-Add-a-new-client-to-your-Practice-Dashboard">creating a new client</a> to test against.</li>
+<li>Create an App at the <a href="https://dev.freeagent.com/">FreeAgent Developer Dashboard</a>, checking the &quot;Enable Accountancy Practice API&quot; option. You can do this when creating the app in the first place or otherwise from the edit app page.</li>
+<li>Once created, take note of the <em>OAuth identifier</em> and <em>OAuth secret</em>.</li>
+<li>Finally, it&#39;s time to get an Access Token which can then be used with the <code>OAuth Playground</code>, <code>curl</code> or your own apps during development. You can follow the steps in the <a href="quick_start.html#generate-access-amp-refresh-tokens">company quick start</a>.</li>
+</ol>
+
+<p>Once enabled, your account managers will be able to
+authorise the application using <a href="oauth.html">OAuth</a>
+and make requests to the Practice API to access data and perform
+actions on behalf of their clients.</p>
+<h2 id="making-api-requests-on-behalf-of-clients">Making API requests on behalf of clients</h2>
+<p>To make requests for a specific client of the authenticated account
+manager, include an additional <code>X-Subdomain</code> HTTP header in the
+request that specifies the client&#39;s subdomain:</p>
+<pre class=prettyprint><code class=http>X-Subdomain: companysubdomain
+</code></pre>
+<p>All the standard FreeAgent API endpoints can be accessed in this way.
+See the <a href="introduction.html">FreeAgent API Documentation</a> for more
+details.</p>
+<h2 id="practice-specific-endpoints">Practice-specific endpoints</h2>
+<p>In addition to the standard FreeAgent API endpoints, the following
+practice-specific endpoints are available.</p>
+<h2 id="list-clients">List clients</h2>
+<p>You can use this API endpoint to get a list of the clients for the
+currently authenticated account manager. If they are a senior account
+manager, all clients for the practice will be returned.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/clients
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/clients?view=active
+</code></pre>
+<ul>
+<li><code>all</code>: Show all clients accessible to the authenticated account manager (default).</li>
+<li><code>active</code>: Show only active practice clients.</li>
+<li><code>inactive</code>: Show only inactive practice clients.</li>
+<li><code>closed</code>: Show only closed practice clients.</li>
+<li><code>practice</code>: Show all practice-managed clients, regardless of their status. Exclude linked and CoPilot clients.</li>
+<li><code>linked</code>: Show only linked clients.</li>
+<li><code>copilot</code>: Show only CoPilot clients.</li>
+<li><code>demo</code>: Show only demo clients.</li>
+</ul>
+<h4>Sort Orders</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/clients?sort=created_at
+</code></pre>
+<ul>
+<li><code>created_at</code>: Sort by the time the client was created (default).</li>
+<li><code>updated_at</code>: Sort by the time the client was last updated.</li>
+</ul>
+
+<p>To sort in descending order, the sort parameter can be prefixed with a hyphen.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/clients?sort=-created_at
+</code></pre><h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/clients?from_date=2020-01-01&amp;to_date=2021-03-31
+</code></pre><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/clients?updated_since=2021-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>from_date</code></li>
+<li><code>to_date</code></li>
+<li><code>updated_since</code></li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;clients&quot;: [
+    {
+      &quot;account_manager&quot;: &quot;https://api.freeagent.com/v2/account_managers/123&quot;,
+      &quot;postcode&quot;: &quot;EH3 9QG&quot;,
+      &quot;type&quot;: &quot;UkLimitedCompany&quot;,
+      &quot;sales_tax_is_value_added&quot;: true,
+      &quot;first_accounting_year_end&quot;: &quot;2014-12-31&quot;,
+      &quot;cis_enabled&quot;: true,
+      &quot;sales_tax_registration_number&quot;: &quot;5555555555&quot;,
+      &quot;company_start_date&quot;: &quot;2008-01-01&quot;,
+      &quot;vat_frs_type&quot;: &quot;Not on Flat Rate Scheme&quot;,
+      &quot;initial_vat_basis&quot;: &quot;Cash&quot;,
+      &quot;subdomain&quot;: &quot;testcompany&quot;,
+      &quot;contact_phone&quot;: &quot;&quot;,
+      &quot;sales_tax_name&quot;: &quot;VAT&quot;,
+      &quot;website&quot;: &quot;&quot;,
+      &quot;address1&quot;: &quot;One Edinburgh Quay&quot;,
+      &quot;address2&quot;: &quot;133 Fountainbridge&quot;,
+      &quot;updated_at&quot;: &quot;2018-03-06T16:16:33.000+00:00&quot;,
+      &quot;contact_email&quot;: &quot;maemail@email.com&quot;,
+      &quot;ec_vat_reporting_enabled&quot;: true,
+      &quot;company_registration_number&quot;: &quot;&quot;,
+      &quot;town&quot;: &quot;Edinburgh&quot;,
+      &quot;sales_tax_effective_date&quot;: &quot;2013-11-01&quot;,
+      &quot;name&quot;: &quot;Test Company&quot;,
+      &quot;url&quot;: &quot;https://api.freeagent.com/v2/company&quot;,
+      &quot;country&quot;: &quot;United Kingdom&quot;,
+      &quot;region&quot;: &quot;Anywhere&quot;,
+      &quot;sales_tax_registration_status&quot;: &quot;Registered&quot;,
+      &quot;created_at&quot;: &quot;2015-01-12T11:45:32.000+00:00&quot;,
+      &quot;freeagent_start_date&quot;: &quot;2008-02-01&quot;,
+      &quot;status&quot;: &quot;Active Licence&quot;,
+      &quot;account_owner&quot;: {
+                &quot;first_name&quot;: &quot;Jane&quot;,
+                &quot;last_name&quot;: &quot;Smith&quot;,
+                &quot;last_logged_in_at&quot;: &quot;2023-09-21T10:32:02.000+01:00&quot;
+                }
+    },
+    {
+      &quot;account_manager&quot;: &quot;https://api.freeagent.com/v2/account_managers/123&quot;,
+      ...
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

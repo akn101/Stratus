@@ -1,0 +1,143 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Tasks</h1>
+<p><em>Minimum access level</em>: <code>Time</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the task</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>name</td>
+      <td>Task name</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>currency</td>
+      <td><a href="currencies.html">Currency</a> code of the project (e.g. <code>USD</code>, <code>GBP</code>, <code>EUR</code>, &#8230;)</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_billable</td>
+      <td><code>true</code> if charging your clients for the task, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>status</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Active</code></li>
+            <li><code>Completed</code></li>
+            <li><code>Hidden</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the task resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the task resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_deletable</td>
+      <td><code>true</code> if this task can be deleted, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes available to users with Contacts & Projects permission</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>billing_rate</td>
+      <td>The rate at which the <a href="projects.html">project</a> is billed, per <code>billing_period</code></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>billing_period</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>day</code></li>
+            <li><code>hour</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-tasks">List all tasks</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/tasks
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/tasks?view=active
+</code></pre>
+<ul>
+<li><code>all</code>: Show all tasks (default)</li>
+<li><code>active</code>: Show only tasks with status active.</li>
+<li><code>completed</code>: Show only tasks with status completed.</li>
+<li><code>hidden</code>: Show only tasks with status hidden.</li>
+</ul>
+<h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/tasks?updated_since=2017-04-06
+</code></pre>
+<ul>
+<li><code>updated_since</code></li>
+</ul>
+<h4>Sort Orders</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/tasks?sort=updated_at
+</code></pre>
+<ul>
+<li><code>name</code>: Sort by the task name (default).</li>
+<li><code>project</code>: Sort by the project_id associated with the task.</li>
+<li><code>billing_rate</code>: Sort by the billing rate.</li>
+<li><code>created_at</code>: Sort by the time the task was created.</li>
+<li><code>updated_at</code>: Sort by the time the task was last modified.</li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;tasks&quot;:[
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/tasks/1&quot;,
+    &quot;project&quot;:&quot;https://api.freeagent.com/v2/projects/1&quot;,
+    &quot;name&quot;:&quot;Sample Task&quot;,
+    &quot;currency&quot;:&quot;GBP&quot;,
+    &quot;is_billable&quot;:true,
+    &quot;billing_rate&quot;:&quot;0.0&quot;,
+    &quot;billing_period&quot;:&quot;hour&quot;,
+    &quot;status&quot;:&quot;Active&quot;,
+    &quot;created_at&quot;:&quot;2011-08-16T11:06:57Z&quot;,
+    &quot;updated_at&quot;:&quot;2011-08-16T11:06:57Z&quot;,
+    &quot;is_deletable&quot;: false
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

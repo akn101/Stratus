@@ -1,0 +1,226 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Bank Accounts</h1>
+<p><em>Minimum access level</em>: <code>Banking</code>, unless stated otherwise.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the bank account</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>StandardBankAccount</code> (the default if no type is given)</li>
+            <li><code>PaypalAccount</code></li>
+            <li><code>CreditCardAccount</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>name</td>
+      <td>Account name</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>currency</td>
+      <td>
+        <p>The <a href="currencies.html">accounting currency</a> for the account, e.g. <code>GBP</code>, <code>USD</code>, <code>EUR</code></p>
+        <p><em>Defaults to the native currency</em></p>
+        <em>Cannot be changed once a bank account has any transactions</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_personal</td>
+      <td>
+        <code>true</code> for a personal account, <code>false</code> for a business account
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_primary</td>
+      <td><code>true</code> if it is the primary bank account of the <a href="company.html">company</a>, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>status</td>
+      <td>Constant that represents if a bank account is <code>active</code> or <code>hidden</code></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bank_name</td>
+      <td>Bank name</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>opening_balance</td>
+      <td>
+        <p>The account balance at the start of the FreeAgent Start Date</p>
+        <em>For accounts opened after this date, enter zero</em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bank_code</td>
+      <td>
+        Constant that represents the bank, based on the sort code. For example:
+        <code>generic</code>, <code>barclays</code>, <code>natwest</code>, <code>rbs</code>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>current_balance</td>
+      <td>Latest balance</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>latest_activity_date</td>
+      <td>
+        Date of latest transaction or the latest bank account entry, in <code>YYYY-MM-DD</code> format
+      </td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the bank account resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the bank account resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bank_guess_enabled</td>
+      <td><code>true</code> if guess is enabled on the bank account, <code>false</code> if disabled</td>
+      <td>Boolean</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional StandardBankAccount attributes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>account_number</td>
+      <td>Bank account number</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sort_code</td>
+      <td>Bank account sort code / routing number</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>secondary_sort_code</td>
+      <td>
+        <p>Secondary bank account sort code / routing number</p>
+        <em>Use this only if the bank account has two Bank/Sort Codes</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>iban</td>
+      <td>International Bank Account Number for the account</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bic</td>
+      <td>Bank Identifier Code for the account (also known as the Swift Code)</td>
+      <td>String</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional CreditCardAccount attributes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>account_number</td>
+      <td>
+        <p>Bank account number</p>
+        <em>For security, only the last four digits are required</em></td>
+      <td>String</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional PaypalAccount attributes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>email</td>
+      <td>The email address used to log into PayPal</td>
+      <td>String</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-bank-accounts">List bank accounts</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_accounts
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/bank_accounts?view=standard_bank_accounts
+</code></pre>
+<ul>
+<li><code>standard_bank_accounts</code>: Show only standard bank accounts.</li>
+<li><code>credit_card_accounts</code>: Show only credit card accounts.</li>
+<li><code>paypal_accounts</code>: Show only paypal accounts.</li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;bank_accounts&quot;:[
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/bank_accounts/1&quot;,
+    &quot;opening_balance&quot;:&quot;0.0&quot;,
+    &quot;type&quot;:&quot;StandardBankAccount&quot;,
+    &quot;name&quot;:&quot;Default bank account&quot;,
+    &quot;is_personal&quot;:false,
+    &quot;status&quot;:&quot;active&quot;,
+    &quot;currency&quot;: &quot;GBP&quot;,
+    &quot;current_balance&quot;: &quot;0.0&quot;,
+    &quot;updated_at&quot;:&quot;2011-07-28T11:25:20Z&quot;,
+    &quot;created_at&quot;:&quot;2011-07-28T11:25:11Z&quot;
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

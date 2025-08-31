@@ -1,0 +1,190 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Categories</h1>
+<p><em>Minimum access level</em>: <code>My Money</code>, unless stated otherwise.</p>
+
+<p>Categories are used to explain the type of income or cost for estimate items, invoice items, expenses, bills and bank transaction explanations.</p>
+<h2 id="attributes">Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td>The unique identifier for the category</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Category name</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>nominal_code</td>
+      <td>
+        <p>Category code</p>
+      </td>
+      <td>String</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for income categories</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>group_description</td>
+      <td>Name of the group to which the category belongs</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>auto_sales_tax_rate</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Outside of the scope of VAT</code></li>
+            <li><code>Zero rate</code></li>
+            <li><code>Reduced rate</code></li>
+            <li><code>Standard rate</code></li>
+            <li><code>Exempt</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for spending categories</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>group_description</td>
+      <td>Name of the group to which the category belongs</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>allowable_for_tax</td>
+      <td><code>true</code> if cost can be deducted from income when working out your tax bill, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td>tax_reporting_name</td>
+      <td>Where the category is reported in the Statutory Accounts</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>auto_sales_tax_rate</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Outside of the scope of VAT</code></li>
+            <li><code>Zero rate</code></li>
+            <li><code>Reduced rate</code></li>
+            <li><code>Standard rate</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes for sub accounts</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>bank_account</td>
+      <td>The bank account represented by the sub account. Will be present on 750-x categories</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>capital_asset_type</td>
+      <td>The capital asset type represented by the sub account. Will be present on 601-x to 607-x categories</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>stock_item</td>
+      <td>The stock item represented by the sub account. Will be present on 609-x categories</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>hire_purchase</td>
+      <td>The hire purchase represented by the sub account. Will be present on 792-x to 793-x categories</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>user</td>
+      <td>The user represented by the sub account. Will be present on 900-x to 910-x categories</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-categories">List all categories</h2>
+<p>Returns the list of all categories for the current company in four sets:
+Admin Expenses, Cost of Sales, Income and General.  The list of
+categories varies between companies as users can create custom
+categories.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/categories
+</code></pre><h3>Input</h3><h4>List all categories including sub accounts</h4>
+<p>Returns the list of all categories as above except it includes sub accounts
+in the list instead of the associated top level accounts where they exist.
+Sub accounts can be identified by inspecting the nominal code which will
+include a - sign and a sub code - for example <code>602-1</code>.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/categories?sub_accounts=true
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre>
+<p>For clarity, only one category per set is shown below</p>
+<div class="highlight-json"><pre class=prettyprint><code class=json>{
+  &quot;admin_expenses_categories&quot;: [
+    {
+        &quot;url&quot;: &quot;https://api.freeagent.com/v2/categories/285&quot;,
+        &quot;description&quot;: &quot;Accommodation and Meals&quot;,
+        &quot;nominal_code&quot;: &quot;285&quot;,
+        &quot;allowable_for_tax&quot;: true,
+        &quot;tax_reporting_name&quot;: &quot;Travel and subsistence expenses&quot;,
+        &quot;auto_sales_tax_rate&quot;: &quot;Standard rate&quot;
+    },
+  ],
+  &quot;cost_of_sales_categories&quot;: [
+    {
+        &quot;url&quot;: &quot;https://api.freeagent.com/v2/categories/102&quot;,
+        &quot;description&quot;: &quot;Commission Paid&quot;,
+        &quot;nominal_code&quot;: &quot;102&quot;,
+        &quot;allowable_for_tax&quot;: true,
+        &quot;tax_reporting_name&quot;: &quot;Commissions Payable&quot;,
+        &quot;auto_sales_tax_rate&quot;: &quot;Standard rate&quot;
+    }
+  ],
+  &quot;income_categories&quot;: [
+    {
+        &quot;url&quot;: &quot;https://api.freeagent.com/v2/categories/001&quot;,
+        &quot;description&quot;: &quot;Sales&quot;,
+        &quot;nominal_code&quot;: &quot;001&quot;,
+        &quot;auto_sales_tax_rate&quot;: &quot;Standard rate&quot;
+    }
+  ],
+  &quot;general_categories&quot;: [
+    {
+        &quot;url&quot;: &quot;https://api.freeagent.com/v2/categories/051&quot;,
+        &quot;description&quot;: &quot;Interest Received&quot;,
+        &quot;nominal_code&quot;: &quot;051&quot;
+    }
+  ]
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

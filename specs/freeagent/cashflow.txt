@@ -1,0 +1,62 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Cashflow</h1>
+<p><em>Minimum access level</em>: <code>Banking</code>, unless stated otherwise.</p>
+
+<p>Provides read-only access to historic cashflow data generated within FreeAgent. As Projected cashflow is not returned, requests with dates in the future will return a <code>total</code> of <code>0</code>.</p>
+<h2 id="cashflow-summary-for-a-given-date-range">Cashflow summary for a given date range</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/cashflow?from_date=2019-07-01&amp;to_date=2019-09-30
+</code></pre>
+<ul>
+<li><code>from_date</code> - Date in YYYY-MM-DD format</li>
+<li><code>to_date</code> - Date in YYYY-MM-DD format</li>
+</ul>
+<h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{
+   &quot;cashflow&quot; : {
+      &quot;outgoing&quot; : {
+         &quot;total&quot; : &quot;56276.55&quot;,
+         &quot;months&quot; : [
+            {
+               &quot;month&quot; : 7,
+               &quot;year&quot; : 2019,
+               &quot;total&quot; : &quot;16322.05&quot;
+            },
+            {
+               &quot;total&quot; : &quot;20372.0&quot;,
+               &quot;year&quot; : 2019,
+               &quot;month&quot; : 8
+            },
+            {
+               &quot;month&quot; : 9,
+               &quot;year&quot; : 2019,
+               &quot;total&quot; : &quot;19582.5&quot;
+            }
+         ]
+      },
+      &quot;from&quot; : &quot;2019-07-01&quot;,
+      &quot;to&quot; : &quot;2019-09-30&quot;,
+      &quot;incoming&quot; : {
+         &quot;months&quot; : [
+            {
+               &quot;month&quot; : 7,
+               &quot;year&quot; : 2019,
+               &quot;total&quot; : &quot;21387.76&quot;
+            },
+            {
+               &quot;total&quot; : &quot;25690.0&quot;,
+               &quot;year&quot; : 2019,
+               &quot;month&quot; : 8
+            },
+            {
+               &quot;total&quot; : &quot;21792.0&quot;,
+               &quot;year&quot; : 2019,
+               &quot;month&quot; : 9
+            }
+         ],
+         &quot;total&quot; : &quot;68869.76&quot;
+      },
+      &quot;balance&quot; : &quot;12593.21&quot;
+   }
+}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

@@ -1,0 +1,686 @@
+      <div id="primary_content" class="docs">
+        <section id="primary">
+          
+          <h1>Invoices</h1>
+<p><em>Minimum access level</em>: <code>Estimates and Invoices</code>, unless stated otherwise.</p>
+<h2 id="invoice-attributes">Invoice Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the invoice</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>status</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Draft</code></li>
+            <li><code>Scheduled To Email</code></li>
+            <li><code>Open</code></li>
+            <li><code>Zero Value</code></li>
+            <li><code>Overdue</code></li>
+            <li><code>Paid</code></li>
+            <li><code>Overpaid</code></li>
+            <li><code>Refunded</code></li>
+            <li><code>Written-off</code></li>
+            <li><code>Part written-off</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>long_status</td>
+      <td>
+        Invoice status along with the due date as a relative date to 'today'
+        <p>For example:</p>
+        <p>
+          <ul>
+            <li><code>Open – due in 1 day</code></li>
+            <li><code>Overdue – due 15 days ago</code></li>
+            <li><code>Paid on – 21 Mar 20</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>contact</td>
+      <td>The <a href="contacts.html">contact</a> being invoiced</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>project</td>
+      <td>The <a href="projects.html">project</a> being invoiced</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>property</td>
+      <td>
+        The <a href="properties.html">property</a> pertaining to this invoice.
+        Only accepted and required for companies with type <code>UkUnincorporatedLandlord</code>.
+      </td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>include_timeslips</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>null</code></li>
+            <li><code>billed_grouped_by_single_timeslip</code> (one line)</li>
+            <li><code>billed_grouped_by_timeslip</code> (separate lines)</li>
+            <li><code>billed_grouped_by_timeslip_task</code></li>
+            <li><code>billed_grouped_by_timeslip_date</code></li>
+          </ul>
+        </p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>include_expenses</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>null</code></li>
+            <li><code>billed_grouped_by_single_expense</code> (one line)</li>
+            <li><code>billed_grouped_by_expense</code> (separate lines)</li>
+          </ul>
+        </p>
+        <em>Includes expenses, bills and bank account entries</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>include_estimates</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>null</code></li>
+            <li><code>billed_grouped_by_single_estimate</code> (one line)</li>
+            <li><code>billed_grouped_by_estimate</code> (separate lines)</li>
+          </ul>
+        </p>
+        <em>Includes only open or approved estimates</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>reference</td>
+      <td>
+        <p>Invoice reference (using global invoice sequencing)</p>
+        <em>If omitted, next invoice reference will be used</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>dated_on</td>
+      <td>Date of invoice in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>due_on</td>
+      <td>When invoice is due, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>payment_terms_in_days</td>
+      <td>Set to zero to display 'Due on Receipt' on the invoice</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>currency</td>
+      <td>
+        <p>Invoice's <a href="currencies.html">currency</a></p>
+        <em>Defaults to the company's native currency</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_rate</td>
+      <td>
+        <p>One of the following:</p>
+        <ul>
+          <li><code>null</code>
+          <li>Name of a <a href="cis_bands.html">Construction Industry Scheme band</a></li>
+        </ul>
+      </td>
+      <td>String | null</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction_rate</td>
+      <td>Percentage of CIS deduction for the <code>cis_rate</code> set</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction</td>
+      <td>Total CIS deduction for this invoice, in its currency</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cis_deduction_suffered</td>
+      <td>CIS deduction already paid for this invoice, in its currency</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>comments</td>
+      <td>Additional text added to the bottom of the invoice</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>send_new_invoice_emails</td>
+      <td>
+        <p><code>true</code> to email this invoice automatically using your default template, <code>false</code> otherwise</p>
+        <em>Can only set to <code>true</code> if templates exist</em>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>send_reminder_emails</td>
+      <td>
+        <p><code>true</code> to email payment reminders if the invoice goes unpaid, <code>false</code> otherwise</p>
+        <em>Can only set to <code>true</code> if templates exist</em>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>send_thank_you_emails</td>
+      <td>
+        <p><code>true</code> to email a Thank You once this invoice has been paid, <code>false</code> otherwise</p>
+        <em>Can only set to <code>true</code> if templates exist</em>
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>discount_percent</td>
+      <td>The discount applied across the whole invoice</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>contact_name</td>
+      <td>The display name of the <a href="contacts.html">contact</a> for this Invoice. This will always be the display name on the <a href="contacts.html">contact</a> associated with the invoice, even if overriden by the <code>client_contact_name</code>.</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>client_contact_name</td>
+      <td>This name will override the default <a href="contacts.html">contact</a> name (and <code>contact_name</code> parameter) on this invoice.</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>payment_terms</td>
+      <td>This will override the normal payment terms and invoice due date</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>po_reference</td>
+      <td>This PO reference will override any PO set for the <a href="projects.html">project</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>bank_account</td>
+      <td>This <a href="bank_accounts.html">bank account</a> will be used to display remittance advice on this invoice</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>omit_header</td>
+      <td>
+        <code>true</code> to omit your logo and company address, <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>show_project_name</td>
+      <td>
+        <code>true</code> to display the <a href="projects.html">project</a> name in the Other Information section, <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>always_show_bic_and_iban</td>
+      <td>
+        <code>true</code> to always display the BIC and IBAN numbers, if defined, on the invoice, <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ec_status</td>
+      <td>
+        Invoice's VAT status for reporting purposes. One of the following:
+        <p>
+          <ul>
+            <li><code>UK/Non-EC</code></li>
+            <li><code>EC Goods</code></li>
+            <li><code>EC Services</code></li>
+            <li><code>Reverse Charge</code></li>
+            <li><code>EC VAT MOSS</code></li>
+          </ul>
+        </p>
+        <p><em>Please note that <code>EC Goods</code> and <code>EC Services</code> are no longer valid options if the invoice is dated 1/1/2021 or later and the company is based in Great Britain (but not Northern Ireland), following the UK's withdrawal from the EU.</em></p>
+        <p><em><code>Reverse Charge</code> is only a valid status if the invoice is dated 1/1/2021 or later.</em></p>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>place_of_supply</td>
+      <td>
+        Place of supply when <code>ec_status</code> is <a href="sales_tax.html#ec-vat-moss"><code>EC VAT MOSS</code></a>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>net_value</td>
+      <td>Net value</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>exchange_rate</td>
+      <td>Rate at which invoice amount is converted into company's native <a href="currencies.html">currency</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>involves_sales_tax</td>
+      <td><code>true</code> if <a href="sales_tax.html">sales tax</a> applies to the invoice, <code>false</code> otherwise</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_value</td>
+      <td>Total value of <a href="sales_tax.html">sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_value</td>
+      <td>[Universal accounts only] Total value of <a href="sales_tax.html">second sales tax</a></td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>total_value</td>
+      <td>Gross value</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>paid_value</td>
+      <td>Amount paid off so far</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>due_value</td>
+      <td>Amount yet to be paid</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>is_interim_uk_vat</td>
+      <td>
+        <code>true</code> if VAT status was <code>Registration Applied For</code> at invoice date,
+        <code>false</code> otherwise
+      </td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>paid_on</td>
+      <td>When the invoice was fully paid off, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>written_off_date</td>
+      <td>When the invoice was written off, in <code>YYYY-MM-DD</code> format</td>
+      <td>Date</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>recurring_invoice</td>
+      <td>The <a href="recurring_invoices.html">recurring invoice</a> from which the invoice was generated</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>payment_url</td>
+      <td>Online payment URL if PayPal, GoCardless, Stripe or Tyl are enabled</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>payment_methods</td>
+      <td>Flags to read/set online payment methods for the invoice. See <a href="#payment-methods-notes">Payment Methods Notes</a>.</td>
+      <td>Hash</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>invoice_items</td>
+      <td>Array of invoice item data structures. See <a href="#invoice-item-attributes">Invoice Item Attributes</a>.</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>created_at</td>
+      <td>Creation of the invoice resource (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>updated_at</td>
+      <td>When the invoice resource was last updated (UTC)</td>
+      <td>Timestamp</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="invoice-item-attributes">Invoice Item Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>url</td>
+      <td>The unique identifier for the invoice item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>position</td>
+      <td>Position in the invoice, starting at 1</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>item_type</td>
+      <td>
+        One of the following:
+        <p>
+          <ul>
+            <li><code>Hours</code></li>
+            <li><code>Days</code></li>
+            <li><code>Weeks</code></li>
+            <li><code>Months</code></li>
+            <li><code>Years</code></li>
+            <li><code>Products</code></li>
+            <li><code>Services</code></li>
+            <li><code>Training</code></li>
+            <li><code>Expenses</code></li>
+            <li><code>Comment</code></li>
+            <li><code>Bills</code></li>
+            <li><code>Discount</code></li>
+            <li><code>Credit</code></li>
+            <li><code>VAT</code></li>
+            <li><code>Stock</code></li>
+          </ul>
+        </p>
+        <em>Leave blank for 'No Unit'</em>
+      </td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>quantity</td>
+      <td>
+        <p>Quantity of the <code>item_type</code></p>
+        <em>Defaults to <code>0</code></em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>description</td>
+      <td>Invoice item details</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>price</td>
+      <td>
+        <p>Unit price</p>
+        <em>Required if <code>invoice_item</code> is given and <code>item_type</code> is non time based</em>
+      </td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>sales_tax_rate</td>
+      <td>One of the standard <a href="sales_tax.html">sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_rate</td>
+      <td>[Universal accounts only] One of the standard <a href="sales_tax.html">second sales tax</a> rates</td>
+      <td>Decimal</td>
+    </tr>
+      <tr>
+      <td></td>
+      <td>sales_tax_status</td>
+      <td>Indicates whether the item is <code>TAXABLE</code> or <code>EXEMPT</code> from
+      <a href="sales_tax.html">sales tax</a></td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>second_sales_tax_status</td>
+      <a href="sales_tax_periods.html">sales tax period</a> defines a second sales tax</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>stock_item</td>
+      <td><a href="stock_items.html">Stock item</a> being invoiced, if <code>item_type</code> is <code>Stock</code></td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>category</td>
+      <td><a href="categories.html">Accounting category</a> of the invoice item</td>
+      <td>URI</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>project</td>
+      <td>The <a href="projects.html">project</a> being invoiced</td>
+      <td>URI</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes when updating an invoice item</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>id</td>
+      <td>ID of the invoice item to update</td>
+      <td>Integer</td>
+    </tr>
+  </tbody>
+
+  <thead>
+    <tr>
+      <th colspan="4">Additional attributes when deleting an invoice item</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#10004;</td>
+      <td>id</td>
+      <td>ID of the invoice item to delete</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>&#10004;</td>
+      <td>_destroy</td>
+      <td>Should be equal to <code>1</code></td>
+      <td>Integer</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="payment-methods-attributes">Payment Methods Attributes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Kind</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>paypal</td>
+      <td>Payable online using <a href="https://www.freeagent.com/support/kb/integrations/invoice-payments-with-paypal/">PayPal</a></td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>gocardless_preauth</td>
+      <td>Payable using a previously authorised <a href="https://www.freeagent.com/support/kb/integrations/gocardless-taking-payments-with-a-direct-debit-mandate/">GoCardless Direct Debit Mandate</a>. See also <a href="#take-payment-using-gocardless-direct-debit-mandate">taking payment</a>.</td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>gocardless_instant_bank_pay</td>
+      <td>Payable online using <a href="https://support.freeagent.com/hc/en-gb/articles/26413965633810-Take-instant-bank-payments-using-GoCardless">GoCardless</a></td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>stripe</td>
+      <td>Payable online using <a href="https://www.freeagent.com/support/kb/integrations/invoice-payments-with-stripe/">Stripe</a></td>
+      <td>Boolean</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>tyl</td>
+      <td>Payable online using <a href="https://support.freeagent.com/hc/en-gb/articles/5850863683602-Take-invoice-payments-with-Tyl-by-NatWest">Tyl</a></td>
+      <td>Boolean</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="list-all-invoices">List all invoices</h2><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/invoices
+</code></pre><h3>Input</h3><h4>View Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/invoices?view=recent_open_or_overdue
+</code></pre>
+<ul>
+<li><code>all</code>: Show all invoices (default)</li>
+<li><code>recent_open_or_overdue</code>: Show only recent, open, or overdue invoices.</li>
+<li><code>open</code>: Show only open invoices.</li>
+<li><code>overdue</code>: Show only overdue invoices.</li>
+<li><code>open_or_overdue</code>: Show only open or overdue invoices.</li>
+<li><code>draft</code>: Show only draft invoices.</li>
+<li><code>paid</code>: Show only paid invoices.</li>
+<li><code>scheduled_to_email</code>: Show only invoices scheduled to email.</li>
+<li><code>thank_you_emails</code>: Show only invoices with active thank you emails.</li>
+<li><code>reminder_emails</code>: Show only invoices with active reminders.</li>
+<li><code>last_N_months</code>: Show only invoices from the last <code>N</code> months.</li>
+</ul>
+<h4>Date Filters</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/invoices?updated_since=2017-05-22T09:00:00.000Z
+</code></pre>
+<ul>
+<li><code>updated_since</code></li>
+</ul>
+<h4>Sort Orders</h4><pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/invoices?sort=updated_at
+</code></pre>
+<ul>
+<li><code>created_at</code>: Sort by the time the invoice was created (default).</li>
+<li><code>updated_at</code>: Sort by the time the invoice was last modified.</li>
+</ul>
+
+<p>To sort in descending order, the sort parameter can be prefixed with a hyphen.</p>
+<pre class=prettyprint><code class=>GET https://api.freeagent.com/v2/invoices?sort=-updated_at
+</code></pre><h3>Response</h3><pre class=prettyprint><code class=>Status: 200 OK
+</code></pre><div class="highlight-json"><pre class=prettyprint><code class=json>{ &quot;invoices&quot;: [
+  {
+    &quot;url&quot;:&quot;https://api.freeagent.com/v2/invoices/1&quot;,
+    &quot;contact&quot;:&quot;https://api.freeagent.com/v2/contacts/2&quot;,
+    &quot;dated_on&quot;:&quot;2011-08-29&quot;,
+    &quot;due_on&quot;:&quot;2011-09-28&quot;,
+    &quot;reference&quot;:&quot;001&quot;,
+    &quot;currency&quot;:&quot;GBP&quot;,
+    &quot;exchange_rate&quot;:&quot;1.0&quot;,
+    &quot;net_value&quot;:&quot;0.0&quot;,
+    &quot;sales_tax_value&quot;:&quot;0.0&quot;,
+    &quot;total_value&quot;: &quot;200.0&quot;,
+    &quot;paid_value&quot;: &quot;50.0&quot;,
+    &quot;due_value&quot;: &quot;150.0&quot;,
+    &quot;status&quot;:&quot;Open&quot;,
+    &quot;long_status&quot;:&quot;Open – due in about 1 month&quot;,
+    &quot;comments&quot;:&quot;An example invoice comment.&quot;,
+    &quot;omit_header&quot;:false,
+    &quot;send_thank_you_emails&quot;:false,
+    &quot;send_reminder_emails&quot;:false,
+    &quot;send_new_invoice_emails&quot;: false,
+    &quot;bank_account&quot;: &quot;https://api.freeagent.com/v2/bank_accounts/1&quot;,
+    &quot;always_show_bic_and_iban&quot;: false,
+    &quot;payment_terms_in_days&quot;:30,
+    &quot;ec_status&quot;:&quot;EC Goods&quot;,
+    &quot;payment_methods&quot;: {
+      &quot;paypal&quot;: true,
+      &quot;stripe&quot;: false
+    },
+    &quot;created_at&quot;:&quot;2011-08-29T00:00:00Z&quot;,
+    &quot;updated_at&quot;:&quot;2011-08-29T00:00:00Z&quot;
+  }
+]}
+</code></pre><a class='switch-to-xml-response' href="#">Show as XML</a></div><div class="highlight-xml"><pre class=prettyprint><code class=xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
