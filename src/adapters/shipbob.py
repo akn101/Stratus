@@ -154,7 +154,6 @@ class ShipBobClient:
         """Normalize inventory item data to warehouse schema."""
         return {
             "sku": str(item_data.get("sku", "")),
-            "source": "shipbob",
             "quantity_on_hand": item_data.get("total_on_hand_quantity", 0),
             "quantity_available": item_data.get("total_sellable_quantity", 0),
             "quantity_reserved": item_data.get("total_committed_quantity", 0),
@@ -165,8 +164,6 @@ class ShipBobClient:
             "backordered_quantity": item_data.get("total_backordered_quantity", 0),
             "exception_quantity": item_data.get("total_exception_quantity", 0),
             "internal_transfer_quantity": item_data.get("total_internal_transfer_quantity", 0),
-            "inventory_name": item_data.get("name", ""),
-            "inventory_id": str(item_data.get("inventory_id", "")),
         }
 
     def _normalize_order_status(self, order_data: dict, since_iso: str) -> dict | None:

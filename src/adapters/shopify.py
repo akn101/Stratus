@@ -429,13 +429,11 @@ class ShopifyClient:
         
         result = {
             "order_id": order_id,  # Use human-readable order name (e.g., "2121") 
-            "source": "shopify",
             "purchase_date": created_at,
             "status": order_data.get("financial_status", ""),
             "customer_id": customer_id,
             "total": total_amount,
             "currency": order_data.get("currency", ""),
-            "marketplace_id": None,  # Not applicable for Shopify
         }
         
         # Only add shopify_internal_id if it's different from order_id (to avoid redundancy)

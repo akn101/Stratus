@@ -1,6 +1,6 @@
 """add_shopify_internal_id_to_orders
 
-Revision ID: 0008
+Revision ID: 0009
 Revises: 0007
 Create Date: 2025-08-31 12:00:00.000000
 
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0008'
-down_revision: Union[str, None] = '0007'
+revision: str = '0009'
+down_revision: Union[str, None] = '0007_add_sync_state'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

@@ -13,7 +13,7 @@ from datetime import UTC, datetime, timedelta
 
 from ..adapters.shopify import ShopifyClient, ShopifyConfig
 from ..db.deps import get_session
-from ..db.upserts import upsert_order_items, upsert_orders
+from ..db.upserts_source_specific import upsert_shopify_orders, upsert_shopify_order_items
 
 # Configure logging
 logging.basicConfig(
@@ -48,12 +48,10 @@ def validate_orders_data(orders: list[dict], order_items: list[dict]) -> None:
     Raises:
         ValueError: If validation fails
     """
-    # Validate orders
+    # Validate orders (source-specific, so no need to check source field)
     for order in orders:
         if not order.get("order_id"):
             raise ValueError(f"Order missing order_id: {order}")
-        if not order.get("source"):
-            raise ValueError(f"Order missing source: {order}")
         if not order.get("purchase_date"):
             raise ValueError(f"Order missing purchase_date: {order}")
 
@@ -138,12 +136,12 @@ def run_shopify_orders_etl(
         logger.info(f"Upserting {len(orders)} orders and {len(filtered_items)} order items")
 
         with get_session() as session:
-            # Upsert orders
-            orders_inserted, orders_updated = upsert_orders(orders, session)
+            # Upsert orders to Shopify-specific table
+            orders_inserted, orders_updated = upsert_shopify_orders(orders, session)
             logger.info(f"Orders - Inserted: {orders_inserted}, Updated: {orders_updated}")
 
-            # Upsert order items
-            items_inserted, items_updated = upsert_order_items(filtered_items, session)
+            # Upsert order items to Shopify-specific table
+            items_inserted, items_updated = upsert_shopify_order_items(filtered_items, session)
             logger.info(f"Order items - Inserted: {items_inserted}, Updated: {items_updated}")
 
         # Return statistics

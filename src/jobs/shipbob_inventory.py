@@ -9,7 +9,7 @@ import logging
 
 from ..adapters.shipbob import ShipBobClient, ShipBobConfig
 from ..db.deps import get_session
-from ..db.upserts import upsert_inventory
+from ..db.upserts_source_specific import upsert_shipbob_inventory
 
 logger = logging.getLogger(__name__)
 
@@ -23,9 +23,6 @@ def validate_inventory_data(inventory_records):
     for record in inventory_records:
         if not record.get("sku"):
             raise ValueError(f"Inventory record missing SKU: {record}")
-
-        if not record.get("source"):
-            raise ValueError(f"Inventory record missing source: {record}")
 
         # Ensure numeric fields are integers
         numeric_fields = [
@@ -96,7 +93,7 @@ def run_shipbob_inventory_etl(token: str, base_url: str = "https://api.shipbob.c
         logger.info(f"Upserting {len(inventory_records)} inventory records to database")
 
         with get_session() as session:
-            inserted, updated = upsert_inventory(inventory_records, session)
+            inserted, updated = upsert_shipbob_inventory(inventory_records, session)
             session.commit()
 
         stats = {
