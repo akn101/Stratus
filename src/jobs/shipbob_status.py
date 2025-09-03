@@ -53,7 +53,7 @@ def validate_status_updates(status_updates):
     logger.info(f"Validated {len(status_updates)} status updates")
 
 
-def run_shipbob_status_sync(lookback_hours: int = None) -> dict:
+def run_shipbob_orders_sync(token: str = None, lookback_hours: int = None) -> dict:
     """
     Run ShipBob order status sync job.
 
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     )
 
     # Run the sync
-    result = run_shipbob_status_sync()
+    result = run_shipbob_orders_sync()
 
     # Exit with appropriate code
     if result["errors"] > 0:

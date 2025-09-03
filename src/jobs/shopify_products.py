@@ -71,7 +71,7 @@ def validate_products_data(products: list[dict], variants: list[dict]) -> None:
     )
 
 
-def run_shopify_products_sync() -> dict[str, int]:
+def run_shopify_products_sync(shop: str = None, access_token: str = None) -> dict[str, int]:
     """
     Run the Shopify products synchronization job.
 
@@ -81,7 +81,7 @@ def run_shopify_products_sync() -> dict[str, int]:
     logger.info("Starting Shopify products sync job (full refresh)")
 
     try:
-        # Initialize Shopify client
+        # Initialize Shopify client (parameters ignored, uses env config)
         client = ShopifyClient()
 
         # Fetch products and variants from Shopify

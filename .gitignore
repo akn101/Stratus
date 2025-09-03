@@ -255,3 +255,31 @@ alembic/__pycache__/
 
 # Specs with potential sensitive data
 specs/amzn/services.txt
+
+# Claude and AI assistant files
+CLAUDE.md
+*.claude.md
+ai-instructions.md
+claude-instructions.txt
+
+# Temporary and one-time scripts
+temp_*.py
+generate_*.py
+populate_*.py
+analyze_*.py
+check_*.py
+fix_*.py
+integrate_*.py
+create_*.py
+*_temp.py
+
+# Data exports and reports
+exports/
+reports/
+data/
+*.csv
+*.xlsx
+
+# Private configuration
+config.json
+secrets.json

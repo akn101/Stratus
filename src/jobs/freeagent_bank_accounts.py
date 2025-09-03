@@ -15,7 +15,7 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 from src.adapters.freeagent import FreeAgentFeatureUnavailableError, create_freeagent_client
-from src.db.upserts import upsert_freeagent_bank_accounts
+from src.db.upserts_source_specific import upsert_freeagent_bank_accounts
 from src.utils.config import get_secret
 
 logger = logging.getLogger(__name__)
@@ -98,7 +98,7 @@ def run_freeagent_bank_accounts_etl(access_token: str) -> dict[str, int]:
     logger.info("Starting FreeAgent bank accounts ETL job")
 
     # Initialize FreeAgent client
-    client = create_freeagent_client(access_token)
+    client = create_freeagent_client(access_token=access_token)
 
     try:
         # Extract bank accounts from FreeAgent API

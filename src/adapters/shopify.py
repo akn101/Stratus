@@ -693,11 +693,6 @@ class ShopifyClient:
             "total_spent": total_spent,
             "orders_count": int(customer_data.get("orders_count", 0)),
             "state": customer_data.get("state", ""),
-            "tags": tags_list,
-            "last_order_id": str(customer_data.get("last_order_id", ""))
-            if customer_data.get("last_order_id")
-            else None,
-            "last_order_date": None,  # Would need to fetch from last order if needed
         }
 
     def _normalize_product(self, product_data: dict) -> dict:
@@ -719,8 +714,8 @@ class ShopifyClient:
         return {
             "product_id": str(product_data["id"]),
             "title": product_data.get("title", ""),
-            "vendor": product_data.get("vendor", ""),
             "product_type": product_data.get("product_type", ""),
+            "vendor": product_data.get("vendor", ""),
             "created_at": created_at,
             "updated_at": updated_at,
         }
@@ -749,14 +744,21 @@ class ShopifyClient:
         except (ValueError, TypeError):
             logger.warning(f"Invalid variant price: {price_str}")
 
+        # Parse weight  
+        weight = None
+        weight_val = variant_data.get("weight")
+        if weight_val is not None:
+            try:
+                weight = Decimal(str(weight_val))
+            except (ValueError, TypeError):
+                logger.warning(f"Invalid variant weight: {weight_val}")
+        
         return {
             "variant_id": str(variant_data["id"]),
             "product_id": product_id,
             "sku": variant_data.get("sku", ""),
             "price": price,
-            "inventory_item_id": str(variant_data.get("inventory_item_id", ""))
-            if variant_data.get("inventory_item_id")
-            else None,
+            "inventory_item_id": str(variant_data.get("inventory_item_id", "")),
             "created_at": created_at,
             "updated_at": updated_at,
         }

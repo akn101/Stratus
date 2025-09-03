@@ -12,16 +12,30 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
 from .deps import get_session
-from .models_source_specific import (
-    ShopifyOrder,
-    ShopifyOrderItem,
+# Import models that match the actual database schema
+from .models import (
     ShopifyCustomer, 
     ShopifyProduct,
     ShopifyVariant,
-    ShipBobInventory,
+    ShipBobReturn,
+    ShipBobReceivingOrder,
+    ShipBobFulfillmentCenter,
     ShipBobProduct,
     ShipBobVariant,
-    ShipBobFulfillmentCenter,
+    ShipBobOrder,
+    FreeAgentBill,
+    FreeAgentCategory,
+    FreeAgentBankAccount,
+    FreeAgentBankTransaction,
+    FreeAgentBankTransactionExplanation,
+    FreeAgentTransaction,
+    FreeAgentUser,
+)
+# Import models that only exist in source-specific
+from .models_source_specific import (
+    ShopifyOrder,
+    ShopifyOrderItem,
+    ShipBobInventory,
     AmazonSettlement,
     AmazonSettlementLine,
     FreeAgentContact,
@@ -44,7 +58,7 @@ def _exec_upsert(
         return 0, 0
 
     stmt = pg_insert(table).values(rows)
-    update_values = {c: getattr(stmt.excluded, c) for c in update_cols}
+    update_values = {c: stmt.excluded[c] for c in update_cols}
     stmt = stmt.on_conflict_do_update(index_elements=list(conflict_cols), set_=update_values)
 
     result = session.execute(stmt.returning(literal_column("xmax")))
@@ -167,11 +181,10 @@ def upsert_shopify_customers(rows: list[dict], session: Session | None = None) -
                 "first_name",
                 "last_name", 
                 "email",
-                "phone",
                 "total_spent",
                 "orders_count",
                 "state",
-                "updated_at_shopify",
+                "updated_at",
             ],
         )
 
@@ -198,11 +211,9 @@ def upsert_shopify_products(rows: list[dict], session: Session | None = None) ->
             conflict_cols=["product_id"],
             update_cols=[
                 "title",
-                "handle",
-                "status",
                 "product_type",
                 "vendor",
-                "updated_at_shopify",
+                "updated_at",
             ],
         )
 
@@ -228,12 +239,10 @@ def upsert_shopify_variants(rows: list[dict], session: Session | None = None) ->
             rows,
             conflict_cols=["variant_id"],
             update_cols=[
-                "title",
                 "sku",
                 "price",
-                "inventory_quantity",
-                "weight",
-                "updated_at_shopify",
+                "inventory_item_id",
+                "updated_at",
             ],
         )
 
@@ -297,9 +306,20 @@ def upsert_shipbob_products(rows: list[dict], session: Session | None = None) ->
             rows,
             conflict_cols=["product_id"],
             update_cols=[
-                "reference_id",
                 "name",
-                "last_modified_date",
+                "sku",
+                "barcode", 
+                "description",
+                "category",
+                "is_case",
+                "is_lot",
+                "is_active",
+                "is_bundle",
+                "is_digital",
+                "is_hazmat",
+                "dimensions",
+                "weight",
+                "value",
             ],
         )
 
@@ -314,7 +334,7 @@ def upsert_shipbob_products(rows: list[dict], session: Session | None = None) ->
 
 def upsert_shipbob_variants(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
     """
-    Upsert ShipBob variants with conflict resolution on inventory_id.
+    Upsert ShipBob variants with conflict resolution on variant_id.
     Returns (inserted_count, updated_count).
     """
 
@@ -323,15 +343,15 @@ def upsert_shipbob_variants(rows: list[dict], session: Session | None = None) ->
             sess,
             ShipBobVariant.__table__,
             rows,
-            conflict_cols=["inventory_id"],
+            conflict_cols=["variant_id"],
             update_cols=[
-                "sku",
                 "name",
-                "quantity_on_hand",
-                "quantity_available",
-                "quantity_committed",
-                "quantity_backordered",
-                "last_modified_date",
+                "sku",
+                "barcode",
+                "is_active",
+                "dimensions",
+                "weight",
+                "value",
             ],
         )
 
@@ -346,7 +366,7 @@ def upsert_shipbob_variants(rows: list[dict], session: Session | None = None) ->
 
 def upsert_shipbob_fulfillment_centers(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
     """
-    Upsert ShipBob fulfillment centers with conflict resolution on fulfillment_center_id.
+    Upsert ShipBob fulfillment centers with conflict resolution on center_id.
     Returns (inserted_count, updated_count).
     """
 
@@ -355,20 +375,93 @@ def upsert_shipbob_fulfillment_centers(rows: list[dict], session: Session | None
             sess,
             ShipBobFulfillmentCenter.__table__,
             rows,
-            conflict_cols=["fulfillment_center_id"],
+            conflict_cols=["center_id"],
             update_cols=[
                 "name",
-                "company_name",
-                "email",
-                "phone",
-                "address_line_1",
-                "address_line_2",
+                "address1",
+                "address2",
                 "city",
                 "state",
                 "country",
                 "zip_code",
-                "is_active",
+                "phone_number",
+                "email",
                 "timezone",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+
+def upsert_shipbob_receiving_orders(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert ShipBob receiving orders with conflict resolution on wro_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            ShipBobReceivingOrder.__table__,
+            rows,
+            conflict_cols=["wro_id"],
+            update_cols=[
+                "purchase_order_number",
+                "status",
+                "package_type",
+                "box_packaging_type",
+                "fulfillment_center_id",
+                "fulfillment_center_name",
+                "inventory_quantities",
+                "status_history",
+                "expected_arrival_date",
+                "insert_date",
+                "last_updated_date",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+
+def upsert_shipbob_returns(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert ShipBob returns with conflict resolution on return_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            ShipBobReturn.__table__,
+            rows,
+            conflict_cols=["return_id"],
+            update_cols=[
+                "original_shipment_id",
+                "reference_id",
+                "store_order_id",
+                "status",
+                "return_type",
+                "customer_name",
+                "tracking_number",
+                "total_cost",
+                "fulfillment_center_id",
+                "fulfillment_center_name",
+                "items",
+                "transactions",
+                "insert_date",
+                "completed_date",
             ],
         )
 
@@ -481,7 +574,6 @@ def upsert_freeagent_contacts(rows: list[dict], session: Session | None = None) 
                 "postcode",
                 "contact_name_on_invoices",
                 "default_payment_terms_in_days",
-                "locale",
                 "account_balance",
                 "uses_contact_invoice_sequence",
                 "charge_sales_tax",
@@ -534,6 +626,294 @@ def upsert_freeagent_invoices(rows: list[dict], session: Session | None = None) 
                 "initial_sales_tax_rate",
                 "comments",
                 "project_id",
+                "updated_at_api",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+def upsert_shipbob_orders(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert ShipBob orders into the shipbob_orders table.
+    
+    Args:
+        rows: List of normalized ShipBob order records
+        session: Optional database session
+        
+    Returns:
+        Tuple of (inserted_count, updated_count)
+    """
+    def _run(sess: Session):
+        return _exec_upsert(
+            sess,
+            ShipBobOrder.__table__,
+            rows,
+            conflict_cols=["shipbob_order_id"],
+            update_cols=[
+                "reference_id",
+                "status", 
+                "last_updated_date",
+                "shipped_date",
+                "delivered_date",
+                "tracking_number",
+                "carrier",
+                "recipient_name",
+                "recipient_email",
+                "fulfillment_center_id",
+                "total_weight",
+                "total_cost",
+                "currency",
+                "shipping_method",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+def upsert_freeagent_bills(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert FreeAgent bills with conflict resolution on bill_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            FreeAgentBill.__table__,
+            rows,
+            conflict_cols=["bill_id"],
+            update_cols=[
+                "reference",
+                "dated_on",
+                "due_on",
+                "contact_id",
+                "contact_name",
+                "net_value",
+                "sales_tax_value",
+                "total_value",
+                "paid_value",
+                "due_value",
+                "status",
+                "sales_tax_status",
+                "comments",
+                "project_id",
+                "updated_at_api",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+
+def upsert_freeagent_categories(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert FreeAgent categories with conflict resolution on category_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            FreeAgentCategory.__table__,
+            rows,
+            conflict_cols=["category_id"],
+            update_cols=[
+                "description",
+                "nominal_code",
+                "category_type",
+                "tax_reporting_name",
+                "allowable_for_tax",
+                "auto_sales_tax_rate",
+                "updated_at_api",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+
+def upsert_freeagent_users(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert FreeAgent users with conflict resolution on user_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            FreeAgentUser.__table__,
+            rows,
+            conflict_cols=["user_id"],
+            update_cols=[
+                "email",
+                "first_name",
+                "last_name",
+                "role",
+                "permission_level",
+                "ni_number",
+                "unique_tax_reference",
+                "updated_at_api",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+
+def upsert_freeagent_bank_accounts(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert FreeAgent bank accounts with conflict resolution on bank_account_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            FreeAgentBankAccount.__table__,
+            rows,
+            conflict_cols=["bank_account_id"],
+            update_cols=[
+                "name",
+                "bank_name",
+                "account_number",
+                "sort_code",
+                "iban",
+                "bic",
+                "type",
+                "currency",
+                "current_balance",
+                "is_primary",
+                "is_personal",
+                "email_new_transactions",
+                "default_bill_category_id",
+                "opening_balance_date",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+
+def upsert_freeagent_bank_transactions(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert FreeAgent bank transactions with conflict resolution on transaction_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            FreeAgentBankTransaction.__table__,
+            rows,
+            conflict_cols=["transaction_id"],
+            update_cols=[
+                "bank_account_id",
+                "dated_on",
+                "amount",
+                "description",
+                "unexplained_amount",
+                "is_manual",
+                "updated_at_api",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+
+def upsert_freeagent_bank_transaction_explanations(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert FreeAgent bank transaction explanations with conflict resolution on explanation_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            FreeAgentBankTransactionExplanation.__table__,
+            rows,
+            conflict_cols=["explanation_id"],
+            update_cols=[
+                "bank_transaction_id",
+                "category_id",
+                "dated_on",
+                "amount",
+                "description",
+                "foreign_currency_value",
+                "receipt",
+                "sales_tax_rate",
+                "sales_tax_value",
+                "updated_at_api",
+            ],
+        )
+
+    if session is not None:
+        return _run(session)
+    
+    with get_session() as sess:
+        result = _run(sess)
+        sess.commit()
+        return result
+
+
+def upsert_freeagent_transactions(rows: list[dict], session: Session | None = None) -> tuple[int, int]:
+    """
+    Upsert FreeAgent transactions with conflict resolution on transaction_id.
+    Returns (inserted_count, updated_count).
+    """
+
+    def _run(sess: Session) -> tuple[int, int]:
+        return _exec_upsert(
+            sess,
+            FreeAgentTransaction.__table__,
+            rows,
+            conflict_cols=["transaction_id"],
+            update_cols=[
+                "dated_on",
+                "description",
+                "category_id",
+                "category_name",
+                "nominal_code",
+                "debit_value",
+                "credit_value",
+                "source_item_url",
+                "foreign_currency_data",
                 "updated_at_api",
             ],
         )

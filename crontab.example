@@ -1,0 +1,37 @@
+# Stratus ERP ETL Cron Schedule
+# 
+# Installation instructions:
+# 1. Copy this file: cp crontab.example crontab.production
+# 2. Edit paths to match your VPS deployment directory
+# 3. Install: crontab crontab.production
+#
+# Recommended schedule for production VPS:
+
+# Every hour: Update critical order and inventory data
+0 * * * * cd /path/to/stratus && /usr/bin/python3 schedule_etl.py --hourly >> logs/cron.log 2>&1
+
+# Every day at 2 AM: Full daily sync of all platforms  
+0 2 * * * cd /path/to/stratus && /usr/bin/python3 schedule_etl.py --daily >> logs/cron.log 2>&1
+
+# Every Sunday at 1 AM: Comprehensive weekly sync with business report
+0 1 * * 0 cd /path/to/stratus && /usr/bin/python3 schedule_etl.py --weekly >> logs/cron.log 2>&1
+
+# Alternative: Run only on business days (Monday-Friday)
+# 0 2 * * 1-5 cd /path/to/stratus && /usr/bin/python3 schedule_etl.py --daily >> logs/cron.log 2>&1
+
+# Alternative: More frequent updates during business hours (9 AM - 6 PM, Mon-Fri)
+# */30 9-18 * * 1-5 cd /path/to/stratus && /usr/bin/python3 schedule_etl.py --hourly >> logs/cron.log 2>&1
+
+# Log rotation (optional - keeps logs manageable)
+0 0 1 * * find /path/to/stratus/logs -name "*.log" -mtime +30 -delete
+
+# Environment variables (if needed)
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+SHELL=/bin/bash
+
+# Notes:
+# - Adjust paths (/path/to/stratus) to your actual deployment directory
+# - Ensure Python virtual environment is activated if needed:
+#   cd /path/to/stratus && source .venv/bin/activate && python schedule_etl.py --daily
+# - Monitor logs/cron.log for execution results
+# - Consider using systemd timers as a more robust alternative to cron

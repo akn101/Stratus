@@ -165,7 +165,14 @@ def run_shopify_orders_etl(
 def main():
     """CLI entry point for the Shopify orders sync job."""
     try:
-        stats = run_shopify_orders_sync()
+        # Load configuration from environment
+        config = ShopifyConfig.from_env()
+        stats = run_shopify_orders_etl(
+            shop=config.shop,
+            access_token=config.access_token,
+            api_version=config.api_version,
+            lookback_hours=int(os.getenv("SHOPIFY_SYNC_LOOKBACK_HOURS", "24"))
+        )
 
         # Print summary for CLI usage
         print("Shopify Orders Sync Summary:")

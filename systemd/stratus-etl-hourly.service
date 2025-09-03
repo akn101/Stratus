@@ -1,0 +1,24 @@
+[Unit]
+Description=Stratus ERP Hourly ETL Sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=stratus
+Group=stratus
+WorkingDirectory=/opt/stratus
+Environment=PATH=/opt/stratus/.venv/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+ExecStart=/opt/stratus/.venv/bin/python schedule_etl.py --hourly
+StandardOutput=append:/opt/stratus/logs/systemd.log
+StandardError=append:/opt/stratus/logs/systemd.log
+
+# Security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/stratus/logs /opt/stratus/reports
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes

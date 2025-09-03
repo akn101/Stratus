@@ -78,7 +78,7 @@ def validate_products_data(products, variants):
     logger.info(f"Validated {len(products)} products and {len(variants)} variants")
 
 
-def run_shipbob_products_sync() -> dict:
+def run_shipbob_products_sync(token: str = None) -> dict:
     """
     Run ShipBob products sync job.
 
@@ -90,7 +90,7 @@ def run_shipbob_products_sync() -> dict:
     logger.info("Starting ShipBob products sync")
 
     try:
-        # Initialize client
+        # Initialize client (parameters ignored, uses env config)
         client = ShipBobClient()
 
         # Fetch products and variants

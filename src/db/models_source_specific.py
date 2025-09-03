@@ -83,6 +83,9 @@ class ShopifyOrder(Base):
     billing_address = Column(JSON)
     shipping_address = Column(JSON)
     
+    # Platform identification
+    storefront = Column(Text, default='shopify')  # 'shopify', 'wix', etc.
+    
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationship to order items
@@ -285,6 +288,38 @@ class ShipBobFulfillmentCenter(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class ShipBobOrder(Base):
+    """ShipBob orders with fulfillment status and tracking data."""
+    
+    __tablename__ = "shipbob_orders"
+
+    shipbob_order_id = Column(Text, primary_key=True)
+    reference_id = Column(Text)  # External order ID from e-commerce platform
+    status = Column(Text)
+    created_date = Column(DateTime(timezone=True))
+    last_updated_date = Column(DateTime(timezone=True))
+    shipped_date = Column(DateTime(timezone=True))
+    delivered_date = Column(DateTime(timezone=True))
+    tracking_number = Column(Text)
+    carrier = Column(Text)
+    recipient_name = Column(Text)
+    recipient_email = Column(Text)
+    fulfillment_center_id = Column(Text)
+    total_weight = Column(Numeric(10, 3))
+    total_cost = Column(Numeric(12, 2))
+    currency = Column(Text, default='USD')
+    shipping_method = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_shipbob_orders_reference_id", "reference_id"),
+        Index("ix_shipbob_orders_status", "status"),
+        Index("ix_shipbob_orders_tracking_number", "tracking_number"),
+        Index("ix_shipbob_orders_created_date", "created_date"),
+        Index("ix_shipbob_orders_last_updated_date", "last_updated_date"),
+    )
+
+
 # =============================================================================
 # AMAZON MODELS
 # =============================================================================
@@ -355,6 +390,8 @@ class FreeAgentContact(Base):
     last_name = Column(Text)
     email = Column(Text)
     phone_number = Column(Text)
+    mobile = Column(Text)
+    fax = Column(Text)
     address1 = Column(Text)
     address2 = Column(Text) 
     address3 = Column(Text)
@@ -371,6 +408,7 @@ class FreeAgentContact(Base):
     sales_tax_registration_number = Column(Text)
     active_projects_count = Column(Integer, default=0)
     status = Column(Text)  # Active, Hidden
+    source = Column(Text, default='freeagent')
     created_at_api = Column(DateTime(timezone=True))
     updated_at_api = Column(DateTime(timezone=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -388,6 +426,7 @@ class FreeAgentInvoice(Base):
     __tablename__ = "freeagent_invoices"
 
     invoice_id = Column(Text, primary_key=True)
+    source = Column(Text, default='freeagent')
     reference = Column(Text)
     dated_on = Column(DateTime(timezone=True))
     due_on = Column(DateTime(timezone=True))

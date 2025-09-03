@@ -36,7 +36,7 @@ def validate_returns_data(returns_records):
     logger.info(f"Validated {len(returns_records)} returns records")
 
 
-def run_shipbob_returns_sync(lookback_days: int = None) -> dict:
+def run_shipbob_returns_sync(token: str = None, lookback_days: int = None) -> dict:
     """
     Run ShipBob returns sync job.
 
@@ -62,7 +62,7 @@ def run_shipbob_returns_sync(lookback_days: int = None) -> dict:
 
         logger.info(f"Looking for ShipBob returns since {since_iso} ({lookback_days} days)")
 
-        # Initialize client
+        # Initialize client (parameters ignored, uses env config)
         client = ShipBobClient()
 
         # Fetch returns data

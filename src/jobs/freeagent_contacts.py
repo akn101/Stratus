@@ -15,7 +15,7 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 from src.adapters.freeagent import FreeAgentFeatureUnavailableError, create_freeagent_client
-from src.db.upserts import upsert_freeagent_contacts
+from src.db.upserts_source_specific import upsert_freeagent_contacts
 from src.utils.config import get_secret
 
 logger = logging.getLogger(__name__)
@@ -79,9 +79,7 @@ def transform_contact(contact: dict) -> dict:
         "sales_tax_registration_number": contact.get("sales_tax_registration_number"),
         "active_projects_count": contact.get("active_projects_count"),
         "account_balance": contact.get("account_balance"),
-        "uses_contact_invoice_sequence": str(contact.get("uses_contact_invoice_sequence"))
-        if contact.get("uses_contact_invoice_sequence") is not None
-        else None,
+        "uses_contact_invoice_sequence": contact.get("uses_contact_invoice_sequence"),
         "status": contact.get("status"),
         "created_at_api": created_at_api,
         "updated_at_api": updated_at_api,
@@ -111,7 +109,7 @@ def run_freeagent_contacts_etl(
     logger.info("Starting FreeAgent contacts ETL job")
 
     # Initialize FreeAgent client
-    client = create_freeagent_client(access_token)
+    client = create_freeagent_client(access_token=access_token)
 
     # Use default date range if none specified and not full sync
     if not full_sync and not from_date and not to_date:

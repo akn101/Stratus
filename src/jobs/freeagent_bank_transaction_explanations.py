@@ -16,7 +16,7 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 from src.adapters.freeagent import FreeAgentFeatureUnavailableError, create_freeagent_client
-from src.db.upserts import upsert_freeagent_bank_transaction_explanations
+from src.db.upserts_source_specific import upsert_freeagent_bank_transaction_explanations
 from src.utils.config import get_secret
 
 logger = logging.getLogger(__name__)
@@ -109,7 +109,7 @@ def run_freeagent_bank_transaction_explanations_etl(
     logger.info("Starting FreeAgent bank transaction explanations ETL job")
 
     # Initialize FreeAgent client
-    client = create_freeagent_client(access_token)
+    client = create_freeagent_client(access_token=access_token)
 
     # Use default date range if none specified and not full sync
     if not full_sync and not from_date and not to_date:

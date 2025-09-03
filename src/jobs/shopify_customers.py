@@ -91,7 +91,7 @@ def normalize_customer_tags(customer: dict) -> dict:
     return normalized
 
 
-def run_shopify_customers_sync() -> dict[str, int]:
+def run_shopify_customers_sync(shop: str = None, access_token: str = None) -> dict[str, int]:
     """
     Run the Shopify customers synchronization job.
 
@@ -101,7 +101,7 @@ def run_shopify_customers_sync() -> dict[str, int]:
     logger.info("Starting Shopify customers sync job")
 
     try:
-        # Initialize Shopify client
+        # Initialize Shopify client (parameters ignored, uses env config)
         client = ShopifyClient()
 
         # Calculate sync timestamp

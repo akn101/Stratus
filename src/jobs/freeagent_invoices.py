@@ -15,7 +15,7 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 from src.adapters.freeagent import FreeAgentFeatureUnavailableError, create_freeagent_client
-from src.db.upserts import upsert_freeagent_invoices
+from src.db.upserts_source_specific import upsert_freeagent_invoices
 from src.utils.config import get_secret
 
 logger = logging.getLogger(__name__)
@@ -94,7 +94,7 @@ def transform_invoice(invoice: dict) -> dict:
 
 
 def run_freeagent_invoices_etl(
-    oauth_config: dict[str, str] | None = None,
+    access_token: str,
     from_date: str | None = None,
     to_date: str | None = None,
     full_sync: bool = False,
@@ -105,7 +105,7 @@ def run_freeagent_invoices_etl(
     Run FreeAgent invoices ETL job.
 
     Args:
-        oauth_config: FreeAgent OAuth configuration dict
+        access_token: FreeAgent OAuth access token
         from_date: Start date for incremental sync (YYYY-MM-DD)
         to_date: End date for incremental sync (YYYY-MM-DD)
         full_sync: Whether to perform full sync (ignores date filters)
@@ -116,7 +116,7 @@ def run_freeagent_invoices_etl(
     logger.info("Starting FreeAgent invoices ETL job")
 
     # Initialize FreeAgent client
-    client = create_freeagent_client(oauth_config=oauth_config)
+    client = create_freeagent_client(access_token=access_token)
 
     # Use lookback_days or default date range if none specified and not full sync
     if not full_sync and not from_date and not to_date:

@@ -495,6 +495,43 @@ class ShipBobFulfillmentCenter(Base):
     )
 
 
+class ShipBobOrder(Base):
+    """
+    ShipBob orders with fulfillment status and tracking data.
+    
+    Links to e-commerce platform orders via reference_id and tracking_number.
+    """
+
+    __tablename__ = "shipbob_orders"
+
+    shipbob_order_id = Column(Text, primary_key=True)
+    reference_id = Column(Text)  # External order ID from e-commerce platform
+    status = Column(Text)
+    created_date = Column(DateTime(timezone=True))
+    last_updated_date = Column(DateTime(timezone=True))
+    shipped_date = Column(DateTime(timezone=True))
+    delivered_date = Column(DateTime(timezone=True))
+    tracking_number = Column(Text)
+    carrier = Column(Text)
+    recipient_name = Column(Text)
+    recipient_email = Column(Text)
+    fulfillment_center_id = Column(Text)
+    total_weight = Column(Numeric(10, 3))
+    total_cost = Column(Numeric(12, 2))
+    currency = Column(Text, default='USD')
+    shipping_method = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Indexes
+    __table_args__ = (
+        Index("ix_shipbob_orders_reference_id", "reference_id"),
+        Index("ix_shipbob_orders_status", "status"),
+        Index("ix_shipbob_orders_tracking_number", "tracking_number"),
+        Index("ix_shipbob_orders_created_date", "created_date"),
+        Index("ix_shipbob_orders_last_updated_date", "last_updated_date"),
+    )
+
+
 # FreeAgent Models for Phase FA-1
 
 

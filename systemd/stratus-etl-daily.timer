@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Stratus ERP Daily ETL Sync
+Requires=stratus-etl-daily.service
+
+[Timer]
+OnCalendar=daily
+Persistent=yes
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

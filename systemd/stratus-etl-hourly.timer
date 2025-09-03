@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Stratus ERP Hourly ETL Sync
+Requires=stratus-etl-hourly.service
+
+[Timer]
+OnCalendar=hourly
+Persistent=yes
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target

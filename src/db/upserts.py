@@ -49,7 +49,7 @@ def _exec_upsert(
         return 0, 0
 
     stmt = pg_insert(table).values(rows)
-    update_values = {c: getattr(stmt.excluded, c) for c in update_cols}
+    update_values = {c: stmt.excluded[c] for c in update_cols}
     stmt = stmt.on_conflict_do_update(index_elements=list(conflict_cols), set_=update_values)
 
     result = session.execute(stmt.returning(literal_column("xmax")))
