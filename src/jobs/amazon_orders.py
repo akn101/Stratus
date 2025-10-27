@@ -77,7 +77,7 @@ def validate_orders_data(orders: list[dict], order_items: list[dict]) -> None:
         )
 
 
-def run_amazon_orders_sync() -> dict[str, int]:
+def run_amazon_orders_etl() -> dict[str, int]:
     """
     Run the Amazon orders synchronization job.
 
@@ -151,7 +151,7 @@ def run_amazon_orders_sync() -> dict[str, int]:
 def main():
     """CLI entry point for the Amazon orders sync job."""
     try:
-        stats = run_amazon_orders_sync()
+        stats = run_amazon_orders_etl()
 
         # Print summary for CLI usage
         print("Amazon Orders Sync Summary:")

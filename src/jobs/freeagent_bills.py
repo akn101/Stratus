@@ -12,39 +12,14 @@ Usage:
 import argparse
 import logging
 from datetime import datetime
-from urllib.parse import urlparse
+
 
 from src.adapters.freeagent import FreeAgentFeatureUnavailableError, create_freeagent_client
+from src.common.etl import extract_id_from_url, parse_date
 from src.db.upserts_source_specific import upsert_freeagent_bills
 from src.utils.config import get_secret
 
 logger = logging.getLogger(__name__)
-
-
-def extract_id_from_url(url: str) -> str:
-    """Extract numeric ID from FreeAgent API URL."""
-    if not url:
-        return ""
-    parsed = urlparse(url)
-    path_parts = parsed.path.strip("/").split("/")
-    return path_parts[-1] if path_parts else ""
-
-
-def parse_date(date_str: str) -> datetime | None:
-    """Parse FreeAgent date string to datetime."""
-    if not date_str:
-        return None
-
-    try:
-        # Handle different date formats
-        if "T" in date_str:
-            # ISO datetime format
-            return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-        else:
-            # Date-only format
-            return datetime.strptime(date_str, "%Y-%m-%d")
-    except (ValueError, TypeError):
-        return None
 
 
 def transform_bill(bill: dict) -> dict:

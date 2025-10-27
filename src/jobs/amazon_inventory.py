@@ -46,7 +46,7 @@ def validate_inventory_data(inventory_items: list[dict]) -> None:
     logger.info(f"Inventory data validation passed for {len(inventory_items)} items")
 
 
-def run_amazon_inventory_sync() -> dict[str, int]:
+def run_amazon_inventory_etl() -> dict[str, int]:
     """
     Run the Amazon FBA inventory synchronization job.
 
@@ -120,7 +120,7 @@ def run_amazon_inventory_sync() -> dict[str, int]:
         raise
 
 
-def run_amazon_inventory_incremental_sync(skus: list[str] = None) -> dict[str, int]:
+def run_amazon_inventory_incremental_etl(skus: list[str] = None) -> dict[str, int]:
     """
     Run an incremental Amazon FBA inventory sync for specific SKUs.
 
@@ -138,7 +138,7 @@ def run_amazon_inventory_incremental_sync(skus: list[str] = None) -> dict[str, i
 
     if not skus:
         logger.info("No SKUs specified, falling back to full sync")
-        return run_amazon_inventory_sync()
+        return run_amazon_inventory_etl()
 
     logger.info(f"Requested sync for {len(skus)} specific SKUs: {skus[:5]}...")
 
@@ -186,10 +186,10 @@ def main():
         if len(sys.argv) > 1 and sys.argv[1] == "--incremental":
             # Parse SKUs from remaining arguments
             skus = sys.argv[2:] if len(sys.argv) > 2 else None
-            stats = run_amazon_inventory_incremental_sync(skus)
+            stats = run_amazon_inventory_incremental_etl(skus)
         else:
             # Default to full refresh
-            stats = run_amazon_inventory_sync()
+            stats = run_amazon_inventory_etl()
 
         # Print summary for CLI usage
         print("Amazon FBA Inventory Sync Summary:")

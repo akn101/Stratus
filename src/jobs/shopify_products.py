@@ -71,7 +71,7 @@ def validate_products_data(products: list[dict], variants: list[dict]) -> None:
     )
 
 
-def run_shopify_products_sync(shop: str = None, access_token: str = None) -> dict[str, int]:
+def run_shopify_products_etl(shop: str = None, access_token: str = None) -> dict[str, int]:
     """
     Run the Shopify products synchronization job.
 
@@ -146,7 +146,7 @@ def run_shopify_products_sync(shop: str = None, access_token: str = None) -> dic
 def main():
     """CLI entry point for the Shopify products sync job."""
     try:
-        stats = run_shopify_products_sync()
+        stats = run_shopify_products_etl()
 
         # Print summary for CLI usage
         print("Shopify Products Sync Summary:")

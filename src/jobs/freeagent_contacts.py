@@ -12,22 +12,13 @@ Usage:
 import argparse
 import logging
 from datetime import datetime
-from urllib.parse import urlparse
-
 from src.adapters.freeagent import FreeAgentFeatureUnavailableError, create_freeagent_client
+from src.common.etl import extract_id_from_url, parse_date
 from src.db.upserts_source_specific import upsert_freeagent_contacts
 from src.utils.config import get_secret
 
 logger = logging.getLogger(__name__)
 
-
-def extract_id_from_url(url: str) -> str:
-    """Extract numeric ID from FreeAgent API URL."""
-    if not url:
-        return ""
-    parsed = urlparse(url)
-    path_parts = parsed.path.strip("/").split("/")
-    return path_parts[-1] if path_parts else ""
 
 
 def transform_contact(contact: dict) -> dict:
@@ -36,23 +27,8 @@ def transform_contact(contact: dict) -> dict:
     contact_id = extract_id_from_url(contact.get("url", ""))
 
     # Parse dates
-    created_at_api = None
-    updated_at_api = None
-    if contact.get("created_at"):
-        try:
-            created_at_api = datetime.fromisoformat(contact["created_at"].replace("Z", "+00:00"))
-        except ValueError:
-            logger.warning(
-                f"Invalid created_at date for contact {contact_id}: {contact.get('created_at')}"
-            )
-
-    if contact.get("updated_at"):
-        try:
-            updated_at_api = datetime.fromisoformat(contact["updated_at"].replace("Z", "+00:00"))
-        except ValueError:
-            logger.warning(
-                f"Invalid updated_at date for contact {contact_id}: {contact.get('updated_at')}"
-            )
+    created_at_api = parse_date(contact.get("created_at"))
+    updated_at_api = parse_date(contact.get("updated_at"))
 
     # Transform contact data
     transformed = {

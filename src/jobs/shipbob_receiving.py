@@ -5,11 +5,11 @@ Fetches warehouse receiving orders (WROs) from ShipBob API for inbound logistics
 Includes expected vs received quantities, purchase orders, and fulfillment center data.
 """
 
-import json
 import logging
 from datetime import UTC, datetime, timedelta
 
 from ..adapters.shipbob import ShipBobClient
+from ..common.etl import json_serialize
 from ..db.deps import get_session
 from ..db.upserts_shipbob import upsert_shipbob_receiving_orders
 
@@ -28,15 +28,15 @@ def validate_receiving_data(receiving_records):
 
         # Serialize JSON fields
         if isinstance(record.get("inventory_quantities"), list):
-            record["inventory_quantities"] = json.dumps(record["inventory_quantities"])
+            record["inventory_quantities"] = json_serialize(record["inventory_quantities"])
 
         if isinstance(record.get("status_history"), list):
-            record["status_history"] = json.dumps(record["status_history"])
+            record["status_history"] = json_serialize(record["status_history"])
 
     logger.info(f"Validated {len(receiving_records)} receiving records")
 
 
-def run_shipbob_receiving_sync(lookback_days: int = None) -> dict:
+def run_shipbob_receiving_etl(lookback_days: int = None) -> dict:
     """
     Run ShipBob receiving orders sync job.
 
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     )
 
     # Run the sync
-    result = run_shipbob_receiving_sync()
+    result = run_shipbob_receiving_etl()
 
     # Exit with appropriate code
     if result["errors"] > 0:

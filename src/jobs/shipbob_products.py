@@ -5,10 +5,10 @@ Fetches products and variants from ShipBob API for product catalog management.
 Includes product attributes, dimensions, weight, value, and variant information.
 """
 
-import json
 import logging
 
 from ..adapters.shipbob import ShipBobClient
+from ..common.etl import json_serialize
 from ..db.deps import get_session
 from ..db.upserts_shipbob import upsert_shipbob_products, upsert_shipbob_variants
 
@@ -29,7 +29,7 @@ def validate_products_data(products, variants):
         # Serialize JSON fields
         for json_field in ["dimensions", "weight", "value"]:
             if isinstance(product.get(json_field), dict):
-                product[json_field] = json.dumps(product[json_field])
+                product[json_field] = json_serialize(product[json_field])
 
         # Convert boolean fields to strings for database storage
         for bool_field in [
@@ -61,7 +61,7 @@ def validate_products_data(products, variants):
         # Serialize JSON fields
         for json_field in ["dimensions", "weight", "value"]:
             if isinstance(variant.get(json_field), dict):
-                variant[json_field] = json.dumps(variant[json_field])
+                variant[json_field] = json_serialize(variant[json_field])
 
         # Convert boolean fields to strings
         if isinstance(variant.get("is_active"), bool):
@@ -78,7 +78,7 @@ def validate_products_data(products, variants):
     logger.info(f"Validated {len(products)} products and {len(variants)} variants")
 
 
-def run_shipbob_products_sync(token: str = None) -> dict:
+def run_shipbob_products_etl(token: str = None) -> dict:
     """
     Run ShipBob products sync job.
 
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     )
 
     # Run the sync
-    result = run_shipbob_products_sync()
+    result = run_shipbob_products_etl()
 
     # Exit with appropriate code
     if result["errors"] > 0:

@@ -91,7 +91,7 @@ def normalize_customer_tags(customer: dict) -> dict:
     return normalized
 
 
-def run_shopify_customers_sync(shop: str = None, access_token: str = None) -> dict[str, int]:
+def run_shopify_customers_etl(shop: str = None, access_token: str = None) -> dict[str, int]:
     """
     Run the Shopify customers synchronization job.
 
@@ -151,7 +151,7 @@ def run_shopify_customers_sync(shop: str = None, access_token: str = None) -> di
 def main():
     """CLI entry point for the Shopify customers sync job."""
     try:
-        stats = run_shopify_customers_sync()
+        stats = run_shopify_customers_etl()
 
         # Print summary for CLI usage
         print("Shopify Customers Sync Summary:")

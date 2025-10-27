@@ -167,7 +167,7 @@ def process_single_settlement_report(
         raise
 
 
-def run_amazon_settlements_sync() -> dict[str, int]:
+def run_amazon_settlements_etl() -> dict[str, int]:
     """
     Run the Amazon settlements synchronization job.
 
@@ -199,7 +199,7 @@ def run_amazon_settlements_sync() -> dict[str, int]:
 def main():
     """CLI entry point for the Amazon settlements sync job."""
     try:
-        stats = run_amazon_settlements_sync()
+        stats = run_amazon_settlements_etl()
 
         # Print summary for CLI usage
         print("Amazon Settlements Sync Summary:")

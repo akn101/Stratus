@@ -11,22 +11,14 @@ Usage:
 
 import argparse
 import logging
-from urllib.parse import urlparse
+
 
 from src.adapters.freeagent import FreeAgentFeatureUnavailableError, create_freeagent_client
+from src.common.etl import extract_id_from_url, parse_date
 from src.db.upserts_source_specific import upsert_freeagent_categories
 from src.utils.config import get_secret
 
 logger = logging.getLogger(__name__)
-
-
-def extract_id_from_url(url: str) -> str:
-    """Extract numeric ID from FreeAgent API URL."""
-    if not url:
-        return ""
-    parsed = urlparse(url)
-    path_parts = parsed.path.strip("/").split("/")
-    return path_parts[-1] if path_parts else ""
 
 
 def transform_category(category: dict) -> dict:

@@ -27,7 +27,7 @@ def validate_fulfillment_centers_data(centers_records):
     logger.info(f"Validated {len(centers_records)} fulfillment centers")
 
 
-def run_shipbob_fulfillment_centers_sync() -> dict:
+def run_shipbob_fulfillment_centers_etl() -> dict:
     """
     Run ShipBob fulfillment centers sync job.
 
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     )
 
     # Run the sync
-    result = run_shipbob_fulfillment_centers_sync()
+    result = run_shipbob_fulfillment_centers_etl()
 
     # Exit with appropriate code
     if result["errors"] > 0:

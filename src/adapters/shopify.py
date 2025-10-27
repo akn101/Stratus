@@ -17,6 +17,9 @@ import requests
 from pydantic import BaseModel, Field
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
+from ..common.http import request_with_retry, safe_headers
+from ..common.etl import parse_date, extract_id_from_url
+
 logger = logging.getLogger(__name__)
 
 
@@ -80,8 +83,7 @@ class ShopifyClient:
         Returns:
             Tuple of (current_calls, call_limit) or (None, None) if not available
         """
-        raw_headers = getattr(response, "headers", None)
-        headers = raw_headers if isinstance(raw_headers, dict) else {}
+        headers = safe_headers(response)
         rate_limit_header = headers.get("X-Shopify-Shop-Api-Call-Limit")
         if isinstance(rate_limit_header, str) and rate_limit_header:
             try:
@@ -109,18 +111,6 @@ class ShopifyClient:
             elif usage_ratio >= 0.7:  # 70% of limit
                 time.sleep(0.5)
 
-    @retry(
-        stop=stop_after_attempt(5),
-        wait=wait_exponential(multiplier=1, min=4, max=60),
-        retry=retry_if_exception_type(
-            (
-                ShopifyRateLimitError,
-                requests.exceptions.ConnectionError,
-                requests.exceptions.Timeout,
-            )
-        ),
-        reraise=True,
-    )
     def _make_request(self, method: str, path: str, params: dict | None = None) -> dict:
         """
         Make authenticated request to Shopify API with retry logic.
@@ -139,43 +129,61 @@ class ShopifyClient:
         """
         url = f"{self.config.base_url}/{path.lstrip('/')}"
 
-        logger.debug(f"Making {method} request to {url} with params: {params}")
+        # Use common retry helper with Shopify-specific error handling
+        def _handle_response(response: requests.Response) -> dict:
+            # Expose headers for pagination helpers that read from the session
+            self.session._last_response_headers = safe_headers(response)
 
-        response = self.session.request(method, url, params=params, timeout=30)
-        # Expose headers for pagination helpers that read from the session
+            # Log rate limit information
+            current_calls, call_limit = self._extract_rate_limit_info(response)
+            if current_calls and call_limit:
+                logger.debug(f"API calls: {current_calls}/{call_limit}")
+
+            # Handle rate limiting
+            if response.status_code == 429:
+                retry_after = int(response.headers.get("Retry-After", 2))
+                logger.warning(f"Rate limited, retrying after {retry_after} seconds")
+                time.sleep(retry_after)
+                raise ShopifyRateLimitError("Rate limited")
+
+            # Handle server errors
+            if 500 <= response.status_code < 600:
+                logger.error(f"Server error {response.status_code}: {response.text}")
+                # Treat as retryable
+                raise ShopifyRateLimitError(f"Server error: {response.status_code}")
+
+            # Handle client errors
+            if 400 <= response.status_code < 500:
+                logger.error(f"Client error {response.status_code}: {response.text}")
+                response.raise_for_status()
+
+            # Handle rate limiting proactively
+            self._handle_rate_limiting(current_calls, call_limit)
+
+            return response.json()
+
         try:
-            # store a dict to ensure predictable behavior under mocks
-            self.session._last_response_headers = dict(response.headers)
-        except Exception:
-            self.session._last_response_headers = {}
-
-        # Log rate limit information
-        current_calls, call_limit = self._extract_rate_limit_info(response)
-        if current_calls and call_limit:
-            logger.debug(f"API calls: {current_calls}/{call_limit}")
-
-        # Handle rate limiting
-        if response.status_code == 429:
-            retry_after = int(response.headers.get("Retry-After", 2))
-            logger.warning(f"Rate limited, retrying after {retry_after} seconds")
-            time.sleep(retry_after)
-            raise ShopifyRateLimitError("Rate limited")
-
-        # Handle server errors
-        if 500 <= response.status_code < 600:
-            logger.error(f"Server error {response.status_code}: {response.text}")
-            # Treat as retryable
-            raise ShopifyRateLimitError(f"Server error: {response.status_code}")
-
-        # Handle client errors
-        if 400 <= response.status_code < 500:
-            logger.error(f"Client error {response.status_code}: {response.text}")
-            response.raise_for_status()
-
-        # Handle rate limiting proactively
-        self._handle_rate_limiting(current_calls, call_limit)
-
-        return response.json()
+            response = request_with_retry(
+                self.session,
+                method,
+                url,
+                params=params,
+                timeout=30,
+                retry_on=(
+                    ShopifyRateLimitError,
+                    requests.exceptions.ConnectionError,
+                    requests.exceptions.Timeout,
+                ),
+                backoff={"multiplier": 1, "min": 4, "max": 60}
+            )
+            return _handle_response(response)
+        except Exception as e:
+            # Re-raise ShopifyRateLimitError to maintain retry behavior
+            if isinstance(e, ShopifyRateLimitError):
+                raise
+            # Convert other errors to ShopifyRateLimitError for retrying
+            logger.error(f"Request failed: {e}")
+            raise ShopifyRateLimitError(f"Request error: {e}")
 
     def _parse_link_header(self, link_header: str) -> dict[str, str]:
         """
@@ -236,15 +244,20 @@ class ShopifyClient:
         logger.info(f"Fetching Shopify orders since {since_iso}")
 
         while True:
-            params = {
-                "updated_at_min": since_iso,
-                "status": "any",  # Include all order statuses
-                "limit": 50,  # Conservative limit for rate limiting
-                # No fields parameter = get ALL available fields from Shopify
-            }
-
             if page_info:
-                params["page_info"] = page_info
+                # When using page_info, can't include filter params
+                params = {
+                    "limit": 50,
+                    "page_info": page_info
+                }
+            else:
+                # Initial request with filters
+                params = {
+                    "updated_at_min": since_iso,
+                    "status": "any",  # Include all order statuses
+                    "limit": 50,  # Conservative limit for rate limiting
+                    # No fields parameter = get ALL available fields from Shopify
+                }
 
             try:
                 response_data = self._make_request("GET", "orders.json", params)
@@ -262,7 +275,7 @@ class ShopifyClient:
                     line_items = order_data.get("line_items", [])
                     for item_data in line_items:
                         normalized_item = self._normalize_order_item(
-                            str(order_data["id"]), item_data
+                            normalized_order["order_id"], item_data  # Use normalized order_id
                         )
                         order_items.append(normalized_item)
 
@@ -697,19 +710,9 @@ class ShopifyClient:
 
     def _normalize_product(self, product_data: dict) -> dict:
         """Normalize Shopify product data."""
-        # Parse dates
-        created_at_str = product_data.get("created_at", "")
-        updated_at_str = product_data.get("updated_at", "")
-
-        try:
-            created_at = datetime.fromisoformat(created_at_str.replace("Z", "+00:00"))
-        except ValueError:
-            created_at = datetime.now(UTC)
-
-        try:
-            updated_at = datetime.fromisoformat(updated_at_str.replace("Z", "+00:00"))
-        except ValueError:
-            updated_at = datetime.now(UTC)
+        # Parse dates using common helper
+        created_at = parse_date(product_data.get("created_at", "")) or datetime.now(UTC)
+        updated_at = parse_date(product_data.get("updated_at", "")) or datetime.now(UTC)
 
         return {
             "product_id": str(product_data["id"]),
@@ -722,19 +725,9 @@ class ShopifyClient:
 
     def _normalize_variant(self, product_id: str, variant_data: dict) -> dict:
         """Normalize Shopify variant data."""
-        # Parse dates
-        created_at_str = variant_data.get("created_at", "")
-        updated_at_str = variant_data.get("updated_at", "")
-
-        try:
-            created_at = datetime.fromisoformat(created_at_str.replace("Z", "+00:00"))
-        except ValueError:
-            created_at = datetime.now(UTC)
-
-        try:
-            updated_at = datetime.fromisoformat(updated_at_str.replace("Z", "+00:00"))
-        except ValueError:
-            updated_at = datetime.now(UTC)
+        # Parse dates using common helper
+        created_at = parse_date(variant_data.get("created_at", "")) or datetime.now(UTC)
+        updated_at = parse_date(variant_data.get("updated_at", "")) or datetime.now(UTC)
 
         # Parse price
         price = None

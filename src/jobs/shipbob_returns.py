@@ -10,6 +10,7 @@ import logging
 from datetime import UTC, datetime, timedelta
 
 from ..adapters.shipbob import ShipBobClient
+from ..common.etl import json_serialize
 from ..db.deps import get_session
 from ..db.upserts_shipbob import upsert_shipbob_returns
 
@@ -28,15 +29,15 @@ def validate_returns_data(returns_records):
 
         # Serialize JSON fields
         if isinstance(record.get("items"), list):
-            record["items"] = json.dumps(record["items"])
+            record["items"] = json_serialize(record["items"])
 
         if isinstance(record.get("transactions"), list):
-            record["transactions"] = json.dumps(record["transactions"])
+            record["transactions"] = json_serialize(record["transactions"])
 
     logger.info(f"Validated {len(returns_records)} returns records")
 
 
-def run_shipbob_returns_sync(token: str = None, lookback_days: int = None) -> dict:
+def run_shipbob_returns_etl(token: str = None, lookback_days: int = None) -> dict:
     """
     Run ShipBob returns sync job.
 
@@ -129,7 +130,7 @@ if __name__ == "__main__":
     )
 
     # Run the sync
-    result = run_shipbob_returns_sync()
+    result = run_shipbob_returns_etl()
 
     # Exit with appropriate code
     if result["errors"] > 0:

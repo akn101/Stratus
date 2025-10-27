@@ -16,6 +16,9 @@ import requests
 from pydantic import BaseModel, Field
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
+from ..common.http import request_with_retry, safe_headers
+from ..common.etl import parse_date, json_serialize, extract_id_from_url
+
 logger = logging.getLogger(__name__)
 
 
@@ -72,46 +75,54 @@ class ShipBobClient:
         # ShipBob doesn't specify rate limit headers in the API spec, so we use conservative approach
         time.sleep(0.5)  # Conservative delay between requests
 
-    @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(
-            (
-                ShipBobRateLimitError,
-                requests.exceptions.ConnectionError,
-                requests.exceptions.Timeout,
-            )
-        ),
-        reraise=True,
-    )
     def _make_request(self, method: str, endpoint: str, params: dict = None) -> dict:
         """Make authenticated request to ShipBob API with retry logic."""
         url = f"{self.config.base_url}{endpoint}"
 
-        logger.debug(f"ShipBob API request: {method} {url}")
+        def _handle_response(response: requests.Response) -> dict:
+            # Handle rate limiting
+            self._handle_rate_limiting(response)
 
-        response = self.session.request(method, url, params=params or {}, timeout=30)
+            # Check for API errors
+            if 500 <= response.status_code < 600:
+                logger.error(f"ShipBob server error {response.status_code}: {response.text}")
+                raise ShipBobRateLimitError(f"Server error: {response.status_code}")
+            if response.status_code == 401:
+                raise ValueError("ShipBob authentication failed - check SHIPBOB_TOKEN")
+            elif response.status_code == 403:
+                raise ValueError("ShipBob access denied - check token permissions")
+            elif response.status_code >= 400:
+                headers = safe_headers(response)
+                try:
+                    error_data = response.json()
+                    logger.error(f"ShipBob API error: {response.status_code} - {error_data}")
+                except:
+                    logger.error(f"ShipBob API error: {response.status_code} - {response.text}")
+                response.raise_for_status()
 
-        # Handle rate limiting
-        self._handle_rate_limiting(response)
+            return response.json()
 
-        # Check for API errors
-        if 500 <= response.status_code < 600:
-            logger.error(f"ShipBob server error {response.status_code}: {response.text}")
-            raise ShipBobRateLimitError(f"Server error: {response.status_code}")
-        if response.status_code == 401:
-            raise ValueError("ShipBob authentication failed - check SHIPBOB_TOKEN")
-        elif response.status_code == 403:
-            raise ValueError("ShipBob access denied - check token permissions")
-        elif response.status_code >= 400:
-            try:
-                error_data = response.json()
-                logger.error(f"ShipBob API error: {response.status_code} - {error_data}")
-            except:
-                logger.error(f"ShipBob API error: {response.status_code} - {response.text}")
-            response.raise_for_status()
-
-        return response.json()
+        try:
+            response = request_with_retry(
+                self.session,
+                method,
+                url,
+                params=params or {},
+                timeout=30,
+                retry_on=(
+                    ShipBobRateLimitError,
+                    requests.exceptions.ConnectionError,
+                    requests.exceptions.Timeout,
+                ),
+                backoff={"multiplier": 1, "min": 4, "max": 10}
+            )
+            return _handle_response(response)
+        except Exception as e:
+            # Re-raise ShipBobRateLimitError to maintain retry behavior
+            if isinstance(e, (ShipBobRateLimitError, ValueError)):
+                raise
+            logger.error(f"ShipBob request failed: {e}")
+            raise ShipBobRateLimitError(f"Request error: {e}")
 
     def _paginate_all(self, endpoint: str, params: dict = None) -> list[dict]:
         """Fetch all pages from a paginated ShipBob endpoint."""
@@ -204,10 +215,9 @@ class ShipBobClient:
 
     def _normalize_order_status(self, order_data: dict, since_iso: str) -> dict | None:
         """Normalize order data to extract status and tracking info."""
-        # Parse the since_iso to compare update times
-        try:
-            since_dt = datetime.fromisoformat(since_iso.replace("Z", "+00:00"))
-        except:
+        # Parse the since_iso to compare update times using common helper
+        since_dt = parse_date(since_iso)
+        if not since_dt:
             since_dt = datetime.now(UTC) - timedelta(hours=24)
 
         # Check if order has been updated since the cutoff
@@ -215,11 +225,10 @@ class ShipBobClient:
         if not last_update_str:
             return None
 
-        try:
-            last_update_dt = datetime.fromisoformat(last_update_str.replace("Z", "+00:00"))
-            if last_update_dt < since_dt:
-                return None  # Skip orders not updated since cutoff
-        except:
+        last_update_dt = parse_date(last_update_str)
+        if last_update_dt and last_update_dt < since_dt:
+            return None  # Skip orders not updated since cutoff
+        if not last_update_dt:
             return None
 
         # Extract reference_id (external order ID from e-commerce platform)
@@ -387,10 +396,9 @@ class ShipBobClient:
         """
         logger.info(f"Fetching ShipBob order statuses since {since_iso}")
 
-        # Convert ISO string to datetime for API parameters
-        try:
-            since_dt = datetime.fromisoformat(since_iso.replace("Z", "+00:00"))
-        except:
+        # Convert ISO string to datetime for API parameters using common helper
+        since_dt = parse_date(since_iso)
+        if not since_dt:
             logger.error(f"Invalid since_iso format: {since_iso}")
             return []
 
@@ -430,10 +438,10 @@ class ShipBobClient:
 
         params = {}
         if since_iso:
-            try:
-                since_dt = datetime.fromisoformat(since_iso.replace("Z", "+00:00"))
+            since_dt = parse_date(since_iso)
+            if since_dt:
                 params["StartDate"] = since_dt.isoformat()
-            except:
+            else:
                 logger.warning(f"Invalid since_iso format: {since_iso}")
 
         try:
@@ -479,10 +487,10 @@ class ShipBobClient:
 
         params = {}
         if since_iso:
-            try:
-                since_dt = datetime.fromisoformat(since_iso.replace("Z", "+00:00"))
+            since_dt = parse_date(since_iso)
+            if since_dt:
                 params["InsertStartDate"] = since_dt.isoformat()
-            except:
+            else:
                 logger.warning(f"Invalid since_iso format: {since_iso}")
 
         try:
@@ -721,10 +729,7 @@ class ShipBobClient:
         """Parse ISO datetime string to datetime object."""
         if not date_str:
             return None
-        try:
-            return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-        except:
-            return None
+        return parse_date(date_str)
 
     def get_all_orders(self, limit: int = None) -> list[dict]:
         """

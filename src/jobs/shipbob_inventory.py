@@ -54,7 +54,7 @@ def validate_inventory_data(inventory_records):
     logger.info(f"Validated {len(inventory_records)} inventory records")
 
 
-def run_shipbob_inventory_etl(token: str, base_url: str = "https://api.shipbob.com/2025-07", **kwargs) -> dict:
+def run_shipbob_inventory_etl() -> dict:
     """
     Run ShipBob inventory sync job.
 
@@ -66,8 +66,8 @@ def run_shipbob_inventory_etl(token: str, base_url: str = "https://api.shipbob.c
     logger.info("Starting ShipBob inventory sync")
 
     try:
-        # Initialize ShipBob client with provided credentials
-        config = ShipBobConfig(token=token, base_url=base_url)
+        # Initialize ShipBob client (loads config from environment)
+        config = ShipBobConfig.from_env()
         client = ShipBobClient(config=config)
 
         # Fetch inventory data
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     )
 
     # Run the sync
-    result = run_shipbob_inventory_sync()
+    result = run_shipbob_inventory_etl()
 
     # Exit with appropriate code
     if result["errors"] > 0:

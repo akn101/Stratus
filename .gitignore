@@ -283,3 +283,13 @@ data/
 # Private configuration
 config.json
 secrets.json
+
+# Work-in-progress / experimental directories
+dashboard/
+src/analytics/
+src/common/
+src/db/models/
+src/db/upserts/
+src/web/
+scripts/runners/
+scripts/analysis/
