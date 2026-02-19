@@ -14,13 +14,14 @@ from typing import Any
 try:
     from fastapi import FastAPI, HTTPException, Response
     from fastapi.responses import PlainTextResponse
+    from fastapi.middleware.cors import CORSMiddleware
 except ImportError:
-    # Fallback to basic HTTP server if FastAPI not available
-    import threading
-    from http.server import BaseHTTPRequestHandler, HTTPServer
-    from urllib.parse import urlparse
-
     FastAPI = None
+
+# Always import fallback modules
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import urlparse
 
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
@@ -35,6 +36,7 @@ from sqlalchemy import text
 from src.config.loader import cfg
 from src.db.deps import get_session
 from src.db.sync_state import get_all_sync_states, is_sync_healthy
+from src.analytics.simple_alerts import BusinessAlertsMonitor
 
 logger = logging.getLogger(__name__)
 
@@ -169,6 +171,15 @@ if FastAPI:
         lifespan=lifespan,
     )
 
+    # Configure CORS for dashboard integration
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:3000", "https://localhost:3000"],  # Next.js dashboard
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     @app.get("/healthz")
     async def health_check():
         """Health check endpoint."""
@@ -195,8 +206,262 @@ if FastAPI:
             "service": "Stratus ERP Integration Service",
             "version": "1.0.0",
             "timestamp": datetime.now(UTC).isoformat(),
-            "endpoints": ["/healthz", "/metrics"],
+            "endpoints": ["/healthz", "/metrics", "/api/alerts", "/api/analytics", "/api/system-stats", "/api/jobs/recent"],
         }
+
+    @app.get("/api/alerts")
+    async def get_alerts():
+        """Get current business alerts for the dashboard"""
+        try:
+            with get_session() as session:
+                monitor = BusinessAlertsMonitor(session)
+                alerts = monitor.check_all_alerts()
+                
+                return {
+                    "alerts": alerts,
+                    "timestamp": datetime.now(UTC).isoformat(),
+                    "total_count": len(alerts),
+                    "severity_counts": {
+                        "critical": len([a for a in alerts if a["severity"] == "critical"]),
+                        "high": len([a for a in alerts if a["severity"] == "high"]),
+                        "medium": len([a for a in alerts if a["severity"] == "medium"]),
+                        "low": len([a for a in alerts if a["severity"] == "low"])
+                    }
+                }
+        except Exception as e:
+            logger.error(f"Error getting alerts: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/analytics")
+    async def get_analytics_data(days: int = 7):
+        """Get analytics data for dashboard charts"""
+        try:
+            with get_session() as session:
+                # Fulfillment performance over time
+                fulfillment_query = text("""
+                    WITH daily_fulfillment AS (
+                        SELECT 
+                            DATE(created_at) as date,
+                            AVG(CASE 
+                                WHEN fulfilled_at IS NOT NULL 
+                                THEN EXTRACT(EPOCH FROM (fulfilled_at - created_at))/3600 
+                                ELSE NULL 
+                            END) as avg_fulfillment_hours,
+                            COUNT(*) as orders_count,
+                            COUNT(CASE 
+                                WHEN fulfillment_status = 'error' OR fulfillment_status = 'cancelled'
+                                THEN 1 
+                            END) * 100.0 / COUNT(*) as exception_rate
+                        FROM orders 
+                        WHERE created_at >= NOW() - INTERVAL :days DAY
+                        GROUP BY DATE(created_at)
+                        ORDER BY date
+                    )
+                    SELECT * FROM daily_fulfillment
+                """)
+                
+                fulfillment_results = session.execute(fulfillment_query, {"days": days}).fetchall()
+                fulfillment_performance = []
+                for row in fulfillment_results:
+                    fulfillment_performance.append({
+                        "date": row.date.strftime("%Y-%m-%d"),
+                        "avg_fulfillment_hours": float(row.avg_fulfillment_hours or 0),
+                        "orders_count": row.orders_count,
+                        "exception_rate": float(row.exception_rate or 0)
+                    })
+                
+                # Delivery metrics
+                delivery_query = text("""
+                    WITH daily_delivery AS (
+                        SELECT 
+                            DATE(created_at) as date,
+                            COUNT(CASE WHEN fulfillment_status = 'fulfilled' THEN 1 END) as delivered,
+                            COUNT(CASE WHEN fulfillment_status IN ('error', 'cancelled') THEN 1 END) as exceptions,
+                            COUNT(CASE WHEN fulfillment_status IN ('pending', 'partial') THEN 1 END) as in_transit,
+                            COUNT(CASE WHEN fulfillment_status IN ('error', 'cancelled') THEN 1 END) * 100.0 / COUNT(*) as exception_rate
+                        FROM orders 
+                        WHERE created_at >= NOW() - INTERVAL :days DAY
+                        GROUP BY DATE(created_at)
+                        ORDER BY date
+                    )
+                    SELECT * FROM daily_delivery
+                """)
+                
+                delivery_results = session.execute(delivery_query, {"days": days}).fetchall()
+                delivery_metrics = []
+                for row in delivery_results:
+                    delivery_metrics.append({
+                        "date": row.date.strftime("%Y-%m-%d"),
+                        "delivered": row.delivered,
+                        "exceptions": row.exceptions,
+                        "in_transit": row.in_transit,
+                        "exception_rate": float(row.exception_rate or 0)
+                    })
+                
+                # Revenue trends
+                revenue_query = text("""
+                    WITH daily_revenue AS (
+                        SELECT 
+                            DATE(created_at) as date,
+                            SUM(total_price) as revenue,
+                            COUNT(*) as orders,
+                            AVG(total_price) as avg_order_value
+                        FROM orders 
+                        WHERE created_at >= NOW() - INTERVAL :days DAY
+                        AND total_price > 0
+                        GROUP BY DATE(created_at)
+                        ORDER BY date
+                    )
+                    SELECT * FROM daily_revenue
+                """)
+                
+                revenue_results = session.execute(revenue_query, {"days": days}).fetchall()
+                revenue_trend = []
+                for row in revenue_results:
+                    revenue_trend.append({
+                        "date": row.date.strftime("%Y-%m-%d"),
+                        "revenue": float(row.revenue or 0),
+                        "orders": row.orders,
+                        "avg_order_value": float(row.avg_order_value or 0)
+                    })
+                
+                # Inventory alerts by category (mock data based on business logic)
+                inventory_alerts = [
+                    {"category": "Low Stock", "count": 15, "severity": "medium"},
+                    {"category": "Out of Stock", "count": 3, "severity": "high"},
+                    {"category": "Overstock", "count": 8, "severity": "low"},
+                    {"category": "Damaged", "count": 2, "severity": "critical"}
+                ]
+                
+                return {
+                    "fulfillment_performance": fulfillment_performance,
+                    "delivery_metrics": delivery_metrics,
+                    "revenue_trend": revenue_trend,
+                    "inventory_alerts": inventory_alerts,
+                    "timestamp": datetime.now(UTC).isoformat()
+                }
+                
+        except Exception as e:
+            logger.error(f"Error getting analytics data: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/system-stats")
+    async def get_system_stats():
+        """Get system statistics for dashboard overview"""
+        try:
+            with get_session() as session:
+                # Get basic counts and recent activity
+                stats_query = text("""
+                    SELECT 
+                        (SELECT COUNT(*) FROM orders) as total_orders,
+                        (SELECT COUNT(*) FROM orders WHERE created_at >= NOW() - INTERVAL '24 HOUR') as orders_24h,
+                        (SELECT COUNT(*) FROM inventory) as total_products,
+                        (SELECT COUNT(*) FROM shopify_customers) as total_customers,
+                        (SELECT MAX(created_at) FROM orders) as last_order_time,
+                        (SELECT COUNT(*) FROM orders WHERE fulfillment_status = 'pending') as pending_orders
+                """)
+                
+                result = session.execute(stats_query).fetchone()
+                
+                return {
+                    "total_orders": result.total_orders or 0,
+                    "orders_24h": result.orders_24h or 0,
+                    "total_products": result.total_products or 0,
+                    "total_customers": result.total_customers or 0,
+                    "last_order_time": result.last_order_time.isoformat() if result.last_order_time else None,
+                    "pending_orders": result.pending_orders or 0,
+                    "timestamp": datetime.now(UTC).isoformat()
+                }
+                
+        except Exception as e:
+            logger.error(f"Error getting system stats: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/jobs/recent")
+    async def get_recent_jobs(limit: int = 20):
+        """Get recent ETL job executions (mock data for now)"""
+        try:
+            from datetime import timedelta
+            # This would typically query a job_executions table
+            # For now, return mock data that matches the expected format
+            recent_jobs = [
+                {
+                    "id": f"job_{i}",
+                    "name": f"shopify_orders_etl" if i % 3 == 0 else f"shipbob_inventory_etl" if i % 3 == 1 else "freeagent_contacts_etl",
+                    "status": "completed" if i % 4 != 0 else "failed" if i % 8 == 0 else "running",
+                    "started_at": (datetime.now(UTC) - timedelta(hours=i)).isoformat(),
+                    "completed_at": (datetime.now(UTC) - timedelta(hours=i) + timedelta(minutes=5)).isoformat() if i % 4 != 0 and i % 8 != 7 else None,
+                    "duration": 300 + (i * 30),  # seconds
+                    "records_processed": 150 + (i * 25),
+                    "records_inserted": 75 + (i * 10),
+                    "records_updated": 75 + (i * 15),
+                    "error_message": "Connection timeout" if i % 8 == 0 else None
+                }
+                for i in range(limit)
+            ]
+            
+            return {
+                "jobs": recent_jobs,
+                "timestamp": datetime.now(UTC).isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting recent jobs: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/api/alerts/{alert_id}/resolve")
+    async def resolve_alert(alert_id: str):
+        """Mark an alert as resolved"""
+        try:
+            # This would typically update an alerts table
+            logger.info(f"Resolving alert {alert_id}")
+            return {
+                "success": True,
+                "message": f"Alert {alert_id} resolved",
+                "timestamp": datetime.now(UTC).isoformat()
+            }
+        except Exception as e:
+            logger.error(f"Error resolving alert {alert_id}: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/integration-status")
+    async def get_integration_status():
+        """Get the health status of external integrations"""
+        try:
+            from datetime import timedelta
+            # This would typically ping each integration's health endpoint
+            # For now, return mock status data
+            integrations = {
+                "shopify": {
+                    "status": "active",
+                    "last_sync": (datetime.now(UTC) - timedelta(minutes=15)).isoformat(),
+                    "health_check": "passed"
+                },
+                "shipbob": {
+                    "status": "active", 
+                    "last_sync": (datetime.now(UTC) - timedelta(minutes=20)).isoformat(),
+                    "health_check": "passed"
+                },
+                "freeagent": {
+                    "status": "warning",
+                    "last_sync": (datetime.now(UTC) - timedelta(hours=2)).isoformat(),
+                    "health_check": "rate_limited"
+                },
+                "amazon": {
+                    "status": "disabled",
+                    "last_sync": None,
+                    "health_check": "not_configured"
+                }
+            }
+            
+            return {
+                "integrations": integrations,
+                "timestamp": datetime.now(UTC).isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting integration status: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
 
 
 # Fallback HTTP server if FastAPI not available
